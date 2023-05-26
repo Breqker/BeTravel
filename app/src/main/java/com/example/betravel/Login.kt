@@ -19,6 +19,12 @@ class Login : AppCompatActivity() {
             val intent = Intent(this, Registrazione::class.java)
             startActivity(intent)
         }
+
+        //Controllare se tutti i campi sono stati compilati, dopo controllare che i dati siano presenti nel DB e dopo accedere alla schermata home
+        binding.buttonLogin.setOnClickListener{
+            val intent = Intent(this,Home::class.java)
+            startActivity(intent)
+        }
     }
 
 }
