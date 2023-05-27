@@ -18,7 +18,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         private const val COLUMN_EMAIL = "email"
         private const val COLUMN_PASSWORD = "password"
         private const val COLUMN_FOTO_PROFILO = "fotoProfilo"
-
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -36,17 +35,22 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         onCreate(db)
     }
 
-    fun insertData(nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray) {
+    fun insertData(nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray?) {
         val db = writableDatabase
         val values = ContentValues()
         values.put(COLUMN_NOME, nome)
         values.put(COLUMN_COGNOME, cognome)
         values.put(COLUMN_EMAIL, email)
         values.put(COLUMN_PASSWORD, password)
-        values.put(COLUMN_FOTO_PROFILO, fotoProfilo)
+        if (fotoProfilo != null) {
+            values.put(COLUMN_FOTO_PROFILO, fotoProfilo)
+        } else {
+            values.putNull(COLUMN_FOTO_PROFILO)
+        }
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
+
 
     fun getAllData(): List<UserData> {
         val dataList = mutableListOf<UserData>()
@@ -75,15 +79,18 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.close()
         return dataList
     }
-
-    fun updateData(id: Int, nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray) {
+    fun updateData(id: Int, nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray?) {
         val db = writableDatabase
         val values = ContentValues()
         values.put(COLUMN_NOME, nome)
         values.put(COLUMN_COGNOME, cognome)
         values.put(COLUMN_EMAIL, email)
         values.put(COLUMN_PASSWORD, password)
-        values.put(COLUMN_FOTO_PROFILO, fotoProfilo)
+        if (fotoProfilo != null) {
+            values.put(COLUMN_FOTO_PROFILO, fotoProfilo)
+        } else {
+            values.putNull(COLUMN_FOTO_PROFILO)
+        }
 
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(id.toString())
@@ -138,13 +145,36 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return userExists
     }
 
+    fun checkCredentials(email: String, password: String): Boolean {
+        val db = readableDatabase
+        val selection = "$COLUMN_EMAIL = ? AND $COLUMN_PASSWORD = ?"
+        val selectionArgs = arrayOf(email, password)
+        val cursor = db.query(TABLE_NAME, null, selection, selectionArgs, null, null, null)
+        val credentialsMatch = cursor.moveToFirst()
+        cursor.close()
+        db.close()
+        return credentialsMatch
+    }
+
+    fun checkPasswordMatch(password1: String, password2: String): Boolean {
+        return password1 == password2
+    }
+
+    private fun toByteArray(blob: ByteArray?): ByteArray {
+        return blob ?: byteArrayOf()
+    }
+
+    private fun toBlob(byteArray: ByteArray?): ByteArray? {
+        return byteArray
+    }
 }
+
 
 data class UserData(
     val nome: String,
     val cognome: String,
     val email: String,
     val password: String,
-    val fotoProfilo: ByteArray
+    val fotoProfilo: ByteArray?
 )
 

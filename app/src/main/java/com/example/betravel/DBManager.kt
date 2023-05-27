@@ -1,8 +1,10 @@
 package com.example.betravel
 
+import java.sql.Blob
+
 class DBManager(private val dbHelper: DBHelper) {
 
-    fun insertData(nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray) {
+    fun insertData(nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray?) {
         dbHelper.insertData(nome, cognome, email, password, fotoProfilo)
     }
 
@@ -10,7 +12,7 @@ class DBManager(private val dbHelper: DBHelper) {
         return dbHelper.getAllData()
     }
 
-    fun updateUserData(id: Int, nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray) {
+    fun updateUserData(id: Int, nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray?) {
         dbHelper.updateData(id, nome, cognome, email, password, fotoProfilo)
     }
 
@@ -24,5 +26,13 @@ class DBManager(private val dbHelper: DBHelper) {
 
     fun checkUserExistenceByEmail(email: String): Boolean {
         return dbHelper.checkUserExistenceByEmail(email)
+    }
+
+    fun checkCredentials(email: String, password: String): Boolean {
+        return dbHelper.checkCredentials(email, password)
+    }
+
+    fun checkPassword(password1: String,password2: String): Boolean{
+        return dbHelper.checkPasswordMatch(password1,password2)
     }
 }
