@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <TextView
+    <EditText
         android:id="@+id/aeroportoPartenza"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,66 +26,120 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewLogo"
-        android:gravity="center"
         android:inputType="textAutoComplete"
-        app:layout_constraintVertical_bias="0.1"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+        android:drawablePadding="16dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="#ECECEC"/>
 
-    <TextView
+    <EditText
         android:id="@+id/aeroportoArrivo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Aeroporto di arrivo"
         android:inputType="textAutoComplete"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenza"
-        app:layout_constraintVertical_bias="0.2" />
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="5dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="#ECECEC"/>
 
-    <TextView
+    <EditText
         android:id="@+id/dataPartenza"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:hint="Data di partenza"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aeroportoArrivo"
-        app:layout_constraintVertical_bias="0.3" />
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_edit_calendar_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="5dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="#ECECEC"/>
 
-    <TextView
+    <EditText
         android:id="@+id/dataArrivo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:hint="Data di arrivo"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
-        app:layout_constraintVertical_bias="0.4" />
-
-    <TextView
-        android:id="@+id/numPersone"
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_edit_calendar_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="5dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="#ECECEC"/>
+    <LinearLayout
+        android:id="@+id/numPersoneLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="Numero Persone"
-        android:inputType="number"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-        app:layout_constraintVertical_bias="0.5" />
+        android:layout_marginTop="5dp"
+        android:background="#ECECEC">
+
+        <EditText
+            android:id="@+id/numPersone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Numero Persone: "
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_person_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC"/>
+
+        <Spinner
+            android:id="@+id/numPersoneSpinner"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bg"
+            android:spinnerMode="dropdown"
+            android:backgroundTint="#ECECEC"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/barraRicerca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_search_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Cerca Voli"
+        android:textColor="#62878F"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
+
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/numPersone">
+        app:layout_constraintTop_toBottomOf="@id/barraRicerca">
 
         <LinearLayout
             android:layout_width="match_parent"
