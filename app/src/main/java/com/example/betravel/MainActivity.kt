@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
             data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto,"Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
             binding.recyclerview1.adapter = adapter1

@@ -64,7 +64,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:paddingStart="16dp"
-            android:text="Search Destinations"
+            android:hint="Search Destinations"
             android:textColor="#62878F"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/textView2"
