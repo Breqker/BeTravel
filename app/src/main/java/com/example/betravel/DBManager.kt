@@ -1,7 +1,5 @@
 package com.example.betravel
 
-import java.sql.Blob
-
 class DBManager(private val dbHelper: DBHelper) {
 
     fun insertData(nome: String, cognome: String, email: String, password: String, fotoProfilo: ByteArray?) {

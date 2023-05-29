@@ -51,6 +51,13 @@ class Login : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::dbHelper.isInitialized) {
+            dbHelper.close()
+        }
+    }
+
     private fun showErrorMessage(message: String) {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Errore")
@@ -74,7 +81,7 @@ class Login : AppCompatActivity() {
     }
 
     private fun navigateToHome() {
-        val intent = Intent(this, Home::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
