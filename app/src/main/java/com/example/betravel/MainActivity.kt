@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.ActivityMainBinding
 import com.example.betravel.databinding.ActivityMainOrizzontaleBinding
+import com.example.betravelimport.BottomNavigationFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingOrizzontale: ActivityMainOrizzontaleBinding
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,14 +87,15 @@ class MainActivity : AppCompatActivity() {
 
         } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setContentView(binding.root)
-            binding.recyclerview1.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            binding.recyclerview1.layoutManager =
+                LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data = ArrayList<ItemsViewModelCategorie>()
 
             data.add(ItemsViewModelCategorie(R.drawable.volo, "Scopri tutti i voli"))
             data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
             data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
-            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto,"Noleggia un auto"))
+            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto, "Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
             binding.recyclerview1.adapter = adapter1
@@ -125,7 +129,8 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-            binding.recyclerview2.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            binding.recyclerview2.layoutManager =
+                LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data2 = ArrayList<ItemsViewModelPacchetti>()
 
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
@@ -143,8 +148,31 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             })
+            val bottomNavigationFragment = BottomNavigationFragment()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, bottomNavigationFragment)
+                .commit()
+
+            bottomNavigationView = findViewById(R.id.bottom_navigation)
+            bottomNavigationView.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.Home -> {
+                        true
+                    }
+
+                    R.id.Profilo -> {
+                        val intent = Intent(this, Profilo::class.java)
+                        startActivity(intent)
+                        true
+                    }
+
+                    R.id.Preferiti -> {
+                        true
+                    }
+
+                    else -> false
+                }
+            }
         }
-
-
     }
 }
