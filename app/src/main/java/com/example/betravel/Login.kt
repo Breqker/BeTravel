@@ -49,6 +49,11 @@ class Login : AppCompatActivity() {
                 showErrorMessage("Compilare tutti i campi")
             }
         }
+
+        binding.editTextRecuperoPassword.setOnClickListener{
+            val intent = Intent(this, RecuperoPassword::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroy() {

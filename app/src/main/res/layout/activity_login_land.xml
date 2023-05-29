@@ -81,4 +81,17 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
         android:layout_marginTop="16dp" />
 
+    <TextView
+        android:id="@+id/editTextRecuperoPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hai dimenticato la password?"
+        android:gravity="center"
+        android:clickable="true"
+        android:onClick="onRecuperoPasswordClick"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRegistrazione"
+        android:layout_marginTop="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

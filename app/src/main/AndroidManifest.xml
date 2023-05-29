@@ -13,23 +13,26 @@
         android:theme="@style/Theme.BeTravel"
         tools:targetApi="31">
         <activity
+            android:name=".RecuperoPassword"
+            android:exported="false" />
+        <activity
             android:name=".Login"
-            android:exported="true"
-            android:configChanges="orientation">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:configChanges="orientation"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Registrazione"
-            android:exported="false"
-            android:configChanges="orientation"/>
+            android:configChanges="orientation"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"
-            android:configChanges="orientation"/>
+            android:configChanges="orientation"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
