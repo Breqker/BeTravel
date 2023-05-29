@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -28,9 +29,39 @@ class MainActivity : AppCompatActivity() {
             data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
             data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto,"Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
             bindingOrizzontale.recyclerview1.adapter = adapter1
+
+            adapter1.setOnItemClickListener(object : CustomAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    when (position) {
+                        0 -> {
+                            // Scopri tutti i voli
+                            val intent = Intent(this@MainActivity, Volo::class.java)
+                            startActivity(intent)
+                        }
+                        /*
+                        1 -> {
+                            // Soggiorno
+                            val intent = Intent(this, SoggiornoActivity::class.java)
+                            startActivity(intent)
+                        }
+                        2 -> {
+                            // Prenota taxi
+                            val intent = Intent(this, PrenotaTaxiActivity::class.java)
+                            startActivity(intent)
+                        }
+                        3 -> {
+                            // Scopri le crociere
+                            val intent = Intent(this, CrociereActivity::class.java)
+                            startActivity(intent)
+                        }
+                         */
+                    }
+                }
+            })
 
             bindingOrizzontale.recyclerview2.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data2 = ArrayList<ItemsViewModelPacchetti>()
@@ -42,6 +73,14 @@ class MainActivity : AppCompatActivity() {
 
             val adapter2 = CustomAdapterPacchetti(data2)
             bindingOrizzontale.recyclerview2.adapter = adapter2
+
+            adapter2.setOnItemClickListener(object : CustomAdapterPacchetti.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    when (position) {
+                        //
+                    }
+                }
+            })
 
         } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setContentView(binding.root)
@@ -57,6 +96,35 @@ class MainActivity : AppCompatActivity() {
             val adapter1 = CustomAdapter(data)
             binding.recyclerview1.adapter = adapter1
 
+            adapter1.setOnItemClickListener(object : CustomAdapter.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    when (position) {
+                        0 -> {
+                            // Scopri tutti i voli
+                            val intent = Intent(this@MainActivity, Volo::class.java)
+                            startActivity(intent)
+                        }
+                        /*
+                        1 -> {
+                            // Soggiorno
+                            val intent = Intent(this, SoggiornoActivity::class.java)
+                            startActivity(intent)
+                        }
+                        2 -> {
+                            // Prenota taxi
+                            val intent = Intent(this, PrenotaTaxiActivity::class.java)
+                            startActivity(intent)
+                        }
+                        3 -> {
+                            // Scopri le crociere
+                            val intent = Intent(this, CrociereActivity::class.java)
+                            startActivity(intent)
+                        }
+                         */
+                    }
+                }
+            })
+
             binding.recyclerview2.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data2 = ArrayList<ItemsViewModelPacchetti>()
 
@@ -67,6 +135,14 @@ class MainActivity : AppCompatActivity() {
 
             val adapter2 = CustomAdapterPacchetti(data2)
             binding.recyclerview2.adapter = adapter2
+
+            adapter2.setOnItemClickListener(object : CustomAdapterPacchetti.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    when (position) {
+                        //
+                    }
+                }
+            })
         }
 
 

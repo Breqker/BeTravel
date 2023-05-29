@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.PacchettiRowItemsBinding
 
 class CustomAdapterPacchetti(private val myList: List<ItemsViewModelPacchetti>) : RecyclerView.Adapter<CustomAdapterPacchetti.ViewHolder>() {
-    class ViewHolder(val binding: PacchettiRowItemsBinding) : RecyclerView.ViewHolder(binding.root) {
+
+    private var listener: OnItemClickListener? = null
+
+    class ViewHolder(binding: PacchettiRowItemsBinding) : RecyclerView.ViewHolder(binding.root) {
         val imageView = binding.imagePacchetto
         val textView = binding.categoriaPacchetto
     }
@@ -24,5 +27,17 @@ class CustomAdapterPacchetti(private val myList: List<ItemsViewModelPacchetti>) 
         val item = myList[position]
         holder.imageView.setImageResource(item.image)
         holder.textView.text = item.text
+
+        holder.itemView.setOnClickListener {
+            listener?.onItemClick(position)
+        }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
     }
 }
