@@ -35,6 +35,11 @@ class Login : AppCompatActivity() {
             startActivity(intent)
         }
 
+        bindingLand.editTextRegistrazione.setOnClickListener{
+            val intent = Intent(this, Registrazione::class.java)
+            startActivity(intent)
+        }
+
         binding.buttonLogin.setOnClickListener{
             val email = binding.editTextEmail2.text.toString()
             val password = binding.editTextPassword2.text.toString()
@@ -50,7 +55,27 @@ class Login : AppCompatActivity() {
             }
         }
 
+        bindingLand.buttonLogin.setOnClickListener{
+            val email = bindingLand.editTextEmail2.text.toString()
+            val password = bindingLand.editTextPassword2.text.toString()
+
+            if(email.isNotEmpty() && password.isNotEmpty()){
+                if (dbManager.checkCredentials(email, password)) {
+                    showMessage("Login effettuato con successo")
+                }else {
+                    showErrorMessage("Credenziali non valide")
+                }
+            }else {
+                showErrorMessage("Compilare tutti i campi")
+            }
+        }
+
         binding.editTextRecuperoPassword.setOnClickListener{
+            val intent = Intent(this, RecuperoPassword::class.java)
+            startActivity(intent)
+        }
+
+        bindingLand.editTextRecuperoPassword.setOnClickListener{
             val intent = Intent(this, RecuperoPassword::class.java)
             startActivity(intent)
         }

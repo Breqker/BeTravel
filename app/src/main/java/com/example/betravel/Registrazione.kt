@@ -15,6 +15,8 @@ class Registrazione : AppCompatActivity() {
     private lateinit var bindingLand : ActivityRegistrazioneLandBinding
     private lateinit var dbHelper: DBHelper
     private lateinit var dbManager: DBManager
+    private val uppercaseRegex = Regex("[A-Z]")
+    private val specialCharacterRegex = Regex("[!@#$%^&*(),.?\":{}|<>]")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +44,40 @@ class Registrazione : AppCompatActivity() {
                     if(dbManager.checkUserExistenceByEmail(email)){
                         showErrorMessage("Utente già registrato")
                     }else{
-                        dbManager.insertData(nome,cognome,email,password,null)
-                        showMessage("Registrazione effettuata con successo")
+                        if (password.length >= 8 && password.contains(uppercaseRegex) && password.contains(specialCharacterRegex)) {
+                            dbManager.insertData(nome, cognome, email, password, null)
+                            showMessage("Registrazione effettuata con successo")
+                        }else{
+                            showErrorMessage("La password deve contenere almeno 8 caratteri, una lettera maiuscola e un carattere speciale.")
+                        }
+                    }
+                }else{
+                    showErrorMessage("Password non coincidenti")
+                }
+            }else {
+                showErrorMessage("Compilare tutti i campi")
+            }
+
+        }
+
+        bindingLand.buttonRegistrati.setOnClickListener{
+            val nome = bindingLand.editTextNome.text.toString()
+            val cognome = bindingLand.editTextCognome.text.toString()
+            val email = bindingLand.editTextEmail.text.toString()
+            val password = bindingLand.editTextPassword.text.toString()
+            val confermaPassword = bindingLand.editTextConfermaPassword.text.toString()
+
+            if(nome.isNotEmpty() && cognome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confermaPassword.isNotEmpty()){
+                if(dbManager.checkPassword(password,confermaPassword)){
+                    if(dbManager.checkUserExistenceByEmail(email)){
+                        showErrorMessage("Utente già registrato")
+                    }else{
+                        if (password.length >= 8 && password.contains(uppercaseRegex) && password.contains(specialCharacterRegex)) {
+                            dbManager.insertData(nome, cognome, email, password, null)
+                            showMessage("Registrazione effettuata con successo")
+                        }else{
+                            showErrorMessage("La password deve contenere almeno 8 caratteri, una lettera maiuscola e un carattere speciale.")
+                        }
                     }
                 }else{
                     showErrorMessage("Password non coincidenti")

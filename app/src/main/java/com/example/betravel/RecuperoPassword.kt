@@ -1,12 +1,13 @@
 package com.example.betravel
 
-import android.content.Intent
+import android.content.DialogInterface
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import com.example.betravel.databinding.ActivityRecuperoPasswordBinding
 import com.example.betravel.databinding.ActivityRecuperoPasswordLandBinding
+import java.util.*
 
 class RecuperoPassword : AppCompatActivity() {
 
@@ -24,26 +25,51 @@ class RecuperoPassword : AppCompatActivity() {
             setContentView(binding.root)
         }
 
-        binding.recuperoPassword.setOnClickListener{
+        binding.recuperoPassword.setOnClickListener {
             val email = binding.editRecuperoPassword.text.toString()
-            sendEmail(email)
+            resetPassword(email)
         }
 
-        bindingLand.recuperoPassword.setOnClickListener{
+        bindingLand.recuperoPassword.setOnClickListener {
             val email = bindingLand.editRecuperoPassword.text.toString()
-            sendEmail(email)
+            resetPassword(email)
         }
     }
 
-    private fun sendEmail(email: String) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$email")
-            putExtra(Intent.EXTRA_SUBJECT, "Recupero Password")
-            putExtra(Intent.EXTRA_TEXT, "Ciao,\n\nAbbiamo ricevuto la tua richiesta di recupero password.\n\nInviati ulteriori dettagli per il recupero.\n\nCordiali saluti,\nIl tuo team di supporto")
+    private fun resetPassword(email: String) {
+        val randomPassword = generateRandomPassword(8) // Genera una password casuale
+        updatePasswordInDatabase(email, randomPassword) // Aggiorna la password nel database
+
+        val message = "La tua nuova password temporanea è: $randomPassword"
+
+        showMessage(message)
+    }
+
+    private fun showMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Nuova Password temporanea")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun generateRandomPassword(length: Int): String {
+        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        val random = Random()
+        val password = StringBuilder()
+
+        for (i in 0 until length) {
+            val randomIndex = random.nextInt(characters.length)
+            password.append(characters[randomIndex])
         }
 
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        }
+        return password.toString()
+    }
+
+    private fun updatePasswordInDatabase(email: String, newPassword: String) {
+        // Logica per aggiornare la password nel database
     }
 }
