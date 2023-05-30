@@ -196,8 +196,22 @@ class MainActivity : AppCompatActivity() {
                             supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
                             currentFragment = null
                         }
-                        // Apri il fragment desiderato
-                        // ...
+                        val fragmentPreferiti = PreferitiFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container, fragmentPreferiti).commit()
+                        currentFragment = fragmentPreferiti
+                        true
+                    }
+                    R.id.Impostazioni -> {
+                        // Chiudi il fragment aperto precedentemente
+                        if (currentFragment != null) {
+                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
+                            currentFragment = null
+                        }
+                        val fragmentImpostazioni = ImpostazioniFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container, fragmentImpostazioni).commit()
+                        currentFragment = fragmentImpostazioni
                         true
                     }
                     else -> false
