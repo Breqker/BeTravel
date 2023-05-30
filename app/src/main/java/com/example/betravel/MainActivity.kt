@@ -4,11 +4,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.ActivityMainBinding
 import com.example.betravel.databinding.ActivityMainOrizzontaleBinding
-import com.example.betravelimport.BottomNavigationFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +17,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingOrizzontale: ActivityMainOrizzontaleBinding
     private lateinit var bottomNavigationView: BottomNavigationView
+
+    private var currentFragment: Fragment? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,19 +163,38 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.Home -> {
+                        // Chiudi il fragment aperto precedentemente
+                        if (currentFragment != null) {
+                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
+                            currentFragment = null
+                        }
                         true
                     }
 
                     R.id.Profilo -> {
-                        val fragmentProfilo = Profilo()
-                        supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragmentProfilo)
+                        // Chiudi il fragment aperto precedentemente
+                        if (currentFragment != null) {
+                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
+                            currentFragment = null
+                        }
+                        // Apri il fragment ProfiloFragement
+                        val fragmentProfilo = ProfiloFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container, fragmentProfilo).commit()
+                        currentFragment = fragmentProfilo
                         true
                     }
 
                     R.id.Preferiti -> {
+                        // Chiudi il fragment aperto precedentemente
+                        if (currentFragment != null) {
+                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
+                            currentFragment = null
+                        }
+                        // Apri il fragment desiderato
+                        // ...
                         true
                     }
-
                     else -> false
                 }
             }
