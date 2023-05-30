@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Soggiorno"))
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Prenota taxi"))
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
+            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia,"Noleggia un auto"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             bindingOrizzontale.recyclerview2.adapter = adapter2
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Soggiorno"))
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Prenota taxi"))
             data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
+            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia,"Noleggia un auto"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             binding.recyclerview2.adapter = adapter2
