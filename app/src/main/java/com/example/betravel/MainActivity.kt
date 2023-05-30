@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             })
             val bottomNavigationFragment = BottomNavigationFragment()
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, bottomNavigationFragment)
+                .add(R.id.frame_layout, bottomNavigationFragment)
                 .commit()
 
             bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -163,8 +163,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.Profilo -> {
-                        val intent = Intent(this, Profilo::class.java)
-                        startActivity(intent)
+                        val fragmentProfilo = Profilo()
+                        supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragmentProfilo)
                         true
                     }
 

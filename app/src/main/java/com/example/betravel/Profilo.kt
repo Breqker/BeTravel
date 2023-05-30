@@ -2,46 +2,27 @@ package com.example.betravel
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.ActivityProfiloBinding
 import com.example.betravelimport.BottomNavigationFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class Profilo: AppCompatActivity() {
+class Profilo: Fragment() {
 
     private lateinit var binding: ActivityProfiloBinding
-    private lateinit var bottomNavigationView: BottomNavigationView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityProfiloBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = ActivityProfiloBinding.inflate(inflater)
+        val view = inflater.inflate(R.layout.activity_profilo, container, false)
 
-        val bottomNavigationFragment = BottomNavigationFragment()
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, bottomNavigationFragment)
-            .commit()
-
-        bottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.Home -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-
-                R.id.Profilo -> {
-                    true
-                }
-
-                R.id.Preferiti -> {
-                    // Logica per gestire la pressione del pulsante Preferiti
-                    true
-                }
-
-                else -> false
-            }
-        }
+        return binding.root
     }
 }
