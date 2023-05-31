@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
             data.add(ItemsViewModelCategorie(R.drawable.volo, "Scopri tutti i voli"))
             data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
-            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto,"Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
@@ -56,19 +56,23 @@ class MainActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                         2 -> {
-                            // Prenota taxi
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position",position)
-                            startActivity(intent)
-                        }
-                        3 -> {
                             // Scopri le crociere
                             val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
-                        /*
-                         */
+                        3 -> {
+                            // Prenota taxi
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
+                            startActivity(intent)
+                        }
+                        4 ->{
+                            //Noleggia un auto
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
+                            startActivity(intent)
+                        }
                     }
                 }
             })
@@ -101,8 +105,8 @@ class MainActivity : AppCompatActivity() {
 
             data.add(ItemsViewModelCategorie(R.drawable.volo, "Scopri tutti i voli"))
             data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
-            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
             data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto, "Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
@@ -124,19 +128,23 @@ class MainActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                         2 -> {
-                            // Prenota taxi
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position",position)
-                            startActivity(intent)
-                        }
-                        3 -> {
                             // Scopri le crociere
                             val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
-                        /*
-                         */
+                        3 -> {
+                            // Prenota taxi
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
+                            startActivity(intent)
+                        }
+                        4 ->{
+                        //Noleggia un auto
+                        val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                        intent.putExtra("position",position)
+                        startActivity(intent)
+                        }
                     }
                 }
             })

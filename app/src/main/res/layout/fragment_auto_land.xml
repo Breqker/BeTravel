@@ -1,0 +1,151 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="25dp">
+
+    <LinearLayout
+        android:id="@+id/leftLayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewLogo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:contentDescription="Logo dell'applicazione"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/citta"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/citta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Città"
+            android:inputType="textAutoComplete"
+            app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenza"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_home_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC" />
+
+        <EditText
+            android:id="@+id/dataPartenza"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data di partenza"
+            app:layout_constraintTop_toBottomOf="@+id/citta"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_edit_calendar_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC" />
+
+        <EditText
+            android:id="@+id/dataArrivo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data di arrivo"
+            app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_edit_calendar_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC"
+            app:layout_constraintWidth_default="wrap"/>
+
+        <LinearLayout
+            android:id="@+id/etaConducenteLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:background="#ECECEC">
+
+            <EditText
+                android:id="@+id/etaConducente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Età conducente: "
+                android:inputType="number"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/baseline_person_24"
+                android:drawablePadding="16dp"
+                android:textColorHint="@color/black"
+                android:backgroundTint="#ECECEC"/>
+
+            <Spinner
+                android:id="@+id/etaConducenteSpinner"
+                android:layout_width="58dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bg"
+                android:spinnerMode="dropdown"
+                android:backgroundTint="#ECECEC"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/barraRicerca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_search_24"
+            android:drawablePadding="16dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="Cerca Auto"
+            android:textColor="#62878F"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etaConducenteLayout" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
