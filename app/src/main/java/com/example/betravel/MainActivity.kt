@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import ProfiloFragment
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -42,8 +43,6 @@ class MainActivity : AppCompatActivity() {
                 setupEditText()
             }
         }
-
-
 
     private fun setupEditText() {
         binding.editText.setOnEditorActionListener { _, actionId, event ->

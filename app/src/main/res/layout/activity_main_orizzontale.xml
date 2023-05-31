@@ -19,12 +19,13 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@drawable/home"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                tools:ignore="MissingConstraints,NotSibling">
+                android:layout_width="0dp"
+                android:layout_height="180dp"
+                android:background="@color/lavender"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
 
                 <TextView
@@ -66,21 +67,18 @@
                     android:id="@+id/editText"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="22dp"
                     android:background="@drawable/search_bg"
                     android:drawableLeft="@drawable/baseline_search_24"
                     android:drawablePadding="16dp"
                     android:ems="10"
-                    android:hint="Cerca: voli per Barcellona"
-                    android:layout_marginBottom="20dp"
                     android:inputType="textPersonName"
                     android:paddingStart="16dp"
+                    android:hint="Cerca: voli per Barcellona"
                     android:textColor="#62878F"
-                    app:layout_constraintBottom_toTopOf="@+id/costraintLayout2"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
                     app:layout_constraintStart_toStartOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2"
-                    tools:ignore="NotSibling" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
