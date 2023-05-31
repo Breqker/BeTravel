@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
     <EditText
-        android:id="@+id/dataPartenza"
+        android:id="@+id/data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/search_bg"
@@ -41,62 +41,27 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="5dp"
-        android:hint="Data di partenza"
+        android:hint="Data"
         android:textColorHint="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/citta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/dataArrivo"
+        android:id="@+id/orario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Data di arrivo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
+        app:layout_constraintTop_toBottomOf="@+id/data"
         android:background="@drawable/search_bg"
-        android:drawableLeft="@drawable/baseline_edit_calendar_24"
+        android:drawableLeft="@drawable/baseline_timer_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="5dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
-    <LinearLayout
-        android:id="@+id/numPersoneLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-        android:layout_marginTop="5dp"
-        android:background="#ECECEC">
-
-        <EditText
-            android:id="@+id/numPersone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Numero Persone: "
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-            android:background="@drawable/search_bg"
-            android:drawableLeft="@drawable/baseline_person_24"
-            android:drawablePadding="16dp"
-            android:textColorHint="@color/black"
-            android:backgroundTint="#ECECEC"/>
-
-        <Spinner
-            android:id="@+id/numPersoneSpinner"
-            android:layout_width="58dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/search_bg"
-            android:spinnerMode="dropdown"
-            android:backgroundTint="#ECECEC"/>
-
-    </LinearLayout>
 
     <EditText
         android:id="@+id/barraRicerca"
@@ -107,11 +72,11 @@
         android:drawablePadding="16dp"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="Cerca Alloggi"
+        android:hint="Cerca Taxi"
         android:textColor="#62878F"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/orario" />
 
 
     <ScrollView

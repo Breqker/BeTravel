@@ -51,17 +51,18 @@ class MainActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                         1 -> {
-                            // Alloggio
+                            // Soggiorno
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
+                            startActivity(intent)
+                        }
+                        2 -> {
+                            // Prenota taxi
                             val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
                         /*
-                        2 -> {
-                            // Prenota taxi
-                            val intent = Intent(this, PrenotaTaxiActivity::class.java)
-                            startActivity(intent)
-                        }
                         3 -> {
                             // Scopri le crociere
                             val intent = Intent(this, CrociereActivity::class.java)
@@ -116,19 +117,19 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
-
                         1 -> {
-                            // Alloggio
+                            // Soggiorno
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
+                            startActivity(intent)
+                        }
+                        2 -> {
+                            // Prenota taxi
                             val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
                         /*
-                        2 -> {
-                            // Prenota taxi
-                            val intent = Intent(this, PrenotaTaxiActivity::class.java)
-                            startActivity(intent)
-                        }
                         3 -> {
                             // Scopri le crociere
                             val intent = Intent(this, CrociereActivity::class.java)

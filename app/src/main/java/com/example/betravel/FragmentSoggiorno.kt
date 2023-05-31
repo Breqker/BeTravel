@@ -35,6 +35,13 @@ class FragmentSoggiorno: Fragment() {
             bindingLand.dataPartenza.isFocusable = false
             bindingLand.dataPartenza.isClickable = true
 
+            bindingLand.dataPartenza.setOnClickListener {
+                showDatePicker(bindingLand.dataPartenza)
+            }
+
+            bindingLand.dataArrivo.isFocusable = false
+            bindingLand.dataArrivo.isClickable = true
+
             bindingLand.dataArrivo.setOnClickListener {
                 showDatePicker(bindingLand.dataArrivo)
             }
@@ -67,6 +74,13 @@ class FragmentSoggiorno: Fragment() {
 
             binding.dataPartenza.isFocusable = false
             binding.dataPartenza.isClickable = true
+
+            binding.dataPartenza.setOnClickListener {
+                showDatePicker(binding.dataPartenza)
+            }
+
+            binding.dataArrivo.isFocusable = false
+            binding.dataArrivo.isClickable = true
 
             binding.dataArrivo.setOnClickListener {
                 showDatePicker(binding.dataArrivo)

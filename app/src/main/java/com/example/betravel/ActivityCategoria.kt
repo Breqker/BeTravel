@@ -15,6 +15,7 @@ class ActivityCategoria : AppCompatActivity() {
         val position = intent.getIntExtra("position", 0)
         val fragmentVolo = FragmentVolo()
         val fragmentSoggiorno = FragmentSoggiorno()
+        val fragmentTaxi = FragmentTaxi()
 
         when (position) {
             0 -> supportFragmentManager.beginTransaction()
@@ -23,6 +24,10 @@ class ActivityCategoria : AppCompatActivity() {
                 .commit()
             1 -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView,fragmentSoggiorno)
+                .remove(fragmentVolo)
+                .commit()
+            2 -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView,fragmentTaxi)
                 .remove(fragmentVolo)
                 .commit()
             // Aggiungi altri casi se necessario per gestire ulteriori posizioni
