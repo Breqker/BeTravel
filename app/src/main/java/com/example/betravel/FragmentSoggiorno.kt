@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentSoggiornoBinding
 import com.example.betravel.databinding.FragmentSoggiornoLandBinding
+import java.util.ArrayList
 import java.util.Calendar
 
 class FragmentSoggiorno: Fragment() {
@@ -36,6 +39,20 @@ class FragmentSoggiorno: Fragment() {
                 showDatePicker(bindingLand.dataArrivo)
             }
 
+            val numbers = ArrayList<String>()
+            for (i in 1..10) {
+                numbers.add(i.toString())
+            }
+
+            bindingLand.numPersone.isFocusable = false
+            bindingLand.numPersone.isClickable = false
+
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            val numPersoneSpinner: Spinner = bindingLand.numPersoneSpinner
+            numPersoneSpinner.adapter = adapter
+
             bindingLand.barraRicerca.isFocusable = false
             bindingLand.barraRicerca.isClickable = true
 
@@ -54,6 +71,21 @@ class FragmentSoggiorno: Fragment() {
             binding.dataArrivo.setOnClickListener {
                 showDatePicker(binding.dataArrivo)
             }
+
+            val numbers = ArrayList<String>()
+            for (i in 1..10) {
+                numbers.add(i.toString())
+            }
+
+            binding.numPersone.isFocusable = false
+            binding.numPersone.isClickable = false
+
+            val adapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            val numPersoneSpinner: Spinner = binding.numPersoneSpinner
+            numPersoneSpinner.adapter = adapter
 
             binding.barraRicerca.isFocusable = false
             binding.barraRicerca.isClickable = true
