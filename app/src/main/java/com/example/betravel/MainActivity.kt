@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.ActivityMainBinding
@@ -62,12 +61,13 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
-                        /*
                         3 -> {
                             // Scopri le crociere
-                            val intent = Intent(this, CrociereActivity::class.java)
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
                             startActivity(intent)
                         }
+                        /*
                          */
                     }
                 }
@@ -129,12 +129,13 @@ class MainActivity : AppCompatActivity() {
                             intent.putExtra("position",position)
                             startActivity(intent)
                         }
-                        /*
                         3 -> {
                             // Scopri le crociere
-                            val intent = Intent(this, CrociereActivity::class.java)
+                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
+                            intent.putExtra("position",position)
                             startActivity(intent)
                         }
+                        /*
                          */
                     }
                 }
