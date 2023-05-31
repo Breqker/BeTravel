@@ -71,7 +71,7 @@
                     android:drawableLeft="@drawable/baseline_search_24"
                     android:drawablePadding="16dp"
                     android:ems="10"
-                    android:hint="Cerca destinazioni"
+                    android:hint="Cerca: voli per Barcellona"
                     android:layout_marginBottom="20dp"
                     android:inputType="textPersonName"
                     android:paddingStart="16dp"

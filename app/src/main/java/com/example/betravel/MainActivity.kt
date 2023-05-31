@@ -3,6 +3,9 @@ package com.example.betravel
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.ActivityMainBinding
 import com.example.betravel.databinding.ActivityMainOrizzontaleBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,15 +33,75 @@ class MainActivity : AppCompatActivity() {
                 setContentView(bindingOrizzontale.root)
                 setupHorizontalRecyclerView1()
                 setupHorizontalRecyclerView2()
+                setupEditText()
             } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 setContentView(binding.root)
                 setupRecyclerView1()
                 setupRecyclerView2()
                 setupBottomNavigation()
+                setupEditText()
             }
         }
 
-        private fun setupHorizontalRecyclerView1() {
+
+
+    private fun setupEditText() {
+        binding.editText.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)
+            ) {
+                val inputText = binding.editText.text.toString()
+                val categoriaViaggio = getCategorieDiViaggio(inputText)
+                val località = getLocalità(inputText)
+                Log.d("MainActivity", "Categoria viaggio: $categoriaViaggio")
+                Log.d("MainActivity", "Località: $località")
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+
+    private fun getCategorieDiViaggio(inputString: String): List<String> {
+        val categories = mutableListOf<String>()
+
+        val lowerCaseInput = inputString.lowercase(Locale.getDefault())
+
+        // Verifica la presenza delle categorie di viaggio nella stringa di input
+        if (lowerCaseInput.contains("volo") || lowerCaseInput.contains("voli") || lowerCaseInput.contains("aereo")) {
+            categories.add("volo")
+        }
+        if (lowerCaseInput.contains("crociera") || lowerCaseInput.contains("crociere")) {
+            categories.add("crociera")
+        }
+        if (lowerCaseInput.contains("noleggio auto") || lowerCaseInput.contains("auto")) {
+            categories.add("noleggio auto")
+        }
+        if (lowerCaseInput.contains("taxi")) {
+            categories.add("taxi")
+        }
+        if (lowerCaseInput.contains("alloggio") || lowerCaseInput.contains("case") || lowerCaseInput.contains("stanza") || lowerCaseInput.contains("casa") || lowerCaseInput.contains("camera")) {
+            categories.add("alloggio")
+        }
+
+        return categories
+    }
+
+
+    fun getLocalità(inputString: String): String? {
+        val words = inputString.trim().split(" ")
+
+        return if (words.isNotEmpty()) {
+            words.last()
+        } else {
+            null
+        }
+    }
+
+
+
+    private fun setupHorizontalRecyclerView1() {
             bindingOrizzontale.recyclerview1.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data = ArrayList<ItemsViewModelCategorie>()
