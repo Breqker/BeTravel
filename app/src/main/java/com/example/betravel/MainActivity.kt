@@ -119,35 +119,35 @@ class MainActivity : AppCompatActivity() {
                         0 -> {
                             // Scopri tutti i voli
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container_orizzontale,FragmentVolo())
+                                .replace(R.id.fragment_container_orizzontale,FragmentVolo())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         1 -> {
                             // Soggiorno
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container_orizzontale,FragmentSoggiorno())
+                                .replace(R.id.fragment_container_orizzontale,FragmentSoggiorno())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         2 -> {
                             // Scopri le crociere
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container_orizzontale,FragmentCrociera())
+                                .replace(R.id.fragment_container_orizzontale,FragmentCrociera())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         3 -> {
                             // Prenota taxi
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container_orizzontale,FragmentTaxi())
+                                .replace(R.id.fragment_container_orizzontale,FragmentTaxi())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         4 -> {
                             //Noleggia un auto
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container_orizzontale,FragmentAuto())
+                                .replace(R.id.fragment_container_orizzontale,FragmentAuto())
                                 .addToBackStack(null)
                                 .commit()
                         }
@@ -198,35 +198,35 @@ class MainActivity : AppCompatActivity() {
                         0 -> {
                             // Scopri tutti i voli
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container,FragmentVolo())
+                                .replace(R.id.fragment_container,FragmentVolo())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         1 -> {
                             // Soggiorno
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container,FragmentSoggiorno())
+                                .replace(R.id.fragment_container,FragmentSoggiorno())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         2 -> {
                             // Scopri le crociere
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container,FragmentCrociera())
+                                .replace(R.id.fragment_container,FragmentCrociera())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         3 -> {
                             // Prenota taxi
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container,FragmentTaxi())
+                                .replace(R.id.fragment_container,FragmentTaxi())
                                 .addToBackStack(null)
                                 .commit()
                         }
                         4 -> {
                             //Noleggia un auto
                             supportFragmentManager.beginTransaction()
-                                .add(R.id.fragment_container,FragmentAuto())
+                                .replace(R.id.fragment_container,FragmentAuto())
                                 .addToBackStack(null)
                                 .commit()
                         }
@@ -270,7 +270,7 @@ class MainActivity : AppCompatActivity() {
 
                     R.id.Profilo -> {
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment_container,ProfiloFragment())
+                            .replace(R.id.fragment_container,ProfiloFragment())
                             .addToBackStack(null)
                             .commit()
                         true
