@@ -1,6 +1,5 @@
 package com.example.betravel
 
-import ProfiloFragment
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -119,39 +118,43 @@ class MainActivity : AppCompatActivity() {
                     when (position) {
                         0 -> {
                             // Scopri tutti i voli
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container_orizzontale,FragmentVolo())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         1 -> {
                             // Soggiorno
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container_orizzontale,FragmentSoggiorno())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         2 -> {
                             // Scopri le crociere
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container_orizzontale,FragmentCrociera())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         3 -> {
                             // Prenota taxi
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container_orizzontale,FragmentTaxi())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         4 -> {
                             //Noleggia un auto
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container_orizzontale,FragmentAuto())
+                                .addToBackStack(null)
+                                .commit()
                         }
                     }
                 }
             })
         }
-
         private fun setupHorizontalRecyclerView2() {
             bindingOrizzontale.recyclerview2.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
@@ -194,33 +197,38 @@ class MainActivity : AppCompatActivity() {
                     when (position) {
                         0 -> {
                             // Scopri tutti i voli
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container,FragmentVolo())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         1 -> {
                             // Soggiorno
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container,FragmentSoggiorno())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         2 -> {
                             // Scopri le crociere
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container,FragmentCrociera())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         3 -> {
                             // Prenota taxi
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container,FragmentTaxi())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         4 -> {
                             //Noleggia un auto
-                            val intent = Intent(this@MainActivity, ActivityCategoria::class.java)
-                            intent.putExtra("position", position)
-                            startActivity(intent)
+                            supportFragmentManager.beginTransaction()
+                                .add(R.id.fragment_container,FragmentAuto())
+                                .addToBackStack(null)
+                                .commit()
                         }
                     }
                 }
@@ -255,25 +263,16 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.Home -> {
-                        // Chiudi il fragment aperto precedentemente
-                        if (currentFragment != null) {
-                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
-                            currentFragment = null
-                        }
+                        val intent = Intent(this,MainActivity::class.java)
+                        startActivity(intent)
                         true
                     }
 
                     R.id.Profilo -> {
-                        // Chiudi il fragment aperto precedentemente
-                        if (currentFragment != null) {
-                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
-                            currentFragment = null
-                        }
-                        // Apri il fragment ProfiloFragement
-                        val fragmentProfilo = ProfiloFragment()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment_container, fragmentProfilo).commit()
-                        currentFragment = fragmentProfilo
+                            .add(R.id.fragment_container,ProfiloFragment())
+                            .addToBackStack(null)
+                            .commit()
                         true
                     }
 

@@ -22,9 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityCategoria"
-            android:exported="false" />
-        <activity
             android:name=".RecuperoPassword"
             android:exported="false" />
         <activity
@@ -39,12 +36,6 @@
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:exported="false" />
-        <!--
-        <activity
-            android:name=".Profilo"
-            android:configChanges="orientation"
-            android:exported="false" />
-        -->
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

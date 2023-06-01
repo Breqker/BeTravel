@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentSoggiornoBinding
 import com.example.betravel.databinding.FragmentSoggiornoLandBinding
 import java.util.ArrayList
 import java.util.Calendar
 
-class FragmentSoggiorno: Fragment() {
+class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
     private lateinit var binding: FragmentSoggiornoBinding
     private lateinit var bindingLand: FragmentSoggiornoLandBinding
@@ -111,6 +114,26 @@ class FragmentSoggiorno: Fragment() {
             return view
         }
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Verifica se ci sono fragment nello stack di backstack
+                if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    isEnabled = false // Disabilita il callback
+                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
+        return requireActivity().onBackPressedDispatcher
     }
 
     private fun showDatePicker(editText: EditText) {

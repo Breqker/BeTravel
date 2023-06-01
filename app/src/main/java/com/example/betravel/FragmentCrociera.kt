@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentCrocieraBinding
 import com.example.betravel.databinding.FragmentCrocieraLandBinding
 import java.util.ArrayList
 import java.util.Calendar
 
-class FragmentCrociera: Fragment() {
+class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
 
     private lateinit var binding: FragmentCrocieraBinding
     private lateinit var bindingLand: FragmentCrocieraLandBinding
@@ -113,6 +116,25 @@ class FragmentCrociera: Fragment() {
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Verifica se ci sono fragment nello stack di backstack
+                if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    isEnabled = false // Disabilita il callback
+                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                }
+            }
+        }
+
+    }
+
+    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
+        return requireActivity().onBackPressedDispatcher
+    }
     private fun showDatePicker(editText: EditText) {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
