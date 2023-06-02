@@ -73,42 +73,22 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginRequest(email: String, password: String) {
-        val checkQuery = "SELECT * FROM Utente WHERE email = '$email';"
         val loginQuery = "SELECT * FROM Utente WHERE email = '$email' AND password = '$password';"
 
-        val checkCall = ClientNetwork.retrofit.select(checkQuery)
-        checkCall.enqueue(object : Callback<JsonObject> {
+        val loginCall = ClientNetwork.retrofit.select(loginQuery)
+        loginCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val result = response.body()?.getAsJsonArray("result")
-                    if (result != null && result.size() > 0) {
-                        // L'email esiste, effettua il login
-                        val loginCall = ClientNetwork.retrofit.select(loginQuery)
-                        loginCall.enqueue(object : Callback<JsonObject> {
-                            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                                if (response.isSuccessful) {
-                                    val data = response.body()
+                    val data = response.body()
 
-                                    if (data != null && data.has("success") && data["success"].asBoolean) {
-                                        showMessage("Login effettuato con successo")
-                                        navigateToHome()
-                                    } else {
-                                        showErrorMessage("Credenziali non valide")
-                                    }
-                                } else {
-                                    showErrorMessage("Errore durante il login")
-                                }
-                            }
-
-                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                showErrorMessage("Errore di connessione: ${t.message}")
-                            }
-                        })
+                    if (data != null && data.has("success") && data["success"].asBoolean) {
+                        showMessage("Login effettuato con successo")
+                        navigateToHome()
                     } else {
-                        showErrorMessage("L'email non esiste")
+                        showErrorMessage("Credenziali non valide")
                     }
                 } else {
-                    showErrorMessage("Errore durante la verifica dell'email")
+                    showErrorMessage("Errore durante il login")
                 }
             }
 
