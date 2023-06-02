@@ -19,15 +19,13 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Abilita la gestione personalizzata del tasto indietro
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Verifica se ci sono fragment nello stack di backstack
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
-                    isEnabled = false // Disabilita il callback
-                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                    isEnabled = false
+                    requireActivity().onBackPressed()
                 }
             }
         }

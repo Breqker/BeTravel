@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.Home -> {
-                        val intent = Intent(this,MainActivity::class.java)
+                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         true
                     }
@@ -277,27 +277,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.Preferiti -> {
-                        // Chiudi il fragment aperto precedentemente
-                        if (currentFragment != null) {
-                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
-                            currentFragment = null
-                        }
-                        val fragmentPreferiti = PreferitiFragment()
                         supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment_container, fragmentPreferiti).commit()
-                        currentFragment = fragmentPreferiti
-                        true
-                    }
-                    R.id.Impostazioni -> {
-                        // Chiudi il fragment aperto precedentemente
-                        if (currentFragment != null) {
-                            supportFragmentManager.beginTransaction().remove(currentFragment!!).commit()
-                            currentFragment = null
-                        }
-                        val fragmentImpostazioni = ImpostazioniFragment()
-                        supportFragmentManager.beginTransaction()
-                            .add(R.id.fragment_container, fragmentImpostazioni).commit()
-                        currentFragment = fragmentImpostazioni
+                            .replace(R.id.fragment_container,PreferitiFragment())
+                            .addToBackStack(null)
+                            .commit()
                         true
                     }
                     else -> false

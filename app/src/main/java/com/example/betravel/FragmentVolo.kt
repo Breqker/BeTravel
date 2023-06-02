@@ -103,13 +103,6 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = binding.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
 
-            binding.barraRicerca.isFocusable = false
-            binding.barraRicerca.isClickable = true
-
-            binding.barraRicerca.setOnClickListener {
-
-            }
-
             return view
         }
     }

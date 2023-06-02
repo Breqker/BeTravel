@@ -15,8 +15,4 @@
         android:icon="@drawable/baseline_bookmark_24"
         android:title="Preferiti" />
 
-    <item
-        android:id="@+id/Impostazioni"
-        android:icon="@drawable/baseline_settings_24"
-        android:title="Impostazioni" />
 </menu>

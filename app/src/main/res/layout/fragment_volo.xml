@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/profilebkg"
     android:padding="25dp">
 
     <ImageView
-        android:id="@+id/imageViewLogo"
+        android:id="@+id/ic_launcher_round"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:contentDescription="Logo dell'applicazione"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_launcher_round"
         app:layout_constraintBottom_toTopOf="@+id/aeroportoPartenza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,13 +21,13 @@
     <EditText
         android:id="@+id/aeroportoPartenza"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:hint="Aeroporto di Partenza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageViewLogo"
+        app:layout_constraintTop_toBottomOf="@id/ic_launcher_round"
         android:inputType="textAutoComplete"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_airplanemode_active_24"
         android:drawablePadding="16dp"
@@ -37,7 +37,7 @@
     <EditText
         android:id="@+id/aeroportoArrivo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:hint="Aeroporto di arrivo"
         android:inputType="textAutoComplete"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,14 +46,14 @@
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_airplanemode_active_24"
         android:drawablePadding="16dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
     <EditText
         android:id="@+id/dataPartenza"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:hint="Data di partenza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,39 +61,39 @@
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
     <EditText
         android:id="@+id/dataArrivo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Data di arrivo"
+        android:layout_height="35dp"
+        android:hint="Data di ritorno"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
     <LinearLayout
         android:id="@+id/numPersoneLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:background="#ECECEC">
 
         <EditText
             android:id="@+id/numPersone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:hint="Numero Persone: "
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
@@ -108,43 +108,20 @@
         <Spinner
             android:id="@+id/numPersoneSpinner"
             android:layout_width="58dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:background="@drawable/search_bg"
             android:spinnerMode="dropdown"
             android:backgroundTint="#ECECEC"/>
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/barraRicerca"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/button"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/search_bg"
-        android:drawableLeft="@drawable/baseline_search_24"
-        android:drawablePadding="16dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="Cerca Voli"
-        android:textColor="#62878F"
+        android:text="Cerca"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
-
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barraRicerca">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

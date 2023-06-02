@@ -5,47 +5,70 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.betravel.databinding.FragmentPreferitiBinding
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
-class PreferitiFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentPreferitiBinding
+    private var currentFragment: Fragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_preferiti, container, false)
+        binding = FragmentPreferitiBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        setUpRecyclerView()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PreferitiFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PreferitiFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun setUpRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        val data = ArrayList<ItemsViewModelPreferiti>()
+
+        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
+        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Soggiorno"))
+        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Prenota taxi"))
+        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
+        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
+
+        val adapter = CustomAdapterPreferiti(data)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener(object : CustomAdapterPreferiti.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                when (position) {
+                    // Gestisci l'evento di clic
                 }
             }
+        })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
+        return requireActivity().onBackPressedDispatcher
     }
 }
