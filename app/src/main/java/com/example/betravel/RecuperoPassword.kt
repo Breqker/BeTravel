@@ -7,7 +7,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.example.betravel.databinding.ActivityRecuperoPasswordBinding
 import com.example.betravel.databinding.ActivityRecuperoPasswordLandBinding
-import java.util.*
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.Random
 
 class RecuperoPassword : AppCompatActivity() {
 
@@ -27,12 +31,12 @@ class RecuperoPassword : AppCompatActivity() {
 
         binding.recuperoPassword.setOnClickListener {
             val email = binding.editRecuperoPassword.text.toString()
-            showMessage("Un'email con le istruzioni per il recupero password è stata inviata all'indirizzo fornito")
+            checkEmailExists(email)
         }
 
         bindingLand.recuperoPassword.setOnClickListener {
             val email = bindingLand.editRecuperoPassword.text.toString()
-            showMessage("Un'email con le istruzioni per il recupero password è stata inviata all'indirizzo fornito")
+            checkEmailExists(email)
         }
     }
 
@@ -47,6 +51,16 @@ class RecuperoPassword : AppCompatActivity() {
         alertDialog.show()
     }
 
+    private fun showErrorMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Errore")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
 
     private fun generateRandomPassword(length: Int): String {
         val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -62,7 +76,50 @@ class RecuperoPassword : AppCompatActivity() {
     }
 
     private fun updatePasswordInDatabase(email: String, newPassword: String) {
-        // Logica per aggiornare la password nel database
-        // Implementa la tua logica per accedere al database esterno e aggiornare la password associata all'email specificata
+        val query = "UPDATE Utente SET password = '$newPassword' WHERE email = '$email';"
+
+        val call = ClientNetwork.retrofit.update(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    showMessage("La password è stata aggiornata con successo")
+                } else {
+                    showErrorMessage("Errore durante l'aggiornamento della password")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
+
+    private fun checkEmailExists(email: String) {
+        val query = "SELECT * FROM Utente WHERE email = '$email';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    val exists = result?.get("exists")?.asBoolean
+
+                    if (exists == true) {
+                        val newPassword = generateRandomPassword(8)
+                        updatePasswordInDatabase(email, newPassword)
+                        showMessage("Un'email con le istruzioni per il recupero password è stata inviata all'indirizzo fornito")
+                    } else {
+                        showErrorMessage("Email non trovata")
+                    }
+                } else {
+                    showErrorMessage("Errore durante la verifica dell'email")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
 }
