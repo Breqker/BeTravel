@@ -88,7 +88,7 @@ class Registrazione : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore durante la registrazione")
+                showErrorMessage("Errore di connessioen")
             }
         })
     }
