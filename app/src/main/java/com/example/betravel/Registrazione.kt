@@ -38,7 +38,7 @@ class Registrazione : AppCompatActivity() {
 
             if (nome.isNotEmpty() && cognome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confermaPassword.isNotEmpty()) {
                 if (checkPassword(password, confermaPassword)) {
-                    registerRequest(nome, cognome, email, password)
+                    registerUser(nome, cognome, email, password)
                 } else {
                     showErrorMessage("Password non coincidenti")
                 }
@@ -56,7 +56,7 @@ class Registrazione : AppCompatActivity() {
 
             if (nome.isNotEmpty() && cognome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confermaPassword.isNotEmpty()) {
                 if (checkPassword(password, confermaPassword)) {
-                    registerRequest(nome, cognome, email, password)
+                    registerUser(nome, cognome, email, password)
                 } else {
                     showErrorMessage("Password non coincidenti")
                 }
@@ -72,8 +72,7 @@ class Registrazione : AppCompatActivity() {
         return password == confermaPassword && password.matches(passwordRegex)
     }
 
-
-    private fun registerRequest(nome: String, cognome: String, email: String, password: String) {
+    private fun registerUser(nome: String, cognome: String, email: String, password: String) {
         val checkQuery = "SELECT * FROM Utente WHERE email = '$email';"
         val insertQuery = "INSERT INTO Utente (nome, cognome, email, password) VALUES ('$nome', '$cognome', '$email', '$password');"
 

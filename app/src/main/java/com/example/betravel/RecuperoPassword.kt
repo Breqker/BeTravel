@@ -36,7 +36,8 @@ class RecuperoPassword : AppCompatActivity() {
 
         bindingLand.recuperoPassword.setOnClickListener {
             val email = bindingLand.editRecuperoPassword.text.toString()
-            checkEmailExists(email)        }
+            checkEmailExists(email)
+        }
     }
 
     private fun showMessage(message: String) {
@@ -93,7 +94,6 @@ class RecuperoPassword : AppCompatActivity() {
         })
     }
 
-
     private fun checkEmailExists(email: String) {
         val query = "SELECT * FROM Utente WHERE email = '$email';"
 
@@ -117,7 +117,7 @@ class RecuperoPassword : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessioen")
+                showErrorMessage("Errore di connessione: ${t.message}")
             }
         })
     }

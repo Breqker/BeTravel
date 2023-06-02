@@ -73,22 +73,42 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginRequest(email: String, password: String) {
-        val query = "select u.email,u.password from Utente u where email = '$email' and password = '$password';"
+        val checkQuery = "SELECT * FROM Utente WHERE email = '$email';"
+        val loginQuery = "SELECT * FROM Utente WHERE email = '$email' AND password = '$password';"
 
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
+        val checkCall = ClientNetwork.retrofit.select(checkQuery)
+        checkCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val data = response.body()
+                    val result = response.body()?.getAsJsonArray("result")
+                    if (result != null && result.size() > 0) {
+                        // L'email esiste, effettua il login
+                        val loginCall = ClientNetwork.retrofit.select(loginQuery)
+                        loginCall.enqueue(object : Callback<JsonObject> {
+                            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                                if (response.isSuccessful) {
+                                    val data = response.body()
 
-                    if (data != null && data.has("success") && data["success"].asBoolean) {
-                        showMessage("Login effettuato con successo")
-                        navigateToHome()
+                                    if (data != null && data.has("success") && data["success"].asBoolean) {
+                                        showMessage("Login effettuato con successo")
+                                        navigateToHome()
+                                    } else {
+                                        showErrorMessage("Credenziali non valide")
+                                    }
+                                } else {
+                                    showErrorMessage("Errore durante il login")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                showErrorMessage("Errore di connessione: ${t.message}")
+                            }
+                        })
                     } else {
-                        showErrorMessage("Credenziali non valide")
+                        showErrorMessage("L'email non esiste")
                     }
                 } else {
-                    showErrorMessage("Errore durante la chiamata API")
+                    showErrorMessage("Errore durante la verifica dell'email")
                 }
             }
 
