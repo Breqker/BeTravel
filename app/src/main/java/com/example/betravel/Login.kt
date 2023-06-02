@@ -1,4 +1,5 @@
 package com.example.betravel
+
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
@@ -7,13 +8,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.betravel.databinding.ActivityLoginBinding
 import com.example.betravel.databinding.ActivityLoginLandBinding
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Login : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var bindingLand: ActivityLoginLandBinding
-    private lateinit var dbHelper: DBHelper
-    private lateinit var dbManager: DBManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,65 +29,72 @@ class Login : AppCompatActivity() {
             setContentView(binding.root)
         }
 
-        dbHelper = DBHelper(this)
-        dbManager = DBManager(dbHelper)
-
-        binding.editTextRegistrazione.setOnClickListener{
+        binding.editTextRegistrazione.setOnClickListener {
             val intent = Intent(this, Registrazione::class.java)
             startActivity(intent)
         }
 
-        bindingLand.editTextRegistrazione.setOnClickListener{
+        bindingLand.editTextRegistrazione.setOnClickListener {
             val intent = Intent(this, Registrazione::class.java)
             startActivity(intent)
         }
 
-        binding.buttonLogin.setOnClickListener{
+        binding.buttonLogin.setOnClickListener {
             val email = binding.editTextEmail2.text.toString()
             val password = binding.editTextPassword2.text.toString()
 
-            if(email.isNotEmpty() && password.isNotEmpty()){
-                if (dbManager.checkCredentials(email, password)) {
-                    showMessage("Login effettuato con successo")
-                }else {
-                    showErrorMessage("Credenziali non valide")
-                }
-            }else {
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                loginRequest(email, password)
+            } else {
                 showErrorMessage("Compilare tutti i campi")
             }
         }
 
-        bindingLand.buttonLogin.setOnClickListener{
+        bindingLand.buttonLogin.setOnClickListener {
             val email = bindingLand.editTextEmail2.text.toString()
             val password = bindingLand.editTextPassword2.text.toString()
 
-            if(email.isNotEmpty() && password.isNotEmpty()){
-                if (dbManager.checkCredentials(email, password)) {
-                    showMessage("Login effettuato con successo")
-                }else {
-                    showErrorMessage("Credenziali non valide")
-                }
-            }else {
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                loginRequest(email, password)
+            } else {
                 showErrorMessage("Compilare tutti i campi")
             }
         }
 
-        binding.editTextRecuperoPassword.setOnClickListener{
+        binding.editTextRecuperoPassword.setOnClickListener {
             val intent = Intent(this, RecuperoPassword::class.java)
             startActivity(intent)
         }
 
-        bindingLand.editTextRecuperoPassword.setOnClickListener{
+        bindingLand.editTextRecuperoPassword.setOnClickListener {
             val intent = Intent(this, RecuperoPassword::class.java)
             startActivity(intent)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (::dbHelper.isInitialized) {
-            dbHelper.close()
-        }
+    private fun loginRequest(email: String, password: String) {
+        val query = "select u.email,u.password from Utente u where email = '$email' and password = '$password';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+
+                    if (data != null && data.has("success") && data["success"].asBoolean) {
+                        showMessage("Login effettuato con successo")
+                    } else {
+                        showErrorMessage("Credenziali non valide")
+                    }
+                } else {
+                    showErrorMessage("Errore durante la chiamata API")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione")
+            }
+        })
     }
 
     private fun showErrorMessage(message: String) {
@@ -97,6 +107,7 @@ class Login : AppCompatActivity() {
             .create()
         alertDialog.show()
     }
+
     private fun showMessage(message: String) {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Informazione")
