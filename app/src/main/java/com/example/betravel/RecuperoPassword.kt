@@ -88,7 +88,7 @@ class RecuperoPassword : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione")
+                showErrorMessage("Errore di connessione: ${t.message}")
             }
         })
     }

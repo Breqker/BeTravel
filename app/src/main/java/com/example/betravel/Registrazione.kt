@@ -74,21 +74,40 @@ class Registrazione : AppCompatActivity() {
 
 
     private fun registerRequest(nome: String, cognome: String, email: String, password: String) {
-        val query = "INSERT INTO Utente (nome, cognome, email, password) VALUES ('$nome', '$cognome', '$email', '$password');"
+        val checkQuery = "SELECT * FROM Utente WHERE email = '$email';"
+        val insertQuery = "INSERT INTO Utente (nome, cognome, email, password) VALUES ('$nome', '$cognome', '$email', '$password');"
 
-        val call = ClientNetwork.retrofit.insert(query)
-        call.enqueue(object : Callback<JsonObject> {
+        val checkCall = ClientNetwork.retrofit.select(checkQuery)
+        checkCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    showMessage("Registrazione effettuata con successo")
-                    navigateToLogin()
+                    val result = response.body()?.getAsJsonArray("result")
+                    if (result != null && result.size() > 0) {
+                        showErrorMessage("L'email esiste già")
+                    } else {
+                        // L'email non esiste, puoi procedere con l'insert
+                        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
+                        insertCall.enqueue(object : Callback<JsonObject> {
+                            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                                if (response.isSuccessful) {
+                                    showMessage("Registrazione effettuata con successo")
+                                } else {
+                                    showErrorMessage("Errore durante la registrazione")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                showErrorMessage("Errore di connessione: ${t.message}")
+                            }
+                        })
+                    }
                 } else {
-                    showErrorMessage("Errore durante la registrazione")
+                    showErrorMessage("Errore durante la verifica dell'email")
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessioen")
+                showErrorMessage("Errore di connessione: ${t.message}")
             }
         })
     }
