@@ -81,6 +81,7 @@ class Registrazione : AppCompatActivity() {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     showMessage("Registrazione effettuata con successo")
+                    navigateToLogin()
                 } else {
                     showErrorMessage("Errore durante la registrazione")
                 }

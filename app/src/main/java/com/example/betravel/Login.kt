@@ -83,6 +83,7 @@ class Login : AppCompatActivity() {
 
                     if (data != null && data.has("success") && data["success"].asBoolean) {
                         showMessage("Login effettuato con successo")
+                        navigateToHome()
                     } else {
                         showErrorMessage("Credenziali non valide")
                     }
