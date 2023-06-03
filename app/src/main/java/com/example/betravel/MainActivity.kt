@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 setContentView(bindingOrizzontale.root)
                 setupHorizontalRecyclerView1()
                 setupHorizontalRecyclerView2()
+                setupBottomNavigationLand()
                 setupEditText()
             } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 setContentView(binding.root)
@@ -285,6 +286,36 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> false
                 }
+        }
+    }
+    private fun setupBottomNavigationLand() {
+        bottomNavigationView = bindingOrizzontale.bottomNavigationOrizzontale
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.Home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.Profilo -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_orizzontale, ProfiloFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.Preferiti -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_orizzontale, PreferitiFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 }
