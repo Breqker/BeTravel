@@ -63,13 +63,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = bindingLand.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
 
-            bindingLand.barraRicerca.isFocusable = false
-            bindingLand.barraRicerca.isClickable = true
-
-            bindingLand.barraRicerca.setOnClickListener {
-
-            }
-
             return view
         }else{
             binding = FragmentSoggiornoBinding.inflate(inflater, container, false)
@@ -103,13 +96,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
             val numPersoneSpinner: Spinner = binding.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
-
-            binding.barraRicerca.isFocusable = false
-            binding.barraRicerca.isClickable = true
-
-            binding.barraRicerca.setOnClickListener {
-
-            }
 
             return view
         }
