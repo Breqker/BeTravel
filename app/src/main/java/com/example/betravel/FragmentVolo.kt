@@ -62,13 +62,6 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = bindingLand.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
 
-            bindingLand.barraRicerca.isFocusable = false
-            bindingLand.barraRicerca.isClickable = true
-
-            bindingLand.barraRicerca.setOnClickListener {
-
-            }
-
             return view
         } else {
             binding = FragmentVoloBinding.inflate(inflater, container, false)
@@ -139,12 +132,11 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Verifica se ci sono fragment nello stack di backstack
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
-                    isEnabled = false // Disabilita il callback
-                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                    isEnabled = false
+                    requireActivity().onBackPressed()
                 }
             }
         }

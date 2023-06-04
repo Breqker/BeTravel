@@ -1,151 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="25dp">
+    android:background="@drawable/profilebkg">
 
+    <ImageView
+        android:id="@+id/ic_launcher_round"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:contentDescription="Logo dell'applicazione"
+        android:src="@drawable/ic_launcher_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.3" />
 
-    <LinearLayout
-        android:id="@+id/leftLayout"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageViewLogo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:contentDescription="Logo dell'applicazione"
-            android:src="@drawable/ic_launcher"
-            app:layout_constraintBottom_toTopOf="@+id/aeroportoPartenza"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <EditText
-            android:id="@+id/aeroportoPartenza"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/search_bg"
-            android:backgroundTint="#ECECEC"
-            android:drawableLeft="@drawable/baseline_airplanemode_active_24"
-            android:drawablePadding="16dp"
-            android:hint="Aeroporto di Partenza"
-            android:inputType="textAutoComplete"
-            android:textColorHint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageViewLogo" />
-
-        <EditText
-            android:id="@+id/aeroportoArrivo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/search_bg"
-            android:backgroundTint="#ECECEC"
-            android:drawableLeft="@drawable/baseline_airplanemode_active_24"
-            android:drawablePadding="16dp"
-            android:hint="Aeroporto di arrivo"
-            android:inputType="textAutoComplete"
-            android:textColorHint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenza" />
-
-        <EditText
-            android:id="@+id/dataPartenza"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/search_bg"
-            android:backgroundTint="#ECECEC"
-            android:drawableLeft="@drawable/baseline_edit_calendar_24"
-            android:drawablePadding="16dp"
-            android:hint="Data di partenza"
-            android:textColorHint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/aeroportoArrivo" />
-
-        <EditText
-            android:id="@+id/dataArrivo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/search_bg"
-            android:backgroundTint="#ECECEC"
-            android:drawableLeft="@drawable/baseline_edit_calendar_24"
-            android:drawablePadding="16dp"
-            android:hint="Data di arrivo"
-            android:textColorHint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
-            app:layout_constraintWidth_default="wrap" />
-
-        <LinearLayout
-            android:id="@+id/numPersoneLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="#ECECEC"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/numPersone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/search_bg"
-                android:backgroundTint="#ECECEC"
-                android:drawableLeft="@drawable/baseline_person_24"
-                android:drawablePadding="16dp"
-                android:hint="Numero Persone: "
-                android:inputType="number"
-                android:textColorHint="@color/black" />
-
-            <Spinner
-                android:id="@+id/numPersoneSpinner"
-                android:layout_width="58dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/search_bg"
-                android:backgroundTint="#ECECEC"
-                android:spinnerMode="dropdown" />
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/barraRicerca"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/search_bg"
-                android:drawableLeft="@drawable/baseline_search_24"
-                android:drawablePadding="16dp"
-                android:ems="10"
-                android:hint="Cerca Voli"
-                android:textColor="#62878F"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
-
-        </LinearLayout>
+        app:layout_constraintGuide_percent="0.3" />
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/guideline"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -153,15 +38,110 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical">
 
+            <EditText
+                android:id="@+id/aeroportoPartenza"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Aeroporto di Partenza"
+                android:inputType="textAutoComplete"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+                android:drawablePadding="16dp"
+                android:textColorHint="@color/black"
+                android:backgroundTint="#ECECEC"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <EditText
+                android:id="@+id/aeroportoArrivo"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Aeroporto di arrivo"
+                android:inputType="textAutoComplete"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+                android:drawablePadding="16dp"
+                android:textColorHint="@color/black"
+                android:backgroundTint="#ECECEC"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <EditText
+                android:id="@+id/dataPartenza"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Data di partenza"
+                android:inputType="textAutoComplete"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:textColorHint="@color/black"
+                android:backgroundTint="#ECECEC"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <EditText
+                android:id="@+id/dataArrivo"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Data di ritorno"
+                android:inputType="textAutoComplete"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:textColorHint="@color/black"
+                android:backgroundTint="#ECECEC"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <LinearLayout
+                android:id="@+id/numPersoneLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:background="#ECECEC"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <EditText
+                    android:id="@+id/numPersone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:hint="Numero Persone: "
+                    android:inputType="number"
+                    android:background="@drawable/search_bg"
+                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:drawablePadding="16dp"
+                    android:textColorHint="@color/black"
+                    android:backgroundTint="#ECECEC" />
+
+                <Spinner
+                    android:id="@+id/numPersoneSpinner"
+                    android:layout_width="58dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/search_bg"
+                    android:spinnerMode="dropdown"
+                    android:backgroundTint="#ECECEC" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Cerca"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
     </ScrollView>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
