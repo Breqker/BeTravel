@@ -76,7 +76,7 @@ class RecuperoPassword : AppCompatActivity() {
     }
 
     private fun updatePasswordInDatabase(email: String, newPassword: String) {
-        val query = "UPDATE Utente SET password = '$newPassword' WHERE email = '$email';"
+        val query = "UPDATE wbmobile.Utente SET password = '$newPassword' WHERE email = '$email';"
 
         val call = ClientNetwork.retrofit.update(query)
         call.enqueue(object : Callback<JsonObject> {

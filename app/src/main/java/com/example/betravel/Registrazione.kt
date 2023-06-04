@@ -73,8 +73,8 @@ class Registrazione : AppCompatActivity() {
     }
 
     private fun registerUser(nome: String, cognome: String, email: String, password: String) {
-        val checkQuery = "SELECT * FROM Utente WHERE email = '$email';"
-        val insertQuery = "INSERT INTO Utente (nome, cognome, email, password) VALUES ('$nome', '$cognome', '$email', '$password');"
+        val checkQuery = "SELECT * FROM webmobile.Utente WHERE email = '$email';"
+        val insertQuery = "INSERT INTO webmobile.Utente (nome, cognome, email, password) VALUES ('$nome', '$cognome', '$email', '$password');"
 
         val checkCall = ClientNetwork.retrofit.select(checkQuery)
         checkCall.enqueue(object : Callback<JsonObject> {

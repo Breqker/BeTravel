@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.betravel.databinding.ActivityLoginBinding
 import com.example.betravel.databinding.ActivityLoginLandBinding
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,7 +74,7 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginRequest(email: String, password: String) {
-        val loginQuery = "SELECT * FROM Utente WHERE email = '$email' AND password = '$password';"
+        val loginQuery = "SELECT * FROM webmobile.Utente WHERE email = '$email' AND password = '$password';"
 
         val loginCall = ClientNetwork.retrofit.select(loginQuery)
         loginCall.enqueue(object : Callback<JsonObject> {
@@ -81,9 +82,8 @@ class Login : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val data = response.body()
 
-                    if (data != null && data.has("success") && data["success"].asBoolean) {
+                    if ((data?.get("queryset") as JsonArray).size() == 1){
                         showMessage("Login effettuato con successo")
-                        navigateToHome()
                     } else {
                         showErrorMessage("Credenziali non valide")
                     }
