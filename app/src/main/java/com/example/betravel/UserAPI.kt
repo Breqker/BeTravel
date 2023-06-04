@@ -29,4 +29,5 @@ interface UserAPI {
     @POST("postRemove/")
     @FormUrlEncoded
     fun remove(@Field("query") query : String): Call<JsonObject>
+
 }

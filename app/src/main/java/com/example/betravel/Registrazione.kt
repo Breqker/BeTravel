@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.betravel.databinding.ActivityRegistrazioneBinding
 import com.example.betravel.databinding.ActivityRegistrazioneLandBinding
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -80,8 +81,8 @@ class Registrazione : AppCompatActivity() {
         checkCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val result = response.body()?.getAsJsonArray("result")
-                    if (result != null && result.size() > 0) {
+                    val data = response.body()
+                    if ((data?.get("queryset") as JsonArray).size() > 0) {
                         showErrorMessage("L'email esiste già")
                     } else {
                         // L'email non esiste, puoi procedere con l'insert
@@ -110,6 +111,7 @@ class Registrazione : AppCompatActivity() {
             }
         })
     }
+
 
     private fun showErrorMessage(message: String) {
         val alertDialog = AlertDialog.Builder(this)

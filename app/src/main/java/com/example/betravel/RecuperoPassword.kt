@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.example.betravel.databinding.ActivityRecuperoPasswordBinding
 import com.example.betravel.databinding.ActivityRecuperoPasswordLandBinding
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,16 +96,15 @@ class RecuperoPassword : AppCompatActivity() {
     }
 
     private fun checkEmailExists(email: String) {
-        val query = "SELECT * FROM Utente WHERE email = '$email';"
+        val query = "SELECT email FROM webmobile.Utente WHERE email = '$email';"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val result = response.body()
-                    val exists = result?.get("exists")?.asBoolean
+                    val data = response.body()
 
-                    if (exists == true) {
+                    if ((data?.get("queryset") as JsonArray).size() > 0) {
                         val newPassword = generateRandomPassword(8)
                         updatePasswordInDatabase(email, newPassword)
                         showMessage("Un'email con le istruzioni per il recupero password è stata inviata all'indirizzo fornito")
