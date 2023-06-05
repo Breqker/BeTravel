@@ -46,10 +46,7 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
                 showTimePicker(bindingLand.orario)
             }
 
-            bindingLand.barraRicerca.isFocusable = false
-            bindingLand.barraRicerca.isClickable = true
-
-            bindingLand.barraRicerca.setOnClickListener {
+            bindingLand.cerca.setOnClickListener {
 
             }
 
@@ -72,10 +69,7 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
                 showTimePicker(binding.orario)
             }
 
-            binding.barraRicerca.isFocusable = false
-            binding.barraRicerca.isClickable = true
-
-            binding.barraRicerca.setOnClickListener {
+            binding.cerca.setOnClickListener {
 
             }
 

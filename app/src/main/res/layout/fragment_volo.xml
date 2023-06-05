@@ -12,43 +12,82 @@
         android:layout_height="100dp"
         android:contentDescription="Logo dell'applicazione"
         android:src="@drawable/ic_launcher_round"
-        app:layout_constraintBottom_toTopOf="@+id/aeroportoPartenza"
+        app:layout_constraintBottom_toTopOf="@+id/aeroportoPartenzaLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <AutoCompleteTextView
-        android:id="@+id/aeroportoPartenza"
+    <LinearLayout
+        android:id="@+id/aeroportoPartenzaLayout"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:hint="Aeroporto di Partenza"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ic_launcher_round"
-        android:inputType="textAutoComplete"
+        app:layout_constraintTop_toBottomOf="@+id/ic_launcher_round"
         android:layout_marginTop="20dp"
-        android:background="@drawable/search_bg"
-        android:drawableLeft="@drawable/baseline_airplanemode_active_24"
-        android:drawablePadding="16dp"
-        android:textColorHint="@color/black"
-        android:backgroundTint="#ECECEC"/>
+        android:background="#ECECEC"
+        app:layout_constraintHorizontal_bias="0.0">
 
-    <AutoCompleteTextView
-        android:id="@+id/aeroportoArrivo"
+        <EditText
+            android:id="@+id/aeroportoPartenza"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="Aeroporto di Partenza: "
+            android:inputType="text"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC"/>
+
+        <Spinner
+            android:id="@+id/aeroportoPartenzaSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/search_bg"
+            android:backgroundTint="#ECECEC"
+            android:spinnerMode="dropdown" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/aeroportoRitornoLayout"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:hint="Aeroporto di arrivo"
-        android:inputType="textAutoComplete"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenza"
-        android:background="@drawable/search_bg"
-        android:drawableLeft="@drawable/baseline_airplanemode_active_24"
-        android:drawablePadding="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenzaLayout"
         android:layout_marginTop="20dp"
-        android:textColorHint="@color/black"
-        android:backgroundTint="#ECECEC"/>
+        android:background="#ECECEC"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <EditText
+            android:id="@+id/aeroportoRitorno"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="Aeroporto di Ritorno: "
+            android:inputType="text"
+            android:background="@drawable/search_bg"
+            android:drawableLeft="@drawable/baseline_airplanemode_active_24"
+            android:drawablePadding="16dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="#ECECEC"/>
+
+        <Spinner
+            android:id="@+id/aeroportoRitornoSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/search_bg"
+            android:backgroundTint="#ECECEC"
+            android:spinnerMode="dropdown" />
+
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/dataPartenza"
@@ -57,7 +96,7 @@
         android:hint="Data di partenza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aeroportoArrivo"
+        app:layout_constraintTop_toBottomOf="@+id/aeroportoRitornoLayout"
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
@@ -79,6 +118,7 @@
         android:layout_marginTop="20dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
+
     <LinearLayout
         android:id="@+id/numPersoneLayout"
         android:layout_width="match_parent"
@@ -107,8 +147,8 @@
 
         <Spinner
             android:id="@+id/numPersoneSpinner"
-            android:layout_width="58dp"
-            android:layout_height="30dp"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
             android:background="@drawable/search_bg"
             android:spinnerMode="dropdown"
             android:backgroundTint="#ECECEC"/>
@@ -116,7 +156,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/cerca"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Cerca"

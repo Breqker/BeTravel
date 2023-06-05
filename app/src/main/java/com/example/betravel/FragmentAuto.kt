@@ -63,10 +63,8 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = bindingLand.etaConducenteSpinner
             numPersoneSpinner.adapter = adapter
 
-            bindingLand.barraRicerca.isFocusable = false
-            bindingLand.barraRicerca.isClickable = true
 
-            bindingLand.barraRicerca.setOnClickListener {
+            bindingLand.cerca.setOnClickListener {
 
             }
 
@@ -104,10 +102,7 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = binding.etaConducenteSpinner
             numPersoneSpinner.adapter = adapter
 
-            binding.barraRicerca.isFocusable = false
-            binding.barraRicerca.isClickable = true
-
-            binding.barraRicerca.setOnClickListener {
+            binding.cerca.setOnClickListener {
 
             }
 

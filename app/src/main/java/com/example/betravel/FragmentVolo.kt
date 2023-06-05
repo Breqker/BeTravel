@@ -4,8 +4,6 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +22,7 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.sql.Date
 import java.util.*
 
 class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
@@ -31,12 +30,6 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
     private lateinit var binding: FragmentVoloBinding
     private lateinit var bindingLand: FragmentVoloLandBinding
     private val calendar = Calendar.getInstance()
-
-    private lateinit var airportAdapter: ArrayAdapter<String>
-    private lateinit var airportAdapter2: ArrayAdapter<String>
-    private var listaPartenza: List<String> = emptyList()
-    private var listaArrivo: List<String> = emptyList()
-    private var selectedAirport: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,27 +42,27 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             bindingLand = FragmentVoloLandBinding.inflate(inflater, container, false)
             val view = bindingLand.root
 
-            initAirportAdapter()
-            aeroportoPartenza("")
-            bindingLand.aeroportoPartenza.setAdapter(airportAdapter)
+            bindingLand.aeroportoPartenza.isFocusable = false
+            bindingLand.aeroportoPartenza.isClickable = false
 
-            bindingLand.aeroportoPartenza.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            bindingLand.aeroportoRitorno.isFocusable = false
+            bindingLand.aeroportoRitorno.isClickable = false
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val searchText = s.toString()
-                    val filteredList = listaPartenza.filter { it.contains(searchText, ignoreCase = true) }
-                    airportAdapter.clear()
-                    airportAdapter.addAll(filteredList)
-                    airportAdapter.notifyDataSetChanged()
-                }
+            val aeroportoPartenza: Spinner = bindingLand.aeroportoPartenzaSpinner
+            val aeroportoPartenzaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            aeroportoPartenzaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoPartenza.adapter = aeroportoPartenzaAdapter
 
-                override fun afterTextChanged(s: Editable?) {}
-            })
+            aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            bindingLand.aeroportoArrivo.setOnItemClickListener { _, _, position, _ ->
-                selectedAirport = airportAdapter.getItem(position)
-            }
+            val aeroportoRitorno: Spinner = bindingLand.aeroportoRitornoSpinner
+            val aeroportoRitornoAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoRitorno.adapter = aeroportoRitornoAdapter
+
+            aeroportoRitorno(aeroportoRitornoAdapter)
 
             bindingLand.dataPartenza.isFocusable = false
             bindingLand.dataPartenza.isClickable = true
@@ -93,60 +86,43 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             bindingLand.numPersone.isFocusable = false
             bindingLand.numPersone.isClickable = false
 
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
+            val adapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             val numPersoneSpinner: Spinner = bindingLand.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
+
+            binding.cerca.setOnClickListener {
+                handleConfermaClick()
+            }
 
             return view
         } else {
             binding = FragmentVoloBinding.inflate(inflater, container, false)
             val view = binding.root
 
-            initAirportAdapter()
-            aeroportoPartenza("")
-            binding.aeroportoPartenza.setAdapter(airportAdapter)
+            binding.aeroportoPartenza.isFocusable = false
+            binding.aeroportoPartenza.isClickable = false
 
-            binding.aeroportoPartenza.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            binding.aeroportoRitorno.isFocusable = false
+            binding.aeroportoRitorno.isClickable = false
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val searchText = s.toString()
-                    val filteredList = listaPartenza.filter { it.contains(searchText, ignoreCase = true) }
-                    airportAdapter.clear()
-                    airportAdapter.addAll(filteredList)
-                    airportAdapter.notifyDataSetChanged()
-                }
+            val aeroportoPartenza: Spinner = binding.aeroportoPartenzaSpinner
+            val aeroportoPartenzaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            aeroportoPartenzaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoPartenza.adapter = aeroportoPartenzaAdapter
 
-                override fun afterTextChanged(s: Editable?) {}
-            })
+            aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            binding.aeroportoPartenza.setOnItemClickListener { _, _, position, _ ->
-                selectedAirport = airportAdapter.getItem(position)
-            }
+            val aeroportoRitorno: Spinner = binding.aeroportoRitornoSpinner
+            val aeroportoRitornoAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoRitorno.adapter = aeroportoRitornoAdapter
 
-            initAirportAdapter2()
-            aeroportoArrivo("")
-            binding.aeroportoArrivo.setAdapter(airportAdapter)
-
-            binding.aeroportoArrivo.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val searchText = s.toString()
-                    val filteredList = listaArrivo.filter { it.contains(searchText, ignoreCase = true) }
-                    airportAdapter.clear()
-                    airportAdapter.addAll(filteredList)
-                    airportAdapter.notifyDataSetChanged()
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            binding.aeroportoArrivo.setOnItemClickListener { _, _, position, _ ->
-                selectedAirport = airportAdapter.getItem(position)
-            }
+            aeroportoRitorno(aeroportoRitornoAdapter)
 
             binding.dataPartenza.isFocusable = false
             binding.dataPartenza.isClickable = true
@@ -176,6 +152,10 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             val numPersoneSpinner: Spinner = binding.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
+
+            binding.cerca.setOnClickListener {
+                handleConfermaClick()
+            }
 
             return view
         }
@@ -225,88 +205,6 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    private fun initAirportAdapter() {
-        airportAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
-    }
-
-    private fun initAirportAdapter2() {
-        airportAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
-    }
-
-    private fun aeroportoPartenza(aeroportoPartenza: String) {
-        val query = "select aeroporto_partenza from webmobile.Volo where aeroporto_partenza = '$aeroportoPartenza';"
-
-        val call = ClientNetwork.retrofit.select(query)
-
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()
-                    val airportsArray = data?.getAsJsonArray("aeroporto_partenza")
-                    if (airportsArray != null && airportsArray.size() > 0) {
-                        val aeroporti = ArrayList<String>()
-                        for (i in 0 until airportsArray.size()) {
-                            val aeroport = airportsArray[i].asString
-                            aeroporti.add(aeroport)
-                        }
-                        listaPartenza = aeroporti
-                        airportAdapter.clear()
-                        airportAdapter.addAll(aeroporti)
-                        airportAdapter.notifyDataSetChanged()
-
-                        if (aeroporti.isEmpty()) {
-                            showErrorMessage("Aeroporto non presente")
-                        }
-                    }
-                } else {
-                    showErrorMessage("Errore durante la scelta dell'aeroporto")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
-            }
-        })
-    }
-
-    private fun aeroportoArrivo(aeroportoArrivo: String) {
-        val query = "select aeroporto_arrivo from webmobile.Volo where aeroporto_arrivo = '$aeroportoArrivo';"
-
-        val call = ClientNetwork.retrofit.select(query)
-
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()
-                    val airportsArray = data?.getAsJsonArray("aeroporto_arrivo")
-                    if (airportsArray != null && airportsArray.size() > 0) {
-                        val aeroporti = ArrayList<String>()
-                        for (i in 0 until airportsArray.size()) {
-                            val aeroport = airportsArray[i].asString
-                            aeroporti.add(aeroport)
-                        }
-                        listaArrivo = aeroporti
-                        airportAdapter2.clear()
-                        airportAdapter2.addAll(aeroporti)
-                        airportAdapter2.notifyDataSetChanged()
-
-                        if (aeroporti.isEmpty()) {
-                            showErrorMessage("Non sono presenti aeroporti")
-                        }
-                    }
-                } else {
-                    showErrorMessage("Errore durante la scelta dell'aeroporto")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
-            }
-        })
-    }
-    private fun isAirportSelected(): Boolean {
-        return selectedAirport != null && selectedAirport!!.isNotBlank()
-    }
 
     private fun showErrorMessage(message: String) {
         val alertDialog = AlertDialog.Builder(requireContext())
@@ -329,4 +227,227 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             .create()
         alertDialog.show()
     }
+
+
+    private fun aeroportoPartenza(adapter: ArrayAdapter<String>) {
+        val query = "SELECT distinct aeroporto_partenza FROM webmobile.Volo;"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val airports = responseBody.getAsJsonArray("queryset")
+
+                        if (airports.size() > 0) {
+                            val airportList = mutableListOf<String>()
+                            for (i in 0 until airports.size()) {
+                                val airport = airports[i].toString()
+                                val aeroporto = airport.substringAfter(":").trim()
+                                airportList.add(aeroporto.substring(1, aeroporto.length - 2))
+                            }
+
+                            activity?.runOnUiThread {
+                                adapter.clear()
+                                adapter.addAll(airportList)
+                                adapter.notifyDataSetChanged()
+                            }
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showErrorMessage("Nessun aeroporto di partenza trovato")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero degli aeroporti di partenza")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showErrorMessage("Errore di connessione: ${t.message}")
+                }
+            }
+
+        })
+    }
+
+    private fun aeroportoRitorno(adapter: ArrayAdapter<String>) {
+        val query = "SELECT distinct aeroporto_ritorno FROM webmobile.Volo;"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val airports = responseBody.getAsJsonArray("queryset")
+
+                        if (airports.size() > 0) {
+                            val airportList = mutableListOf<String>()
+                            for (i in 0 until airports.size()) {
+                                val airport = airports[i].toString()
+                                val aeroporto = airport.substringAfter(":").trim()
+                                airportList.add(aeroporto.substring(1, aeroporto.length - 2))
+                            }
+
+                            activity?.runOnUiThread {
+                                adapter.clear()
+                                adapter.addAll(airportList)
+                                adapter.notifyDataSetChanged()
+                            }
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showErrorMessage("Nessun aeroporto di arrivo trovato")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero degli aeroporti di arrivo")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showErrorMessage("Errore di connessione: ${t.message}")
+                }
+            }
+
+        })
+    }
+
+    private fun dataPartenza(data: Date,aeroporto : String){
+        val query = "SELECT data_partenza from webmobile.Volo where data_partenza = '$data' and aeroporto_partenza = '$aeroporto';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna data di partenza trovata")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle date di partenza")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun dataArrivo(data: Date,aeroporto: String){
+        val query = "SELECT data_arrivo from webmobile.Volo where data_arrivo = '$data' and aeroporto_ritorno = '$aeroporto';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna data di arrivo trovata")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle date di arrivo")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+
+
+    private fun handleConfermaClick() {
+        val aeroportoPartenza: Spinner
+        val aeroportoRitorno: Spinner
+        val dataPartenza: EditText
+        val dataArrivo: EditText
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            aeroportoPartenza = bindingLand.aeroportoPartenzaSpinner
+            aeroportoRitorno = bindingLand.aeroportoRitornoSpinner
+            dataPartenza = bindingLand.dataPartenza
+            dataArrivo = bindingLand.dataArrivo
+        } else {
+            aeroportoPartenza = binding.aeroportoPartenzaSpinner
+            aeroportoRitorno = binding.aeroportoRitornoSpinner
+            dataPartenza = binding.dataPartenza
+            dataArrivo = binding.dataArrivo
+        }
+        val selectedPartenza = aeroportoPartenza.selectedItem.toString()
+        val selectedRitorno = aeroportoRitorno.selectedItem.toString()
+
+        if (selectedPartenza == selectedRitorno) {
+            // Gli aeroporti di partenza e ritorno sono uguali, mostra un messaggio di errore
+            showErrorMessage("Gli aeroporti di partenza e ritorno devono essere diversi.")
+            return
+        }
+
+        val partenzaDate = dataPartenza.text.toString()
+        val arrivoDate = dataArrivo.text.toString()
+
+        if (partenzaDate.isEmpty() || arrivoDate.isEmpty()) {
+            showErrorMessage("Seleziona una data di partenza e di arrivo.")
+            return
+        }
+
+        if(arrivoDate < partenzaDate){
+            showErrorMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
+            return
+        }
+
+        val partenzaSqlDate = convertToSqlDate(partenzaDate)
+        val arrivoSqlDate = convertToSqlDate(arrivoDate)
+
+        dataPartenza(partenzaSqlDate, selectedPartenza)
+        dataArrivo(arrivoSqlDate, selectedRitorno)
+
+        // Continua con il resto del codice per gestire la conferma del volo
+        // ...
+    }
+
+
+    private fun convertToSqlDate(dateString: String): Date {
+        val parts = dateString.split("/")
+        val day = parts[0].toInt()
+        val month = parts[1].toInt() - 1
+        val year = parts[2].toInt()
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+        return Date(calendar.timeInMillis)
+    }
+
+
 }
