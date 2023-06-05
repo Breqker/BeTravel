@@ -48,19 +48,19 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             bindingLand.aeroportoRitorno.isFocusable = false
             bindingLand.aeroportoRitorno.isClickable = false
 
-            val aeroportoPartenza: Spinner = bindingLand.aeroportoPartenzaSpinner
+            val aeroportoPartenzaSpinner: Spinner = bindingLand.aeroportoPartenzaSpinner
             val aeroportoPartenzaAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
             aeroportoPartenzaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoPartenza.adapter = aeroportoPartenzaAdapter
+            aeroportoPartenzaSpinner.adapter = aeroportoPartenzaAdapter
 
             aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            val aeroportoRitorno: Spinner = bindingLand.aeroportoRitornoSpinner
+            val aeroportoRitornoSpinner: Spinner = bindingLand.aeroportoRitornoSpinner
             val aeroportoRitornoAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
             aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoRitorno.adapter = aeroportoRitornoAdapter
+            aeroportoRitornoSpinner.adapter = aeroportoRitornoAdapter
 
             aeroportoRitorno(aeroportoRitornoAdapter)
 
@@ -93,13 +93,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             val numPersoneSpinner: Spinner = bindingLand.numPersoneSpinner
             numPersoneSpinner.adapter = adapter
 
-            binding.cerca.setOnClickListener {
+            bindingLand.cerca.setOnClickListener {
                 handleConfermaClick()
             }
 
             return view
         } else {
-            binding = FragmentVoloBinding.inflate(inflater, container, false)
+            binding = FragmentVoloBinding.inflate(inflater,container,false)
             val view = binding.root
 
             binding.aeroportoPartenza.isFocusable = false
@@ -108,19 +108,19 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             binding.aeroportoRitorno.isFocusable = false
             binding.aeroportoRitorno.isClickable = false
 
-            val aeroportoPartenza: Spinner = binding.aeroportoPartenzaSpinner
+            val aeroportoPartenzaSpinner: Spinner = binding.aeroportoPartenzaSpinner
             val aeroportoPartenzaAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
             aeroportoPartenzaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoPartenza.adapter = aeroportoPartenzaAdapter
+            aeroportoPartenzaSpinner.adapter = aeroportoPartenzaAdapter
 
             aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            val aeroportoRitorno: Spinner = binding.aeroportoRitornoSpinner
+            val aeroportoRitornoSpinner: Spinner = binding.aeroportoRitornoSpinner
             val aeroportoRitornoAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
             aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoRitorno.adapter = aeroportoRitornoAdapter
+            aeroportoRitornoSpinner.adapter = aeroportoRitornoAdapter
 
             aeroportoRitorno(aeroportoRitornoAdapter)
 
@@ -406,6 +406,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             dataPartenza = binding.dataPartenza
             dataArrivo = binding.dataArrivo
         }
+
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
         val selectedRitorno = aeroportoRitorno.selectedItem.toString()
 
