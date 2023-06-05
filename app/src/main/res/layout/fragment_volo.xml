@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/aeroportoPartenza"
         android:layout_width="match_parent"
         android:layout_height="35dp"
@@ -34,7 +34,7 @@
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/aeroportoArrivo"
         android:layout_width="match_parent"
         android:layout_height="35dp"

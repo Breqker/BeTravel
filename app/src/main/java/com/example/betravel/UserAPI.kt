@@ -19,9 +19,6 @@ interface UserAPI {
     @FormUrlEncoded
     fun update(@Field("query") query: String): Call <JsonObject>
 
-    @GET
-    fun getAvatar(@Url url: String) : Call <ResponseBody>
-
     @POST("postInsert/")
     @FormUrlEncoded
     fun insert(@Field("query") query: String): Call<JsonObject>
@@ -30,4 +27,6 @@ interface UserAPI {
     @FormUrlEncoded
     fun remove(@Field("query") query : String): Call<JsonObject>
 
+    @GET
+    fun image(@Url url: String) : Call <ResponseBody>
 }
