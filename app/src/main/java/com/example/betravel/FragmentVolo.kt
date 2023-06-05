@@ -126,7 +126,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                 selectedAirport = airportAdapter.getItem(position)
             }
 
-            initAirportAdapter()
+            initAirportAdapter2()
             aeroportoArrivo("")
             binding.aeroportoArrivo.setAdapter(airportAdapter)
 
