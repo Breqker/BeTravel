@@ -155,6 +155,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
+
             }
 
             return view
