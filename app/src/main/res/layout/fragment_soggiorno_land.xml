@@ -1,10 +1,18 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
     android:padding="25dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
 
     <ImageView
         android:id="@+id/ic_launcher_round"
@@ -19,107 +27,143 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_percent="0.3" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
-
-    <EditText
-        android:id="@+id/citta"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="@drawable/search_bg"
-        android:backgroundTint="#ECECEC"
-        android:inputType="textAutoComplete"
-        android:drawableLeft="@drawable/baseline_home_24"
-        android:drawablePadding="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="16dp"
-        android:hint="Città"
-        android:textColorHint="@color/black"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/dataPartenza"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="@drawable/search_bg"
-        android:backgroundTint="#ECECEC"
-        android:drawableLeft="@drawable/baseline_edit_calendar_24"
-        android:drawablePadding="16dp"
-        android:layout_marginTop="20dp"
-        android:hint="Data di partenza"
-        android:layout_marginLeft="16dp"
-        android:textColorHint="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/citta"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/dataArrivo"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:hint="Data di arrivo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
-        android:background="@drawable/search_bg"
-        android:layout_marginLeft="16dp"
-        android:drawableLeft="@drawable/baseline_edit_calendar_24"
-        android:drawablePadding="16dp"
-        android:layout_marginTop="20dp"
-        android:textColorHint="@color/black"
-        android:backgroundTint="#ECECEC"/>
+            <LinearLayout
+                android:id="@+id/cittaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#ECECEC"
+                android:orientation="horizontal"
+                android:textColorHint="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ic_launcher_round">
 
-    <LinearLayout
-        android:id="@+id/numPersoneLayout"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:orientation="horizontal"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-        android:layout_marginTop="20dp"
-        android:background="#ECECEC">
+                <EditText
+                    android:id="@+id/citta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:drawableLeft="@drawable/baseline_home_24"
+                    android:drawablePadding="16dp"
+                    android:hint="Città: "
+                    android:inputType="text"
+                    android:textColorHint="@color/black" />
 
-        <EditText
-            android:id="@+id/numPersone"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:hint="Numero Persone: "
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-            android:background="@drawable/search_bg"
-            android:drawableLeft="@drawable/baseline_person_24"
-            android:drawablePadding="16dp"
-            android:textColorHint="@color/black"
-            android:backgroundTint="#ECECEC"/>
+                <Spinner
+                    android:id="@+id/cittaSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:spinnerMode="dropdown" />
 
-        <Spinner
-            android:id="@+id/numPersoneSpinner"
-            android:layout_width="58dp"
-            android:layout_height="35dp"
-            android:background="@drawable/search_bg"
-            android:spinnerMode="dropdown"
-            android:backgroundTint="#ECECEC"/>
+            </LinearLayout>
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/dataInizio"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/search_bg"
+                android:backgroundTint="#ECECEC"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:hint="Data di inizio"
+                android:inputType="textAutoComplete"
+                android:textColorHint="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/cittaLayout" />
 
-    <Button
-        android:id="@+id/cerca"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Cerca"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
+            <EditText
+                android:id="@+id/dataRilascio"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/search_bg"
+                android:backgroundTint="#ECECEC"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:hint="Data di rilascio"
+                android:inputType="textAutoComplete"
+                android:textColorHint="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/guideline"
+                app:layout_constraintStart_toStartOf="@id/ic_launcher_round"
+                app:layout_constraintTop_toBottomOf="@+id/dataInizio" />
+
+            <LinearLayout
+                android:id="@+id/numPersoneLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#ECECEC"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@id/guideline"
+                app:layout_constraintStart_toEndOf="@id/ic_launcher_round"
+                app:layout_constraintTop_toBottomOf="@+id/dataRilascio">
+
+                <EditText
+                    android:id="@+id/numPersone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:drawablePadding="16dp"
+                    android:hint="Numero persone: "
+                    android:inputType="number"
+                    android:textColorHint="@color/black" />
+
+                <Spinner
+                    android:id="@+id/numPersoneSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/cerca"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Cerca"
+                app:layout_constraintEnd_toEndOf="@id/guideline"
+                app:layout_constraintStart_toEndOf="@id/ic_launcher_round"
+                app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

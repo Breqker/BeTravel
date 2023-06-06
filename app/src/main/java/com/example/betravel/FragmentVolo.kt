@@ -450,7 +450,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         val ritornoDate = dataRitorno.text.toString()
 
         if (partenzaDate.isEmpty() || ritornoDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di partenza e di arrivo.")
+            showErrorMessage("Seleziona una data di partenza e/o di arrivo.")
             return
         }
 
