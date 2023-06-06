@@ -2,18 +2,29 @@ package com.example.betravel
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentTaxiBinding
 import com.example.betravel.databinding.FragmentTaxiLandBinding
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.sql.Date
+import java.sql.Time
 import java.util.Calendar
 
 class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
@@ -31,6 +42,17 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             bindingLand = FragmentTaxiLandBinding.inflate(inflater, container, false)
             val view = bindingLand.root
+
+            bindingLand.citta.isFocusable = false
+            bindingLand.citta.isClickable = false
+
+            val cittaSpinner: Spinner = bindingLand.cittaSpinner
+            val cittaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            cittaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            cittaSpinner.adapter = cittaAdapter
+
+            citta(cittaAdapter)
 
             bindingLand.data.isFocusable = false
             bindingLand.data.isClickable = true
@@ -51,9 +73,20 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
             }
 
             return view
-        }else{
-            binding = FragmentTaxiBinding.inflate(inflater,container,false)
+        } else {
+            binding = FragmentTaxiBinding.inflate(inflater, container, false)
             val view = binding.root
+
+            binding.citta.isFocusable = false
+            binding.citta.isClickable = false
+
+            val cittaSpinner: Spinner = binding.cittaSpinner
+            val cittaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            cittaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            cittaSpinner.adapter = cittaAdapter
+
+            citta(cittaAdapter)
 
             binding.data.isFocusable = false
             binding.data.isClickable = true
@@ -75,7 +108,6 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
             return view
         }
-
 
 
     }
@@ -137,5 +169,195 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
         timePickerDialog.show()
     }
+
+    private fun showErrorMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Errore")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun showMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Informazione")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun citta(adapter: ArrayAdapter<String>) {
+        val query = "SELECT distinct citta FROM webmobile.Taxi;"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val cities = responseBody.getAsJsonArray("queryset")
+
+                        if (cities.size() > 0) {
+                            val cityList = mutableListOf<String>()
+                            for (i in 0 until cities.size()) {
+                                val city = cities[i].toString()
+                                val citta = city.substringAfter(":").trim()
+                                cityList.add(citta.substring(1, citta.length - 2))
+                            }
+
+                            activity?.runOnUiThread {
+                                adapter.clear()
+                                adapter.addAll(cityList)
+                                adapter.notifyDataSetChanged()
+                            }
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showErrorMessage("Nessuna città trovata")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle città")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showErrorMessage("Errore di connessione: ${t.message}")
+                }
+            }
+
+        })
+    }
+
+    private fun dataPrenotazione(data: Date) {
+        val query =
+            "SELECT data_prenotazione from webmobile.Taxi where data_prenotazione = '$data';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna data trovata")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle date")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+
+        })
+    }
+
+    private fun orarioPrenotazione(orario: Time) {
+        val query =
+            "SELECT orario_prenotazione from webmobile.Taxi where orario_prenotazione = '$orario';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessun orario trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero degli orari")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+
+        })
+    }
+
+    private fun handleConfermaClick() {
+        val data: EditText
+        val orario: EditText
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            data = bindingLand.data
+            orario = bindingLand.orario
+        } else {
+            data = binding.data
+            orario = binding.orario
+        }
+
+
+        val dataDate = data.text.toString()
+        val orarioTime = orario.text.toString()
+
+        if (dataDate.isEmpty()) {
+            showErrorMessage("Seleziona una data.")
+            return
+        }
+
+        if (orarioTime.isEmpty()){
+            showErrorMessage("Seleziona un'orario.")
+            return
+        }
+
+        val dataSqlDate = convertToSqlDate(dataDate)
+        val orarioSqlTime = convertToSqlTime(orarioTime)
+
+        dataPrenotazione(dataSqlDate)
+        orarioPrenotazione(orarioSqlTime)
+
+        // Continua con il resto del codice per gestire la conferma del volo
+        // ...
+    }
+
+
+    private fun convertToSqlDate(dateString: String): Date {
+        val parts = dateString.split("/")
+        val day = parts[0].toInt()
+        val month = parts[1].toInt() - 1
+        val year = parts[2].toInt()
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+        return Date(calendar.timeInMillis)
+    }
+
+    private fun convertToSqlTime(timeString: String): Time {
+        val parts = timeString.split(":")
+        val hour = parts[0].toInt()
+        val minute = parts[1].toInt()
+        val seconds = 0
+        return Time(hour, minute, seconds)
+    }
+
 
 }
