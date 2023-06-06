@@ -79,7 +79,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/aeroportoRitornoLayout"
+                android:id="@+id/aeroportoArrivoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:orientation="horizontal"
@@ -93,10 +93,10 @@
                 app:layout_constraintHorizontal_bias="0.0">
 
                 <EditText
-                    android:id="@+id/aeroportoRitorno"
+                    android:id="@+id/aeroportoArrivo"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:hint="Aeroporto di Ritorno: "
+                    android:hint="Aeroporto di Arrivo: "
                     android:layout_weight="1"
                     android:inputType="textAutoComplete"
                     android:background="@drawable/search_bg"
@@ -106,7 +106,7 @@
                     android:backgroundTint="#ECECEC"/>
 
                 <Spinner
-                    android:id="@+id/aeroportoRitornoSpinner"
+                    android:id="@+id/aeroportoArrivoSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -133,10 +133,10 @@
                 android:layout_marginRight="10dp" />
 
             <EditText
-                android:id="@+id/dataArrivo"
+                android:id="@+id/dataRitorno"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:hint="Data di ritorno"
+                android:hint="Data di Ritorno"
                 android:inputType="textAutoComplete"
                 android:background="@drawable/search_bg"
                 android:drawableLeft="@drawable/baseline_edit_calendar_24"

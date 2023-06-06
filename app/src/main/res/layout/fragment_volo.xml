@@ -6,16 +6,6 @@
     android:background="@drawable/profilebkg"
     android:padding="25dp">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="com.example.betravel.FragmentVolo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/ic_launcher_round"
         android:layout_width="100dp"
@@ -64,7 +54,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/aeroportoRitornoLayout"
+        android:id="@+id/aeroportoArrivoLayout"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:orientation="horizontal"
@@ -76,10 +66,10 @@
         app:layout_constraintHorizontal_bias="0.0">
 
         <EditText
-            android:id="@+id/aeroportoRitorno"
+            android:id="@+id/aeroportoArrivo"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:hint="Aeroporto di Ritorno: "
+            android:hint="Aeroporto di Arrivo: "
             android:inputType="text"
             android:background="@drawable/search_bg"
             android:drawableLeft="@drawable/baseline_airplanemode_active_24"
@@ -88,7 +78,7 @@
             android:backgroundTint="#ECECEC"/>
 
         <Spinner
-            android:id="@+id/aeroportoRitornoSpinner"
+            android:id="@+id/aeroportoArrivoSpinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -106,7 +96,7 @@
         android:hint="Data di partenza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aeroportoRitornoLayout"
+        app:layout_constraintTop_toBottomOf="@+id/aeroportoArrivoLayout"
         android:background="@drawable/search_bg"
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
@@ -115,10 +105,10 @@
         android:backgroundTint="#ECECEC"/>
 
     <EditText
-        android:id="@+id/dataArrivo"
+        android:id="@+id/dataRitorno"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:hint="Data di ritorno"
+        android:hint="Data di Ritorno"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
@@ -136,7 +126,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
+        app:layout_constraintTop_toBottomOf="@+id/dataRitorno"
         android:layout_marginTop="20dp"
         android:background="#ECECEC">
 
@@ -148,7 +138,7 @@
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
+            app:layout_constraintTop_toBottomOf="@+id/dataRitorno"
             android:background="@drawable/search_bg"
             android:drawableLeft="@drawable/baseline_person_24"
             android:drawablePadding="16dp"

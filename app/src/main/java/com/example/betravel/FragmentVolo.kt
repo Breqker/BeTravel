@@ -45,8 +45,8 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             bindingLand.aeroportoPartenza.isFocusable = false
             bindingLand.aeroportoPartenza.isClickable = false
 
-            bindingLand.aeroportoRitorno.isFocusable = false
-            bindingLand.aeroportoRitorno.isClickable = false
+            bindingLand.aeroportoArrivo.isFocusable = false
+            bindingLand.aeroportoArrivo.isClickable = false
 
             val aeroportoPartenzaSpinner: Spinner = bindingLand.aeroportoPartenzaSpinner
             val aeroportoPartenzaAdapter =
@@ -56,13 +56,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            val aeroportoRitornoSpinner: Spinner = bindingLand.aeroportoRitornoSpinner
-            val aeroportoRitornoAdapter =
+            val aeroportoArrivoSpinner: Spinner = bindingLand.aeroportoArrivoSpinner
+            val aeroportoArrivoAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
-            aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoRitornoSpinner.adapter = aeroportoRitornoAdapter
+            aeroportoArrivoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoArrivoSpinner.adapter = aeroportoArrivoAdapter
 
-            aeroportoRitorno(aeroportoRitornoAdapter)
+            aeroportoArrivo(aeroportoArrivoAdapter)
 
             bindingLand.dataPartenza.isFocusable = false
             bindingLand.dataPartenza.isClickable = true
@@ -71,11 +71,11 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                 showDatePicker(bindingLand.dataPartenza)
             }
 
-            bindingLand.dataArrivo.isFocusable = false
-            bindingLand.dataArrivo.isClickable = true
+            bindingLand.dataRitorno.isFocusable = false
+            bindingLand.dataRitorno.isClickable = true
 
-            bindingLand.dataArrivo.setOnClickListener {
-                showDatePicker(bindingLand.dataArrivo)
+            bindingLand.dataRitorno.setOnClickListener {
+                showDatePicker(bindingLand.dataRitorno)
             }
 
             val numbers = ArrayList<String>()
@@ -105,8 +105,8 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             binding.aeroportoPartenza.isFocusable = false
             binding.aeroportoPartenza.isClickable = false
 
-            binding.aeroportoRitorno.isFocusable = false
-            binding.aeroportoRitorno.isClickable = false
+            binding.aeroportoArrivo.isFocusable = false
+            binding.aeroportoArrivo.isClickable = false
 
             val aeroportoPartenzaSpinner: Spinner = binding.aeroportoPartenzaSpinner
             val aeroportoPartenzaAdapter =
@@ -116,13 +116,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             aeroportoPartenza(aeroportoPartenzaAdapter)
 
-            val aeroportoRitornoSpinner: Spinner = binding.aeroportoRitornoSpinner
-            val aeroportoRitornoAdapter =
+            val aeroportoArrivoSpinner: Spinner = binding.aeroportoArrivoSpinner
+            val aeroportoArrivoAdapter =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
-            aeroportoRitornoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            aeroportoRitornoSpinner.adapter = aeroportoRitornoAdapter
+            aeroportoArrivoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            aeroportoArrivoSpinner.adapter = aeroportoArrivoAdapter
 
-            aeroportoRitorno(aeroportoRitornoAdapter)
+            aeroportoArrivo(aeroportoArrivoAdapter)
 
             binding.dataPartenza.isFocusable = false
             binding.dataPartenza.isClickable = true
@@ -131,11 +131,11 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                 showDatePicker(binding.dataPartenza)
             }
 
-            binding.dataArrivo.isFocusable = false
-            binding.dataArrivo.isClickable = true
+            binding.dataRitorno.isFocusable = false
+            binding.dataRitorno.isClickable = true
 
-            binding.dataArrivo.setOnClickListener {
-                showDatePicker(binding.dataArrivo)
+            binding.dataRitorno.setOnClickListener {
+                showDatePicker(binding.dataRitorno)
             }
 
             val numbers = ArrayList<String>()
@@ -280,8 +280,8 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    private fun aeroportoRitorno(adapter: ArrayAdapter<String>) {
-        val query = "SELECT distinct aeroporto_ritorno FROM webmobile.Volo;"
+    private fun aeroportoArrivo(adapter: ArrayAdapter<String>) {
+        val query = "SELECT distinct aeroporto_arrivo FROM webmobile.Volo;"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
@@ -392,49 +392,49 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun handleConfermaClick() {
         val aeroportoPartenza: Spinner
-        val aeroportoRitorno: Spinner
+        val aeroportoArrivo: Spinner
         val dataPartenza: EditText
-        val dataArrivo: EditText
+        val dataRitorno: EditText
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             aeroportoPartenza = bindingLand.aeroportoPartenzaSpinner
-            aeroportoRitorno = bindingLand.aeroportoRitornoSpinner
+            aeroportoArrivo = bindingLand.aeroportoArrivoSpinner
             dataPartenza = bindingLand.dataPartenza
-            dataArrivo = bindingLand.dataArrivo
+            dataRitorno = bindingLand.dataRitorno
         } else {
             aeroportoPartenza = binding.aeroportoPartenzaSpinner
-            aeroportoRitorno = binding.aeroportoRitornoSpinner
+            aeroportoArrivo = binding.aeroportoArrivoSpinner
             dataPartenza = binding.dataPartenza
-            dataArrivo = binding.dataArrivo
+            dataRitorno = binding.dataRitorno
         }
 
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
-        val selectedRitorno = aeroportoRitorno.selectedItem.toString()
+        val selectedArrivo = aeroportoArrivo.selectedItem.toString()
 
-        if (selectedPartenza == selectedRitorno) {
+        if (selectedPartenza == selectedArrivo) {
             // Gli aeroporti di partenza e ritorno sono uguali, mostra un messaggio di errore
             showErrorMessage("Gli aeroporti di partenza e ritorno devono essere diversi.")
             return
         }
 
         val partenzaDate = dataPartenza.text.toString()
-        val arrivoDate = dataArrivo.text.toString()
+        val ritornoDate = dataRitorno.text.toString()
 
-        if (partenzaDate.isEmpty() || arrivoDate.isEmpty()) {
+        if (partenzaDate.isEmpty() || ritornoDate.isEmpty()) {
             showErrorMessage("Seleziona una data di partenza e di arrivo.")
             return
         }
 
-        if(arrivoDate < partenzaDate){
+        if(ritornoDate < partenzaDate){
             showErrorMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
             return
         }
 
         val partenzaSqlDate = convertToSqlDate(partenzaDate)
-        val arrivoSqlDate = convertToSqlDate(arrivoDate)
+        val arrivoSqlDate = convertToSqlDate(ritornoDate)
 
         dataPartenza(partenzaSqlDate, selectedPartenza)
-        dataArrivo(arrivoSqlDate, selectedRitorno)
+        dataArrivo(arrivoSqlDate, selectedArrivo)
 
         // Continua con il resto del codice per gestire la conferma del volo
         // ...
