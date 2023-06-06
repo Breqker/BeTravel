@@ -69,7 +69,7 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
             }
 
             bindingLand.cerca.setOnClickListener {
-
+                handleConfermaClick()
             }
 
             return view
@@ -103,7 +103,10 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
             }
 
             binding.cerca.setOnClickListener {
-
+                handleConfermaClick()
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView,FragmentRisultati())
+                    .commit()
             }
 
             return view

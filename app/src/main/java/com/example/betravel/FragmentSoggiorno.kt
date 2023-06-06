@@ -337,7 +337,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
         }
 
         if(rilascioDate < inizioDate){
-            showErrorMessage("La data di Rilascio deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
+            showErrorMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
         }
 
