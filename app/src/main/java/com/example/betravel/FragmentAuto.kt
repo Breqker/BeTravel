@@ -1,6 +1,7 @@
 package com.example.betravel
 
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +13,16 @@ import android.widget.Spinner
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentAutoBinding
 import com.example.betravel.databinding.FragmentAutoLandBinding
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.sql.Date
 import java.util.ArrayList
 import java.util.Calendar
 
@@ -35,18 +43,29 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
             bindingLand = FragmentAutoLandBinding.inflate(inflater, container, false)
             val view = bindingLand.root
 
-            bindingLand.dataPartenza.isFocusable = false
-            bindingLand.dataPartenza.isClickable = true
+            bindingLand.citta.isFocusable = false
+            bindingLand.citta.isClickable = false
 
-            bindingLand.dataPartenza.setOnClickListener {
-                showDatePicker(bindingLand.dataPartenza)
+            val cittaSpinner: Spinner = bindingLand.cittaSpinner
+            val cittaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            cittaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            cittaSpinner.adapter = cittaAdapter
+
+            citta(cittaAdapter)
+
+            bindingLand.dataInizio.isFocusable = false
+            bindingLand.dataInizio.isClickable = true
+
+            bindingLand.dataInizio.setOnClickListener {
+                showDatePicker(bindingLand.dataInizio)
             }
 
-            bindingLand.dataArrivo.isFocusable = false
-            bindingLand.dataArrivo.isClickable = true
+            bindingLand.dataRilascio.isFocusable = false
+            bindingLand.dataRilascio.isClickable = true
 
-            bindingLand.dataArrivo.setOnClickListener {
-                showDatePicker(bindingLand.dataArrivo)
+            bindingLand.dataRilascio.setOnClickListener {
+                showDatePicker(bindingLand.dataRilascio)
             }
 
             val numbers = ArrayList<String>()
@@ -65,7 +84,7 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
 
             bindingLand.cerca.setOnClickListener {
-
+                handleConfermaClick()
             }
 
             return view
@@ -73,18 +92,29 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
             binding = FragmentAutoBinding.inflate(inflater, container, false)
             val view = binding.root
 
-            binding.dataPartenza.isFocusable = false
-            binding.dataPartenza.isClickable = true
+            binding.citta.isFocusable = false
+            binding.citta.isClickable = false
 
-            binding.dataPartenza.setOnClickListener {
-                showDatePicker(binding.dataPartenza)
+            val cittaSpinner: Spinner = binding.cittaSpinner
+            val cittaAdapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+            cittaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            cittaSpinner.adapter = cittaAdapter
+
+            citta(cittaAdapter)
+
+            binding.dataInizio.isFocusable = false
+            binding.dataInizio.isClickable = true
+
+            binding.dataInizio.setOnClickListener {
+                showDatePicker(binding.dataInizio)
             }
 
-            binding.dataArrivo.isFocusable = false
-            binding.dataArrivo.isClickable = true
+            binding.dataRilascio.isFocusable = false
+            binding.dataRilascio.isClickable = true
 
-            binding.dataArrivo.setOnClickListener {
-                showDatePicker(binding.dataArrivo)
+            binding.dataRilascio.setOnClickListener {
+                showDatePicker(binding.dataRilascio)
             }
 
             val numbers = ArrayList<String>()
@@ -103,7 +133,10 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
             numPersoneSpinner.adapter = adapter
 
             binding.cerca.setOnClickListener {
-
+                handleConfermaClick()
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView,FragmentRisultati())
+                    .commit()
             }
 
             return view
@@ -152,6 +185,210 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val formattedMonth = if (month + 1 < 10) "0${month + 1}" else "${month + 1}"
         val formattedDay = if (day < 10) "0$day" else "$day"
         return "$formattedDay/$formattedMonth/$year"
+    }
+
+    private fun showErrorMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Errore")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun showMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Informazione")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun citta(adapter: ArrayAdapter<String>) {
+        val query = "SELECT distinct citta FROM webmobile.Auto;"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val cities = responseBody.getAsJsonArray("queryset")
+
+                        if (cities.size() > 0) {
+                            val cityList = mutableListOf<String>()
+                            for (i in 0 until cities.size()) {
+                                val city = cities[i].toString()
+                                val citta = city.substringAfter(":").trim()
+                                cityList.add(citta.substring(1, citta.length - 2))
+                            }
+
+                            activity?.runOnUiThread {
+                                adapter.clear()
+                                adapter.addAll(cityList)
+                                adapter.notifyDataSetChanged()
+                            }
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showErrorMessage("Nessuna città trovata")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle città")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showErrorMessage("Errore di connessione: ${t.message}")
+                }
+            }
+
+        })
+    }
+
+    private fun dataInizio(data: Date){
+        val query = "SELECT data_inizio from webmobile.Auto where data_inizio = '$data';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna data di inizio trovata")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle date di inizio")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun dataRilascio(data: Date){
+        val query = "SELECT data_rilascio from webmobile.Auto where data_rilascio = '$data';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna data di rilascio trovata")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero delle date di rilascio")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun etaConducente(eta: Int){
+        val query = "SELECT CASE WHEN eta_conducente < 26 THEN prezzo_giornaliero + (prezzo_giornaliero * 0.1) ELSE prezzo_giornaliero END AS nuovo_prezzo_giornaliero FROM webmobile.Auto WHERE eta_conducente = '$eta';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful) {
+                    val responseBody = response.body()?.get("queryset") as JsonArray
+                    if (responseBody.size() > 0) {
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessuna costo giornaliero trovato")
+                        }
+                    }
+                }else{
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante il recupero del costo giornaliero")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+
+    }
+
+    private fun handleConfermaClick() {
+        val dataInizio: EditText
+        val dataRilascio: EditText
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            dataInizio = bindingLand.dataInizio
+            dataRilascio = bindingLand.dataRilascio
+        } else {
+            dataInizio = binding.dataInizio
+            dataRilascio = binding.dataRilascio
+        }
+
+
+        val inizioDate = dataInizio.text.toString()
+        val rilascioDate = dataRilascio.text.toString()
+
+        if (inizioDate.isEmpty() || rilascioDate.isEmpty()) {
+            showErrorMessage("Seleziona una data di inizio e/o di arrivo.")
+            return
+        }
+
+        if(rilascioDate < inizioDate){
+            showErrorMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
+            return
+        }
+
+        val inizioSqlDate = convertToSqlDate(inizioDate)
+        val rilascioSqlDate = convertToSqlDate(rilascioDate)
+
+        dataInizio(inizioSqlDate)
+        dataRilascio(rilascioSqlDate)
+
+        // Continua con il resto del codice per gestire la conferma del volo
+        // ...
+    }
+
+
+    private fun convertToSqlDate(dateString: String): Date {
+        val parts = dateString.split("/")
+        val day = parts[0].toInt()
+        val month = parts[1].toInt() - 1
+        val year = parts[2].toInt()
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day)
+        return Date(calendar.timeInMillis)
     }
 
 }

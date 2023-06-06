@@ -1,5 +1,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
@@ -25,99 +26,132 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
 
-    <EditText
-        android:id="@+id/citta"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/search_bg"
-        android:backgroundTint="#ECECEC"
-        android:drawableLeft="@drawable/baseline_home_24"
-        android:drawablePadding="16dp"
-        android:hint="Città"
-        android:inputType="textAutoComplete"
-        android:textColorHint="@color/black"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/dataPartenza"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="@drawable/search_bg"
-        android:backgroundTint="#ECECEC"
-        android:drawableLeft="@drawable/baseline_edit_calendar_24"
-        android:drawablePadding="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="16dp"
-        android:hint="Data di partenza"
-        android:textColorHint="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/citta"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline" />
-
-    <EditText
-        android:id="@+id/dataArrivo"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:hint="Data di arrivo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/dataPartenza"
-        android:background="@drawable/search_bg"
-        android:drawableLeft="@drawable/baseline_edit_calendar_24"
-        android:drawablePadding="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:textColorHint="@color/black"
-        android:backgroundTint="#ECECEC"/>
 
     <LinearLayout
-        android:id="@+id/etaConducenteLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-        android:layout_marginTop="20dp"
-        android:background="#ECECEC">
-
-        <EditText
-            android:id="@+id/etaConducente"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:hint="Età conducente: "
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dataArrivo"
-            android:background="@drawable/search_bg"
-            android:drawableLeft="@drawable/baseline_person_24"
-            android:drawablePadding="16dp"
-            android:textColorHint="@color/black"
-            android:backgroundTint="#ECECEC"/>
-
-        <Spinner
-            android:id="@+id/etaConducenteSpinner"
-            android:layout_width="58dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_bg"
-            android:spinnerMode="dropdown"
-            android:backgroundTint="#ECECEC"/>
+            android:orientation="vertical" >
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/cittaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#ECECEC"
+                android:orientation="horizontal"
+                android:textColorHint="@color/black">
 
-    <Button
-        android:id="@+id/cerca"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Cerca"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/etaConducenteLayout" />
+                <EditText
+                    android:id="@+id/citta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:drawableLeft="@drawable/baseline_home_24"
+                    android:drawablePadding="16dp"
+                    android:hint="Città: "
+                    android:inputType="text"
+                    android:textColorHint="@color/black" />
+
+                <Spinner
+                    android:id="@+id/cittaSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/dataInizio"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/search_bg"
+                android:backgroundTint="#ECECEC"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:hint="Data di inizio"
+                android:textColorHint="@color/black" />
+
+            <EditText
+                android:id="@+id/dataRilascio"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/search_bg"
+                android:backgroundTint="#ECECEC"
+                android:drawableLeft="@drawable/baseline_edit_calendar_24"
+                android:drawablePadding="16dp"
+                android:hint="Data di rilascio"
+                android:textColorHint="@color/black" />
+
+            <LinearLayout
+                android:id="@+id/etaConducenteLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#ECECEC"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etaConducente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:drawablePadding="16dp"
+                    android:hint="Età conducente: "
+                    android:inputType="number"
+                    android:textColorHint="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dataRilascio" />
+
+                <Spinner
+                    android:id="@+id/etaConducenteSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_bg"
+                    android:backgroundTint="#ECECEC"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/cerca"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Cerca"
+                app:layout_constraintEnd_toEndOf="@id/guideline"
+                app:layout_constraintStart_toEndOf="@id/imageViewLogo"
+                app:layout_constraintTop_toBottomOf="@+id/numPersoneLayout" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
