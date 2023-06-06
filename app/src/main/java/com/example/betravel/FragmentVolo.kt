@@ -362,16 +362,43 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun dataArrivo(data: Date,aeroporto: String){
-        val query = "SELECT data_arrivo from webmobile.Volo where data_arrivo = '$data' and aeroporto_ritorno = '$aeroporto';"
-
+        val query = "SELECT data_ritorno from webmobile.Volo where data_ritorno = '$data' and aeroporto_arrivo = '$aeroporto';"
+        val queryPrezzo = "SELECT IF(data_arrivo IS NULL, costo_biglietto, costo_biglietto * 1.5) AS costo_calcolato FROM webmobile.Volo"
+        val callPrezzo = ClientNetwork.retrofit.select(queryPrezzo)
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()?.get("queryset") as JsonArray
-
+                    val data = response.body()
                     if (responseBody.size() > 0) {
+                        if(data == null){
+                            callPrezzo.enqueue(object : Callback<JsonObject>{
+                                override fun onResponse(
+                                    call: Call<JsonObject>,
+                                    response: Response<JsonObject>
+                                ) {
+                                    if(response.isSuccessful){
+                                        val responseBody2 = response.body()?.get("queryset") as JsonArray
+                                        if(responseBody2.size() > 0){
 
+                                        }else{
+                                            requireActivity().runOnUiThread {
+                                                showErrorMessage("Nessuna prezzo trovato")
+                                            }
+                                        }
+                                    }else{
+                                        requireActivity().runOnUiThread {
+                                            showErrorMessage("Errore durante il recupero dei prezzi")
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                    showErrorMessage("Errore di connessione: ${t.message}")
+                                }
+                            })
+                        }
                     } else {
                         requireActivity().runOnUiThread {
                             showErrorMessage("Nessuna data di arrivo trovata")
