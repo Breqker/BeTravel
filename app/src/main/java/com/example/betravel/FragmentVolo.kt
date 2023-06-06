@@ -155,7 +155,9 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView,FragmentRisultati())
+                    .commit()
             }
 
             return view
