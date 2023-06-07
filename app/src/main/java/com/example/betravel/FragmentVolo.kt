@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -424,21 +425,26 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         val aeroportoArrivo: Spinner
         val dataPartenza: EditText
         val dataRitorno: EditText
+        val numPersone: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             aeroportoPartenza = bindingLand.aeroportoPartenzaSpinner
             aeroportoArrivo = bindingLand.aeroportoArrivoSpinner
             dataPartenza = bindingLand.dataPartenza
             dataRitorno = bindingLand.dataRitorno
+            numPersone = bindingLand.numPersoneSpinner
         } else {
             aeroportoPartenza = binding.aeroportoPartenzaSpinner
             aeroportoArrivo = binding.aeroportoArrivoSpinner
             dataPartenza = binding.dataPartenza
             dataRitorno = binding.dataRitorno
+            numPersone = binding.numPersoneSpinner
         }
 
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
         val selectedArrivo = aeroportoArrivo.selectedItem.toString()
+        val selectedPersone = numPersone.selectedItem.toString()
+
 
         if (selectedPartenza == selectedArrivo) {
             // Gli aeroporti di partenza e ritorno sono uguali, mostra un messaggio di errore
@@ -467,6 +473,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
         // Continua con il resto del codice per gestire la conferma del volo
         // ...
+
+        // QUERY:
+        // SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto
+        // FROM Volo
+        // WHERE aeroporto_partenza=... && aeroporto_arrivo=... && data_partenza=... && data_ritorno=... && ora_partenza=...
+        // && ora_arrivo=... && costo_biglietto=...
+        // Log.d("TAG", "$arrivoSqlDate $partenzaSqlDate $selectedPartenza $selectedArrivo $selectedPersone")
     }
 
 

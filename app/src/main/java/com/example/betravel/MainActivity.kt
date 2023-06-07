@@ -15,12 +15,12 @@ import com.example.betravel.databinding.ActivityMainOrizzontaleBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Locale
 
+
 class MainActivity : AppCompatActivity() {
 
         private lateinit var binding: ActivityMainBinding
         private lateinit var bindingOrizzontale: ActivityMainOrizzontaleBinding
         private lateinit var bottomNavigationView: BottomNavigationView
-
         private var currentFragment: Fragment? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {

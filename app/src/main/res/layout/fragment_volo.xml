@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
-    android:padding="25dp">
+    >
 
     <ImageView
         android:id="@+id/ic_launcher_round"
@@ -28,6 +28,8 @@
         app:layout_constraintTop_toBottomOf="@+id/ic_launcher_round"
         android:layout_marginTop="20dp"
         android:background="#ECECEC"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         app:layout_constraintHorizontal_bias="0.0">
 
         <EditText
@@ -63,6 +65,8 @@
         app:layout_constraintTop_toBottomOf="@+id/aeroportoPartenzaLayout"
         android:layout_marginTop="20dp"
         android:background="#ECECEC"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         app:layout_constraintHorizontal_bias="0.0">
 
         <EditText
@@ -101,6 +105,8 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
@@ -116,6 +122,8 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
@@ -128,6 +136,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataRitorno"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="#ECECEC">
 
         <EditText
@@ -168,5 +178,6 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
