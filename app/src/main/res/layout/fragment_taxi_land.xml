@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
-    android:padding="25dp">
+    android:padding="25dp"
+    android:focusable="true"
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/imageViewLogo"

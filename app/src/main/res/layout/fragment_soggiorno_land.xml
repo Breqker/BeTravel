@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
+    android:focusable="true"
+    android:clickable="true"
     android:padding="25dp">
 
     <androidx.constraintlayout.widget.Guideline
