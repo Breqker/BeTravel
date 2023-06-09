@@ -16,6 +16,7 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import com.example.betravel.databinding.FragmentVoloBinding
 import com.example.betravel.databinding.FragmentVoloLandBinding
 import com.google.gson.JsonArray
@@ -24,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Date
+import java.sql.Time
 import java.util.*
 
 class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
@@ -156,14 +158,12 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-                childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView,FragmentRisultati())
-                    .commit()
             }
 
             return view
         }
     }
+
 
     private fun showDatePicker(editText: EditText) {
         val datePickerDialog = DatePickerDialog(
@@ -194,7 +194,11 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        parentFragmentManager.setFragmentResultListener("risultatiKey", this) { _, bundle ->
+            val risultatiVoli = bundle.getStringArrayList("risultati_voli")
+            // Utilizza i risultati come desideri
+            // Esegui l'aggiornamento della UI o qualsiasi altra operazione necessaria
+        }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
@@ -205,8 +209,6 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                 }
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
 
@@ -443,7 +445,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
         val selectedArrivo = aeroportoArrivo.selectedItem.toString()
-        val selectedPersone = numPersone.selectedItem.toString()
+        //val selectedPersone = numPersone.selectedItem.toString()
 
 
         if (selectedPartenza == selectedArrivo) {
@@ -474,13 +476,51 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         // Continua con il resto del codice per gestire la conferma del volo
         // ...
 
-        // QUERY:
-        // SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto
-        // FROM Volo
-        // WHERE aeroporto_partenza=... && aeroporto_arrivo=... && data_partenza=... && data_ritorno=... && ora_partenza=...
-        // && ora_arrivo=... && costo_biglietto=...
         // Log.d("TAG", "$arrivoSqlDate $partenzaSqlDate $selectedPartenza $selectedArrivo $selectedPersone")
+
+        cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, arrivoSqlDate)
+
     }
+
+    private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date) {
+        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno = '$data_ritorno';"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiVoli = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiVoli.size()) {
+                            val volo = risultatiVoli[i].toString()
+                            stringList.add(volo)
+                        }
+
+                        val bundle = Bundle()
+                        bundle.putString("data", stringList.toString())
+                        val fragment = FragmentRisultati()
+                        fragment.arguments = bundle
+                        fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView, fragment)?.commit()
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
 
 
     private fun convertToSqlDate(dateString: String): Date {

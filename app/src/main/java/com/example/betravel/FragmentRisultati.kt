@@ -1,6 +1,7 @@
 package com.example.betravel
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,26 +30,40 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun setUpRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
         val data = ArrayList<ItemsViewModelPreferiti>()
 
-        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Descrizione"))
-        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Descrizione"))
-        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Descrizione"))
-        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Descrizione"))
-        data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, "Descrizione"))
+        val args = this.arguments
+        val inputData = args?.get("data")
+        /*parentFragmentManager.setFragmentResultListener(
+            "queryset",
+            viewLifecycleOwner
+        ) { _, bundle ->
+            val risultatiVoli = bundle.getStringArrayList("queryset")
+            if (risultatiVoli != null) {
+                for (i in 0 until risultatiVoli.size) {
+                    val volo = risultatiVoli[i]
+                    data.add(
+                        ItemsViewModelPreferiti(
+                            R.drawable.pacchetto_famiglia,
+                            volo
+                        )
+                    )
+                }*/
+        Log.d("INPUT DATA", "$inputData")
+        data.add(R.drawable.pacchetto_famiglia, inputData as ItemsViewModelPreferiti)
+                val adapter = CustomAdapterRisultati(data)
+                binding.recyclerView.adapter = adapter
 
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
-            }
-        })
+                adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        when (position) {
+                            // Gestisci l'evento di clic
+                        }
+                    }
+                })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
