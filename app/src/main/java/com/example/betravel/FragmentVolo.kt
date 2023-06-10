@@ -499,10 +499,10 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                         }
 
                         val bundle = Bundle()
-                        bundle.putString("data", stringList.toString())
-                        val fragment = FragmentRisultati()
-                        fragment.arguments = bundle
+                        bundle.putString("data", risultatiVoli.toString())
+                        val fragment = FragmentRisultati.newInstance(risultatiVoli.toString())
                         fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView, fragment)?.commit()
+
                     } else {
                         requireActivity().runOnUiThread {
                             showErrorMessage("Nessun risultato trovato")

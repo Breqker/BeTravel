@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,10 +33,14 @@ class CustomAdapterRisultati(private val myList: List<ItemsViewModelPreferiti>) 
         holder.imageView.setImageResource(item.image)
         holder.textView.text = item.text
 
+        // Imposta la dimensione del carattere desiderata
+        holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+
         holder.itemView.setOnClickListener {
             listener?.onItemClick(position)
         }
     }
+
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)

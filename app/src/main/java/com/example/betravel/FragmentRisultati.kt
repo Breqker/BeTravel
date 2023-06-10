@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRisultatiBinding
+import org.json.JSONArray
+import org.json.JSONObject
 
 class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
@@ -35,29 +37,21 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         val data = ArrayList<ItemsViewModelPreferiti>()
 
-        val args = this.arguments
-        val inputData = args?.get("data")
-        /*parentFragmentManager.setFragmentResultListener(
-            "queryset",
-            viewLifecycleOwner
-        ) { _, bundle ->
-            val risultatiVoli = bundle.getStringArrayList("queryset")
-            if (risultatiVoli != null) {
-                for (i in 0 until risultatiVoli.size) {
-                    val volo = risultatiVoli[i]
-                    data.add(
-                        ItemsViewModelPreferiti(
-                            R.drawable.pacchetto_famiglia,
-                            volo
-                        )
-                    )
-                }*/
-        Log.d("INPUT DATA", "$inputData")
-        data.add(R.drawable.pacchetto_famiglia, inputData as ItemsViewModelPreferiti)
-                val adapter = CustomAdapterRisultati(data)
-                binding.recyclerView.adapter = adapter
+        val inputData = arguments?.getString(ARG_DATA)
+        if (!inputData.isNullOrEmpty()) {
+            val risultatiVoli = JSONArray(inputData)
+            for (i in 0 until risultatiVoli.length()) {
+                val volo = risultatiVoli.getJSONObject(i).toString()
+                val flightDetails = formatFlightDetails(volo)
+                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
+            }
+        }
 
-                adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+        val adapter = CustomAdapterRisultati(data)
+        binding.recyclerView.adapter = adapter
+
+
+        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                     override fun onItemClick(position: Int) {
                         when (position) {
                             // Gestisci l'evento di clic
@@ -65,6 +59,31 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                     }
                 })
     }
+
+    fun formatFlightDetails(jsonString: String): String {
+        val jsonObject = JSONObject(jsonString)
+
+        val nomeVolo = jsonObject.getString("nome_volo")
+        val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
+        val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
+        val dataPartenza = jsonObject.getString("data_partenza")
+        val dataRitorno = jsonObject.getString("data_ritorno")
+        val oraPartenza = jsonObject.getString("ora_partenza")
+        val oraArrivo = jsonObject.getString("ora_arrivo")
+        val costoBiglietto = jsonObject.getDouble("costo_biglietto")
+
+        val formattedString = StringBuilder()
+        formattedString.append("Nome Volo: $nomeVolo")
+        formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
+        formattedString.append("\nData partenza: $dataPartenza")
+        formattedString.append("\nData ritorno: $dataRitorno")
+        formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
+        formattedString.append("\nOra ritorno: ${oraArrivo.substring(0, 5)}")
+        formattedString.append("\nCosto biglietto: $costoBiglietto")
+
+        return formattedString.toString()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,5 +103,17 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
         return requireActivity().onBackPressedDispatcher
+    }
+
+    companion object {
+        private const val ARG_DATA = "data"
+
+        fun newInstance(data: String): FragmentRisultati {
+            val fragment = FragmentRisultati()
+            val bundle = Bundle()
+            bundle.putString(ARG_DATA, data)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
