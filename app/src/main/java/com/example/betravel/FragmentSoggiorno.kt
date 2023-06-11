@@ -133,9 +133,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-                childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView,FragmentRisultati())
-                    .commit()
             }
 
             return view
@@ -189,17 +186,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
     private fun showErrorMessage(message: String) {
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-
-    private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
             .setMessage(message)
             .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
@@ -318,21 +304,27 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
     private fun handleConfermaClick() {
         val dataInizio: EditText
         val dataRilascio: EditText
+        val citta: Spinner
+        val numeroOspiti: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             dataInizio = bindingLand.dataInizio
             dataRilascio = bindingLand.dataRilascio
+            citta = bindingLand.cittaSpinner
+            numeroOspiti = bindingLand.numPersoneSpinner
         } else {
             dataInizio = binding.dataInizio
             dataRilascio = binding.dataRilascio
+            citta = binding.cittaSpinner
+            numeroOspiti = binding.numPersoneSpinner
         }
-
 
         val inizioDate = dataInizio.text.toString()
         val rilascioDate = dataRilascio.text.toString()
 
+
         if (inizioDate.isEmpty() || rilascioDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di inizio e/o di arrivo.")
+            showErrorMessage("Seleziona una data di inizio e/o di arrivo")
             return
         }
 
@@ -347,8 +339,46 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
         dataInizio(inizioSqlDate)
         dataRilascio(rilascioSqlDate)
 
-        // Continua con il resto del codice per gestire la conferma del volo
-        // ...
+        cercaSoggiorni(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate, numeroOspiti.selectedItem.toString())
+    }
+
+    private fun cercaSoggiorni(citta: String, inizioDate: Date, rilascioDate: Date, numeroOspiti: String) {
+        val query = "select nome_alloggio, citta, data_inizio, data_rilascio, costo_giornaliero, num_ospiti from Soggiorno where citta='$citta' and data_inizio='$inizioDate' and data_rilascio='$rilascioDate' and num_ospiti>=$numeroOspiti"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiSoggiorni = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiSoggiorni.size()) {
+                            val soggiorno = risultatiSoggiorni[i].toString()
+                            stringList.add(soggiorno)
+                        }
+
+                        val fragment = FragmentRisultati.newInstanceSoggiorno(stringList)
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 
 

@@ -26,12 +26,22 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         binding = FragmentRisultatiBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        setUpRecyclerView()
+        val data = arguments?.getStringArrayList(ARG_DATA)
+
+        if (!data.isNullOrEmpty()) {
+            val isVoliData = data.first().contains("nome_volo")
+            if (isVoliData) {
+                setUpRecyclerViewVoli()
+            } else {
+                setUpRecyclerViewSoggiorni()
+            }
+        }
 
         return view
     }
 
-    private fun setUpRecyclerView() {
+
+    private fun setUpRecyclerViewVoli() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
@@ -58,10 +68,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    fun formatFlightDetails(jsonString: String): String {
+    private fun formatFlightDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
 
-        if(jsonObject.has("data_ritorno")){
+        if (jsonObject.has("data_ritorno")) {
             val nomeVolo = jsonObject.getString("nome_volo")
             val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
             val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
@@ -115,6 +125,55 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 }
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun setUpRecyclerViewSoggiorni() {
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        val data = ArrayList<ItemsViewModelPreferiti>()
+
+        val inputData = arguments?.getStringArrayList("data")
+        if (!inputData.isNullOrEmpty()) {
+            for (i in 0 until inputData.size) {
+                val soggiorno = inputData[i]
+                val soggiorniDetails = formatSoggiorniDetails(soggiorno)
+                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, soggiorniDetails))
+            }
+        }
+
+        val adapter = CustomAdapterRisultati(data)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                when (position) {
+                    // Gestisci l'evento di clic
+                }
+            }
+        })
+    }
+
+    private fun formatSoggiorniDetails(jsonString: String?): String {
+        val jsonObject = JSONObject(jsonString)
+
+        val nomeAlloggio = jsonObject.getString("nome_alloggio")
+        val citta = jsonObject.getString("citta")
+        val dataInizio = jsonObject.getString("data_inizio")
+        val dataRilascio = jsonObject.getString("data_rilascio")
+        val costoGiornaliero = jsonObject.getString("costo_giornaliero")
+        val numOspiti = jsonObject.getString("num_ospiti")
+
+        val formattedString = StringBuilder()
+        formattedString.append("Nome alloggio: \n$nomeAlloggio")
+        formattedString.append("\nCittà: $citta")
+        formattedString.append("\nDal: $dataInizio \nal $dataRilascio")
+        formattedString.append("\nCosto giornaliero: $costoGiornaliero")
+        formattedString.append("\nNumero ospiti: $numOspiti")
+
+        return formattedString.toString()
     }
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
@@ -125,6 +184,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         private const val ARG_DATA = "data"
 
         fun newInstance(data: ArrayList<String>): FragmentRisultati {
+            val fragment = FragmentRisultati()
+            val bundle = Bundle()
+            bundle.putStringArrayList(ARG_DATA, data)
+            fragment.arguments = bundle
+            return fragment
+        }
+
+        fun newInstanceSoggiorno(data: ArrayList<String>): FragmentRisultati {
             val fragment = FragmentRisultati()
             val bundle = Bundle()
             bundle.putStringArrayList(ARG_DATA, data)

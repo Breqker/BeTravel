@@ -434,13 +434,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             aeroportoArrivo = bindingLand.aeroportoArrivoSpinner
             dataPartenza = bindingLand.dataPartenza
             dataRitorno = bindingLand.dataRitorno
-            numPersone = bindingLand.numPersoneSpinner
+            //numPersone = bindingLand.numPersoneSpinner
         } else {
             aeroportoPartenza = binding.aeroportoPartenzaSpinner
             aeroportoArrivo = binding.aeroportoArrivoSpinner
             dataPartenza = binding.dataPartenza
             dataRitorno = binding.dataRitorno
-            numPersone = binding.numPersoneSpinner
+            //numPersone = binding.numPersoneSpinner
         }
 
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
