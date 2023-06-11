@@ -41,7 +41,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         if (!inputData.isNullOrEmpty()) {
             for (i in 0 until inputData.size) {
                 val volo = inputData[i]
-                Log.d("VOLO", inputData[i])
                 val flightDetails = formatFlightDetails(volo)
                 data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
             }
@@ -62,27 +61,46 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     fun formatFlightDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
 
-        val nomeVolo = jsonObject.getString("nome_volo")
-        val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
-        val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
-        val dataPartenza = jsonObject.getString("data_partenza")
-        val dataRitorno = jsonObject.getString("data_ritorno")
-        val oraPartenza = jsonObject.getString("ora_partenza")
-        val oraArrivo = jsonObject.getString("ora_arrivo")
-        val costoBiglietto = jsonObject.getDouble("costo_biglietto")
+        if(jsonObject.has("data_ritorno")){
+            val nomeVolo = jsonObject.getString("nome_volo")
+            val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
+            val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
+            val dataPartenza = jsonObject.getString("data_partenza")
+            val dataRitorno = jsonObject.getString("data_ritorno")
+            val oraPartenza = jsonObject.getString("ora_partenza")
+            val oraArrivo = jsonObject.getString("ora_arrivo")
+            val costoBiglietto = jsonObject.getDouble("costo_biglietto")
 
-        val formattedString = StringBuilder()
-        formattedString.append("Nome Volo: $nomeVolo")
-        formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
-        formattedString.append("\nData partenza: $dataPartenza")
-        formattedString.append("\nData ritorno: $dataRitorno")
-        formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
-        formattedString.append("\nOra ritorno: ${oraArrivo.substring(0, 5)}")
-        formattedString.append("\nCosto biglietto: $costoBiglietto")
+            val formattedString = StringBuilder()
+            formattedString.append("Nome Volo: $nomeVolo")
+            formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
+            formattedString.append("\nData partenza: $dataPartenza")
+            formattedString.append("\nData ritorno: $dataRitorno")
+            formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
+            formattedString.append("\nOra arrivo: ${oraArrivo.substring(0, 5)}")
+            formattedString.append("\nCosto biglietto: $costoBiglietto")
 
-        return formattedString.toString()
+            return formattedString.toString()
+        } else {
+            val nomeVolo = jsonObject.getString("nome_volo")
+            val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
+            val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
+            val dataPartenza = jsonObject.getString("data_partenza")
+            val oraPartenza = jsonObject.getString("ora_partenza")
+            val oraArrivo = jsonObject.getString("ora_arrivo")
+            val costoBiglietto = jsonObject.getDouble("costo_biglietto")
+
+            val formattedString = StringBuilder()
+            formattedString.append("Nome Volo: $nomeVolo")
+            formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
+            formattedString.append("\nData partenza: $dataPartenza")
+            formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
+            formattedString.append("\nOra arrivo: ${oraArrivo.substring(0, 5)}")
+            formattedString.append("\nCosto biglietto: $costoBiglietto")
+
+            return formattedString.toString()
+        }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,14 +108,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
-                    requireActivity().supportFragmentManager.popBackStack()
+                    requireActivity().supportFragmentManager.popBackStack() // Rimuovi il FragmentRisultati dal back stack
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {

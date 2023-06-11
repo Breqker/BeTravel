@@ -192,12 +192,10 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         return requireActivity().onBackPressedDispatcher
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentFragmentManager.setFragmentResultListener("risultatiKey", this) { _, bundle ->
-            val risultatiVoli = bundle.getStringArrayList("risultati_voli")
-            // Utilizza i risultati come desideri
-            // Esegui l'aggiornamento della UI o qualsiasi altra operazione necessaria
         }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -209,7 +207,9 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                 }
             }
         }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
+
 
 
     private fun showErrorMessage(message: String) {
@@ -457,29 +457,69 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         val partenzaDate = dataPartenza.text.toString()
         val ritornoDate = dataRitorno.text.toString()
 
-        if (partenzaDate.isEmpty() || ritornoDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di partenza e/o di arrivo.")
-            return
-        }
-
-        if(ritornoDate < partenzaDate){
-            showErrorMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
+        if (partenzaDate.isEmpty()) {
+            showErrorMessage("Seleziona una data di partenza.")
             return
         }
 
         val partenzaSqlDate = convertToSqlDate(partenzaDate)
-        val arrivoSqlDate = convertToSqlDate(ritornoDate)
-
         dataPartenza(partenzaSqlDate, selectedPartenza)
-        dataArrivo(arrivoSqlDate, selectedArrivo)
 
-        // Continua con il resto del codice per gestire la conferma del volo
-        // ...
+        if (ritornoDate.isEmpty()) {
+            cercaVoliSoloAndata(selectedPartenza, selectedArrivo, partenzaSqlDate)
+        } else {
+            val ritornoSqlDate = convertToSqlDate(ritornoDate)
 
-        // Log.d("TAG", "$arrivoSqlDate $partenzaSqlDate $selectedPartenza $selectedArrivo $selectedPersone")
+            if (ritornoSqlDate < partenzaSqlDate) {
+                showErrorMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
+                return
+            }
 
-        cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, arrivoSqlDate)
+            dataArrivo(ritornoSqlDate, selectedArrivo)
+            cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, ritornoSqlDate)
+        }
 
+    }
+
+    private fun cercaVoliSoloAndata(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date) {
+        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno is null;"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiVoli = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiVoli.size()) {
+                            val volo = risultatiVoli[i].toString()
+                            stringList.add(volo)
+                        }
+
+                        //val bundle = Bundle()
+                        //bundle.putStringArrayList("data", stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                        transaction.commit()
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showErrorMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showErrorMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 
     private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date) {
@@ -501,7 +541,10 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                         //val bundle = Bundle()
                         //bundle.putStringArrayList("data", stringList)
                         val fragment = FragmentRisultati.newInstance(stringList)
-                        fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView, fragment)?.commit()
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                        transaction.commit()
 
                     } else {
                         requireActivity().runOnUiThread {
