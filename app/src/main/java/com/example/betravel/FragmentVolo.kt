@@ -498,9 +498,9 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                             stringList.add(volo)
                         }
 
-                        val bundle = Bundle()
-                        bundle.putString("data", risultatiVoli.toString())
-                        val fragment = FragmentRisultati.newInstance(risultatiVoli.toString())
+                        //val bundle = Bundle()
+                        //bundle.putStringArrayList("data", stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList)
                         fragmentManager?.beginTransaction()?.replace(R.id.fragmentContainerView, fragment)?.commit()
 
                     } else {

@@ -33,15 +33,15 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun setUpRecyclerView() {
         binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
         val data = ArrayList<ItemsViewModelPreferiti>()
 
-        val inputData = arguments?.getString(ARG_DATA)
+        val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
-            val risultatiVoli = JSONArray(inputData)
-            for (i in 0 until risultatiVoli.length()) {
-                val volo = risultatiVoli.getJSONObject(i).toString()
+            for (i in 0 until inputData.size) {
+                val volo = inputData[i]
+                Log.d("VOLO", inputData[i])
                 val flightDetails = formatFlightDetails(volo)
                 data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
             }
@@ -50,14 +50,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val adapter = CustomAdapterRisultati(data)
         binding.recyclerView.adapter = adapter
 
-
         adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-                    override fun onItemClick(position: Int) {
-                        when (position) {
-                            // Gestisci l'evento di clic
-                        }
-                    }
-                })
+            override fun onItemClick(position: Int) {
+                when (position) {
+                    // Gestisci l'evento di clic
+                }
+            }
+        })
     }
 
     fun formatFlightDetails(jsonString: String): String {
@@ -108,10 +107,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     companion object {
         private const val ARG_DATA = "data"
 
-        fun newInstance(data: String): FragmentRisultati {
+        fun newInstance(data: ArrayList<String>): FragmentRisultati {
             val fragment = FragmentRisultati()
             val bundle = Bundle()
-            bundle.putString(ARG_DATA, data)
+            bundle.putStringArrayList(ARG_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
