@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         private lateinit var bindingOrizzontale: ActivityMainOrizzontaleBinding
         private lateinit var bottomNavigationView: BottomNavigationView
         private var currentFragment: Fragment? = null
+        private var id_utente: Int = -1
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
                 setupRecyclerView2()
                 setupBottomNavigation()
                 setupEditText()
+
+
             }
         }
 
@@ -270,6 +273,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.Profilo -> {
+                        Bundle().putInt("id_utente",id_utente)
+                        ProfiloFragment().arguments = Bundle()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container,ProfiloFragment())
                             .addToBackStack(null)
@@ -299,6 +304,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.Profilo -> {
+                    Bundle().putInt("id_utente",id_utente)
+                    ProfiloFragment().arguments = Bundle()
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_orizzontale, ProfiloFragment())
                         .addToBackStack(null)

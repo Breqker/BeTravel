@@ -1,59 +1,111 @@
 package com.example.betravel
 
+import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
+import com.example.betravel.databinding.FragmentModificaProfiloBinding
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ModificaProfiloFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ModificaProfiloFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class ModificaProfiloFragment : Fragment(){
+
+    private lateinit var binding: FragmentModificaProfiloBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                }
+            }
         }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_modifica_profilo, container, false)
+        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            /*gestire il binding orizzontale*/
+            return super.onCreateView(inflater, container, savedInstanceState)
+        }else{
+            binding = FragmentModificaProfiloBinding.inflate(inflater, container, false)
+            val view = binding.root
+
+            binding.saveButton.setOnClickListener {
+                val nome = binding.editName.text.toString()
+                val cognome = binding.editCognome.text.toString()
+                val email = binding.editEmail.text.toString()
+                val password = binding.editPassword.text.toString()
+
+                modificaDati(nome,cognome, email, password)
+            }
+
+            return view
+        }
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ModificaProfiloFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ModificaProfiloFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun showMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Informazione")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+    private fun showErrorMessage(message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Errore")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
+    }
+
+    private fun modificaDati(nome: String,cognome: String,email: String,password: String){
+        val updateQuery = "UPDATE INTO webmobile.UTENTE (nome,cognome,email,password) VALUES ('$nome','$cognome','$email','$password') ; "
+
+        val updateCall = ClientNetwork.retrofit.update(updateQuery)
+        updateCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val data = response.body()?.get("queryset") as JsonArray
+
+                    if(data.size() > 0){
+                        showMessage("Modifica avvenuta con successo")
+                    }else{
+                        showErrorMessage("Errore durante la modifica")
+                    }
+                } else {
+                    showErrorMessage("Risposta dal server vuota")
                 }
             }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showErrorMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 }

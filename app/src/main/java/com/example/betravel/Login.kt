@@ -19,6 +19,10 @@ class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var bindingLand: ActivityLoginLandBinding
 
+    companion object{
+        const val user_id = "id_utente"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -80,10 +84,11 @@ class Login : AppCompatActivity() {
         loginCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val data = response.body()
+                    val data = response.body()?.get("queryset") as JsonArray
 
-                    if ((data?.get("queryset") as JsonArray).size() == 1){
-                        showMessage("Login effettuato con successo")
+                    if (data.size() == 1){
+                        val id = data.get(0).toString().toIntOrNull()
+                        showMessage("Login effettuato con successo",id)
                     } else {
                         showErrorMessage("Credenziali non valide")
                     }
@@ -109,20 +114,22 @@ class Login : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun showMessage(message: String) {
+    private fun showMessage(message: String,id_utente: Int?) {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Informazione")
             .setMessage(message)
             .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
-                navigateToHome()
+                navigateToHome(id_utente)
             }
             .create()
         alertDialog.show()
     }
 
-    private fun navigateToHome() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun navigateToHome(id_utente: Int?) {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("id_utente",id_utente)
+        }
         startActivity(intent)
         finish()
     }
