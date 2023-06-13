@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -186,27 +187,8 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val formattedDay = if (day < 10) "0$day" else "$day"
         return "$formattedDay/$formattedMonth/$year"
     }
-
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun citta(adapter: ArrayAdapter<String>) {
@@ -235,24 +217,24 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessuna città trovata")
+                                showMessage("Nessuna città trovata")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle città")
+                        showMessage("Errore durante il recupero delle città")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -272,18 +254,18 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di inizio trovata")
+                            showMessage("Nessuna data di inizio trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di inizio")
+                        showMessage("Errore durante il recupero delle date di inizio")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -300,18 +282,18 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di rilascio trovata")
+                            showMessage("Nessuna data di rilascio trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di rilascio")
+                        showMessage("Errore durante il recupero delle date di rilascio")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -327,18 +309,18 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna costo giornaliero trovato")
+                            showMessage("Nessuna costo giornaliero trovato")
                         }
                     }
                 }else{
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero del costo giornaliero")
+                        showMessage("Errore durante il recupero del costo giornaliero")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
 
@@ -361,12 +343,12 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val rilascioDate = dataRilascio.text.toString()
 
         if (inizioDate.isEmpty() || rilascioDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di inizio e/o di arrivo.")
+            showMessage("Seleziona una data di inizio e/o di arrivo.")
             return
         }
 
         if(rilascioDate < inizioDate){
-            showErrorMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
+            showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
         }
 

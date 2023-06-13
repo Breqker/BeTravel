@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.appcompat.app.AlertDialog
@@ -24,7 +25,17 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
     private lateinit var binding: FragmentProfiloBinding
     private lateinit var bindingOrizzontale: FragmentProfiloOrizzontaleBinding
     private var currentFragment: Fragment? = null
-    private var id_utente: Int = -1
+    companion object{
+        private const val idUtente = "id"
+        fun newInstance(id: Int): ProfiloFragment {
+            val fragment = ProfiloFragment()
+            val bundle = Bundle()
+            bundle.putInt(idUtente, id)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +60,9 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
             bindingOrizzontale = FragmentProfiloOrizzontaleBinding.inflate(inflater, container, false)
             val view = bindingOrizzontale.root
 
-            id_utente = arguments?.getInt("id_utente", -1) ?: -1
+            val inputData = arguments?.getInt("id")
+            datiProfilo(inputData)
+
 
             bindingOrizzontale.editButton.setOnClickListener {
                 val fragmentProfilo = ModificaProfiloFragment()
@@ -69,7 +82,8 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
             binding = FragmentProfiloBinding.inflate(inflater, container, false)
             val view = binding.root
 
-            id_utente = arguments?.getInt("id_utente", -1) ?: -1
+            val inputData = arguments?.getInt("id")
+            datiProfilo(inputData)
 
             binding.editButton.setOnClickListener {
                 val fragmentProfilo = ModificaProfiloFragment()
@@ -88,17 +102,11 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        datiProfilo(id_utente)
-    }
-
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
         return requireActivity().onBackPressedDispatcher
     }
 
-    private fun datiProfilo(id: Int){
+    private fun datiProfilo(id: Int?){
         val query = "SELECT nome, cognome, email, password FROM webmobile.Utente WHERE id = '$id';"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -130,24 +138,24 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessun profilo trovato")
+                                showMessage("Nessun profilo trovato")
                             }
                         }
                     }else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero dei dati")
+                        showMessage("Errore durante il recupero dei dati")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
         })
@@ -155,42 +163,23 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showMessaggeLogout(message: String) {
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle("Attenzione")
             .setMessage(message)
-            .setPositiveButton("Si") { dialog: DialogInterface, _: Int ->
+            .setPositiveButton("No") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            .setNegativeButton("Si") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
                 logout()
-            }
-            .setNegativeButton("No") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
             }
             .create()
         alertDialog.show()
     }
-
-
 
 
     private fun logout(){

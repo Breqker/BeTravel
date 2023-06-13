@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -186,26 +187,8 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
         return "$formattedDay/$formattedMonth/$year"
     }
 
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun citta(adapter: ArrayAdapter<String>) {
@@ -234,24 +217,24 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessuna città trovata")
+                                showMessage("Nessuna città trovata")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle città")
+                        showMessage("Errore durante il recupero delle città")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -271,18 +254,18 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di partenza trovata")
+                            showMessage("Nessuna data di partenza trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di partenza")
+                        showMessage("Errore durante il recupero delle date di partenza")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -299,18 +282,18 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di ritorno trovata")
+                            showMessage("Nessuna data di ritorno trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di ritorno")
+                        showMessage("Errore durante il recupero delle date di ritorno")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -332,12 +315,12 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
         val ritornoDate = dataRitorno.text.toString()
 
         if (partenzaDate.isEmpty() || ritornoDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di partenza e di ritorno.")
+            showMessage("Seleziona una data di partenza e di ritorno.")
             return
         }
 
         if(ritornoDate < partenzaDate){
-            showErrorMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
+            showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
         }
 

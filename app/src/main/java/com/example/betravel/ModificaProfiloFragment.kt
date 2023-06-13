@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import com.example.betravel.databinding.FragmentModificaProfiloBinding
@@ -64,20 +65,16 @@ class ModificaProfiloFragment : Fragment(){
     }
 
     private fun showMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+    private fun showMessageConferma(message: String) {
         val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
+            .setTitle("Attenzione")
             .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+            .setPositiveButton("No") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
             }
-            .create()
-        alertDialog.show()
-    }
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+            .setNegativeButton("Si") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
             }
             .create()
@@ -94,17 +91,18 @@ class ModificaProfiloFragment : Fragment(){
                     val data = response.body()?.get("queryset") as JsonArray
 
                     if(data.size() > 0){
+                        showMessageConferma("Sei sicuro delle modifiche effettuate ?")
                         showMessage("Modifica avvenuta con successo")
                     }else{
-                        showErrorMessage("Errore durante la modifica")
+                        showMessage("Errore durante la modifica")
                     }
                 } else {
-                    showErrorMessage("Risposta dal server vuota")
+                    showMessage("Risposta dal server vuota")
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }

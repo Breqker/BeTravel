@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -22,7 +23,14 @@ class MainActivity : AppCompatActivity() {
         private lateinit var bindingOrizzontale: ActivityMainOrizzontaleBinding
         private lateinit var bottomNavigationView: BottomNavigationView
         private var currentFragment: Fragment? = null
-        private var id_utente: Int = -1
+        companion object {
+            const val EXTRA_ID_UTENTE = "id_utente"
+            fun createIntent(context: Context, idUtente: Int): Intent {
+                val intent = Intent(context, MainActivity::class.java)
+                intent.putExtra(EXTRA_ID_UTENTE, idUtente)
+                return intent
+            }
+        }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -273,12 +281,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.Profilo -> {
-                        Bundle().putInt("id_utente",id_utente)
-                        ProfiloFragment().arguments = Bundle()
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container,ProfiloFragment())
-                            .addToBackStack(null)
-                            .commit()
+                        val idUtente = intent.getIntExtra(EXTRA_ID_UTENTE, -1)
+                        val fragment = ProfiloFragment.newInstance(idUtente)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        val bundle = Bundle()
+                        bundle.putInt("id_utente", idUtente)
+                        fragment.arguments = bundle
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                        transaction.commit()
                         true
                     }
 
@@ -304,12 +315,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.Profilo -> {
-                    Bundle().putInt("id_utente",id_utente)
-                    ProfiloFragment().arguments = Bundle()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_orizzontale, ProfiloFragment())
-                        .addToBackStack(null)
-                        .commit()
+                    val idUtente = intent.getIntExtra(EXTRA_ID_UTENTE, -1)
+                    val fragment = ProfiloFragment.newInstance(idUtente)
+                    val transaction = supportFragmentManager.beginTransaction()
+                    val bundle = Bundle()
+                    bundle.putInt("id_utente", idUtente)
+                    fragment.arguments = bundle
+                    transaction.replace(R.id.fragment_container, fragment)
+                    transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                    transaction.commit()
                     true
                 }
 

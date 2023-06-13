@@ -1,10 +1,9 @@
 package com.example.betravel
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.betravel.databinding.ActivityLoginBinding
 import com.example.betravel.databinding.ActivityLoginLandBinding
@@ -19,8 +18,8 @@ class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var bindingLand: ActivityLoginLandBinding
 
-    companion object{
-        const val user_id = "id_utente"
+    companion object {
+        const val userId = "id_utente"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,9 +85,9 @@ class Login : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val data = response.body()?.get("queryset") as JsonArray
 
-                    if (data.size() == 1){
-                        val id = data.get(0).toString().toIntOrNull()
-                        showMessage("Login effettuato con successo",id)
+                    if (data.size() == 1) {
+                        val id = data[0].asJsonObject.get("id").asInt
+                        showMessage("Login effettuato con successo", id)
                     } else {
                         showErrorMessage("Credenziali non valide")
                     }
@@ -104,32 +103,16 @@ class Login : AppCompatActivity() {
     }
 
     private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showMessage(message: String,id_utente: Int?) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-                navigateToHome(id_utente)
-            }
-            .create()
-        alertDialog.show()
+    private fun showMessage(message: String, id_utente: Int) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        navigateToHome(id_utente)
     }
 
-    private fun navigateToHome(id_utente: Int?) {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("id_utente",id_utente)
-        }
+    private fun navigateToHome(idUtente: Int) {
+        val intent = MainActivity.createIntent(this, idUtente)
         startActivity(intent)
         finish()
     }

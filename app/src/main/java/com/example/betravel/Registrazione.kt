@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.example.betravel.databinding.ActivityRegistrazioneBinding
 import com.example.betravel.databinding.ActivityRegistrazioneLandBinding
 import com.google.gson.JsonArray
@@ -111,29 +112,13 @@ class Registrazione : AppCompatActivity() {
             }
         })
     }
-
-
     private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-                navigateToLogin()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        navigateToLogin()
     }
 
     private fun navigateToLogin() {

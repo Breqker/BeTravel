@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -173,26 +174,8 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         timePickerDialog.show()
     }
 
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun citta(adapter: ArrayAdapter<String>) {
@@ -221,24 +204,24 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessuna città trovata")
+                                showMessage("Nessuna città trovata")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle città")
+                        showMessage("Errore durante il recupero delle città")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -259,18 +242,18 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data trovata")
+                            showMessage("Nessuna data trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date")
+                        showMessage("Errore durante il recupero delle date")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
 
         })
@@ -290,18 +273,18 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessun orario trovato")
+                            showMessage("Nessun orario trovato")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero degli orari")
+                        showMessage("Errore durante il recupero degli orari")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
 
         })
@@ -324,12 +307,12 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         val orarioTime = orario.text.toString()
 
         if (dataDate.isEmpty()) {
-            showErrorMessage("Seleziona una data.")
+            showMessage("Seleziona una data.")
             return
         }
 
         if (orarioTime.isEmpty()){
-            showErrorMessage("Seleziona un'orario.")
+            showMessage("Seleziona un'orario.")
             return
         }
 

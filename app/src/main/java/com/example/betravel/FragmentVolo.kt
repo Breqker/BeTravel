@@ -1,22 +1,19 @@
 package com.example.betravel
 
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import com.example.betravel.databinding.FragmentVoloBinding
 import com.example.betravel.databinding.FragmentVoloLandBinding
 import com.google.gson.JsonArray
@@ -25,7 +22,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Date
-import java.sql.Time
 import java.util.*
 
 class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
@@ -210,30 +206,9 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-
-
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
-
     private fun showMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Informazione")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-
 
     private fun aeroportoPartenza(adapter: ArrayAdapter<String>) {
         val query = "SELECT distinct aeroporto_partenza FROM webmobile.Volo;"
@@ -261,24 +236,24 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessun aeroporto di partenza trovato")
+                                showMessage("Nessun aeroporto di partenza trovato")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero degli aeroporti di partenza")
+                        showMessage("Errore durante il recupero degli aeroporti di partenza")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -311,24 +286,24 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessun aeroporto di arrivo trovato")
+                                showMessage("Nessun aeroporto di arrivo trovato")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero degli aeroporti di arrivo")
+                        showMessage("Errore durante il recupero degli aeroporti di arrivo")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -348,18 +323,18 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di partenza trovata")
+                            showMessage("Nessuna data di partenza trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di partenza")
+                        showMessage("Errore durante il recupero delle date di partenza")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -387,35 +362,35 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                                         }else{
                                             requireActivity().runOnUiThread {
-                                                showErrorMessage("Nessuna prezzo trovato")
+                                                showMessage("Nessuna prezzo trovato")
                                             }
                                         }
                                     }else{
                                         requireActivity().runOnUiThread {
-                                            showErrorMessage("Errore durante il recupero dei prezzi")
+                                            showMessage("Errore durante il recupero dei prezzi")
                                         }
                                     }
                                 }
 
                                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                    showErrorMessage("Errore di connessione: ${t.message}")
+                                    showMessage("Errore di connessione: ${t.message}")
                                 }
                             })
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di arrivo trovata")
+                            showMessage("Nessuna data di arrivo trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di arrivo")
+                        showMessage("Errore durante il recupero delle date di arrivo")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -450,7 +425,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
         if (selectedPartenza == selectedArrivo) {
             // Gli aeroporti di partenza e ritorno sono uguali, mostra un messaggio di errore
-            showErrorMessage("Gli aeroporti di partenza e ritorno devono essere diversi.")
+            showMessage("Gli aeroporti di partenza e ritorno devono essere diversi.")
             return
         }
 
@@ -458,7 +433,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
         val ritornoDate = dataRitorno.text.toString()
 
         if (partenzaDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di partenza.")
+            showMessage("Seleziona una data di partenza.")
             return
         }
 
@@ -471,7 +446,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
             val ritornoSqlDate = convertToSqlDate(ritornoDate)
 
             if (ritornoSqlDate < partenzaSqlDate) {
-                showErrorMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
+                showMessage("La data di arrivo deve essere o nello stesso giorno o nei giorni successivi alla data di partenza")
                 return
             }
 
@@ -506,18 +481,18 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessun risultato trovato")
+                            showMessage("Nessun risultato trovato")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante la query al database")
+                        showMessage("Errore durante la query al database")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -548,18 +523,18 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessun risultato trovato")
+                            showMessage("Nessun risultato trovato")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante la query al database")
+                        showMessage("Errore durante la query al database")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }

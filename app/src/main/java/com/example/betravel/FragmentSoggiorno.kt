@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -183,16 +184,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
         return "$formattedDay/$formattedMonth/$year"
     }
 
-    private fun showErrorMessage(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Errore")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
 
     private fun citta(adapter: ArrayAdapter<String>) {
         val query = "SELECT distinct citta FROM webmobile.Soggiorno;"
@@ -220,24 +211,24 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
                             }
                         } else {
                             requireActivity().runOnUiThread {
-                                showErrorMessage("Nessuna città trovata")
+                                showMessage("Nessuna città trovata")
                             }
                         }
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Risposta del server vuota")
+                            showMessage("Risposta del server vuota")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle città")
+                        showMessage("Errore durante il recupero delle città")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 requireActivity().runOnUiThread {
-                    showErrorMessage("Errore di connessione: ${t.message}")
+                    showMessage("Errore di connessione: ${t.message}")
                 }
             }
 
@@ -245,7 +236,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun dataInizio(data: Date){
-        val query = "SELECT data_inizio from webmobile.Soggiorno where data_inizio = '$data';"
+        val query = "SELECT data_inizio_disponibilita from webmobile.Soggiorno where data_inizio_disponibilita = '$data';"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
@@ -257,24 +248,24 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di inizio trovata")
+                            showMessage("Nessuna data di inizio trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di inizio")
+                        showMessage("Errore durante il recupero delle date di inizio")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
 
     private fun dataRilascio(data: Date){
-        val query = "SELECT data_rilascio from webmobile.Soggiorno where data_rilascio = '$data';"
+        val query = "SELECT data_fine_disponibilita from webmobile.Soggiorno where data_fine_disponibilita = '$data';"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
@@ -285,18 +276,18 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessuna data di rilascio trovata")
+                            showMessage("Nessuna data di rilascio trovata")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante il recupero delle date di rilascio")
+                        showMessage("Errore durante il recupero delle date di rilascio")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
     }
@@ -324,12 +315,12 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
 
         if (inizioDate.isEmpty() || rilascioDate.isEmpty()) {
-            showErrorMessage("Seleziona una data di inizio e/o di arrivo")
+            showMessage("Seleziona una data di inizio e/o di arrivo")
             return
         }
 
         if(rilascioDate < inizioDate){
-            showErrorMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
+            showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
         }
 
@@ -365,20 +356,24 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
                     } else {
                         requireActivity().runOnUiThread {
-                            showErrorMessage("Nessun risultato trovato")
+                            showMessage("Nessun risultato trovato")
                         }
                     }
                 } else {
                     requireActivity().runOnUiThread {
-                        showErrorMessage("Errore durante la query al database")
+                        showMessage("Errore durante la query al database")
                     }
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showErrorMessage("Errore di connessione: ${t.message}")
+                showMessage("Errore di connessione: ${t.message}")
             }
         })
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
 
