@@ -194,5 +194,10 @@
                 android:layout_marginRight="10dp" />
         </LinearLayout>
     </ScrollView>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

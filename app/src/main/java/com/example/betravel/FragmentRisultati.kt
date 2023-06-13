@@ -22,7 +22,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentRisultatiBinding.inflate(inflater, container, false)
         val view = binding.root
 
