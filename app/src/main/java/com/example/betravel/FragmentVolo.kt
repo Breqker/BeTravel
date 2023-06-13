@@ -475,7 +475,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                         //bundle.putStringArrayList("data", stringList)
                         val fragment = FragmentRisultati.newInstance(stringList)
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null) // Aggiungi il fragment al back stack
                         transaction.commit()
 
@@ -517,7 +517,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                         //bundle.putStringArrayList("data", stringList)
                         val fragment = FragmentRisultati.newInstance(stringList)
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null) // Aggiungi il fragment al back stack
                         transaction.commit()
 
