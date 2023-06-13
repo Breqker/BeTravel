@@ -161,15 +161,15 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         val nomeAlloggio = jsonObject.getString("nome_alloggio")
         val citta = jsonObject.getString("citta")
-        val dataInizio = jsonObject.getString("data_inizio")
-        val dataRilascio = jsonObject.getString("data_rilascio")
+        val dataInizio = jsonObject.getString("data_inizio_disponibilita")
+        val dataRilascio = jsonObject.getString("data_fine_disponibilita")
         val costoGiornaliero = jsonObject.getString("costo_giornaliero")
         val numOspiti = jsonObject.getString("num_ospiti")
 
         val formattedString = StringBuilder()
-        formattedString.append("Nome alloggio: \n$nomeAlloggio")
+        formattedString.append("$nomeAlloggio")
         formattedString.append("\nCittà: $citta")
-        formattedString.append("\nDal: $dataInizio \nal $dataRilascio")
+        formattedString.append("\nDisponibile dal\n$dataInizio \nal $dataRilascio")
         formattedString.append("\nCosto giornaliero: $costoGiornaliero")
         formattedString.append("\nNumero ospiti: $numOspiti")
 

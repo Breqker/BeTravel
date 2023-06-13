@@ -327,14 +327,29 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
         val inizioSqlDate = convertToSqlDate(inizioDate)
         val rilascioSqlDate = convertToSqlDate(rilascioDate)
 
-        dataInizio(inizioSqlDate)
-        dataRilascio(rilascioSqlDate)
+        //dataInizio(inizioSqlDate)
+        //dataRilascio(rilascioSqlDate)
 
         cercaSoggiorni(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate, numeroOspiti.selectedItem.toString())
     }
 
     private fun cercaSoggiorni(citta: String, inizioDate: Date, rilascioDate: Date, numeroOspiti: String) {
-        val query = "select nome_alloggio, citta, data_inizio, data_rilascio, costo_giornaliero, num_ospiti from Soggiorno where citta='$citta' and data_inizio='$inizioDate' and data_rilascio='$rilascioDate' and num_ospiti>=$numeroOspiti"
+        val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti\n" +
+                "FROM Soggiorno\n" +
+                "WHERE data_inizio_disponibilita <= '$inizioDate'\n" +
+                "  AND data_fine_disponibilita >= '$rilascioDate'\n" +
+                "  AND citta = '$citta'\n" +
+                "  AND num_ospiti >= '$numeroOspiti'\n" +
+                "  AND codice_alloggio NOT IN (\n" +
+                "    SELECT codice_alloggio\n" +
+                "    FROM Prenotazione\n" +
+                "    WHERE \n" +
+                "      (data_inizio_prenotazione <= '$rilascioDate'\n" +
+                "      AND data_fine_prenotazione >= '$inizioDate')\n" +
+                "      OR\n" +
+                "      (data_inizio_prenotazione >= '$inizioDate'\n" +
+                "      AND data_fine_prenotazione <= '$rilascioDate')\n" +
+                "  );\n"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
