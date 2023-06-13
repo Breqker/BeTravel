@@ -29,15 +29,62 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val data = arguments?.getStringArrayList(ARG_DATA)
 
         if (!data.isNullOrEmpty()) {
-            val isVoliData = data.first().contains("nome_volo")
-            if (isVoliData) {
+            if (data.first().contains("nome_volo")) {
                 setUpRecyclerViewVoli()
-            } else {
+            }
+            else if(data.first().contains("nome_alloggio")) {
                 setUpRecyclerViewSoggiorni()
+
+            } else {
+                setUpRecyclerViewTaxi()
             }
         }
 
         return view
+    }
+
+    private fun setUpRecyclerViewTaxi() {
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        val data = ArrayList<ItemsViewModelPreferiti>()
+
+        val inputData = arguments?.getStringArrayList("data")
+        if (!inputData.isNullOrEmpty()) {
+            for (i in 0 until inputData.size) {
+                val taxi = inputData[i]
+                val taxiDetails = formatTaxiDetails(taxi)
+                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, taxiDetails))
+            }
+        }
+
+        val adapter = CustomAdapterRisultati(data)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                when (position) {
+                    // Gestisci l'evento di clic
+                }
+            }
+        })
+    }
+
+    private fun formatTaxiDetails(jsonString: String?): String {
+        val jsonObject = JSONObject(jsonString)
+
+        val citta = jsonObject.getString("citta")
+        val data_disponibilita = jsonObject.getString("data_disponibilita")
+        val orario_disponibilita = jsonObject.getString("orario_disponibilita")
+        val prezzo_orario = jsonObject.getString("prezzo_orario")
+
+        val formattedString = StringBuilder()
+        formattedString.append("Città: $citta")
+        formattedString.append("\nData disponibilità $data_disponibilita")
+        formattedString.append("\nOrario disponibilità: ${orario_disponibilita.substring(0, 5)}")
+        formattedString.append("\nPrezzo orario: $prezzo_orario")
+
+        return formattedString.toString()
     }
 
 

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
-    android:padding="25dp"
     android:focusable="true"
     android:clickable="true">
 
@@ -15,6 +14,7 @@
         android:src="@drawable/ic_launcher_round"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
@@ -28,6 +28,8 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewLogo"
         android:textColorHint="@color/black"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="#ECECEC"
         app:layout_constraintHorizontal_bias="0.0">
 
@@ -68,6 +70,8 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:hint="Data"
         android:textColorHint="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/cittaLayout"
@@ -78,7 +82,7 @@
         android:id="@+id/orario"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:hint="Data di arrivo"
+        android:hint="Orario"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/data"
@@ -86,6 +90,8 @@
         android:drawableLeft="@drawable/baseline_timer_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
@@ -98,5 +104,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/orario" />
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

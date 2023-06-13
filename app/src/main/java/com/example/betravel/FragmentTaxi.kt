@@ -26,6 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Date
 import java.sql.Time
+import java.util.ArrayList
 import java.util.Calendar
 
 class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
@@ -105,9 +106,6 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-                childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView,FragmentRisultati())
-                    .commit()
             }
 
             return view
@@ -120,12 +118,11 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         super.onCreate(savedInstanceState)
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Verifica se ci sono fragment nello stack di backstack
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
-                    isEnabled = false // Disabilita il callback
-                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                    isEnabled = false
+                    requireActivity().onBackPressed()
                 }
             }
         }
@@ -293,11 +290,14 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
     private fun handleConfermaClick() {
         val data: EditText
         val orario: EditText
+        val citta: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            citta = bindingLand.cittaSpinner
             data = bindingLand.data
             orario = bindingLand.orario
         } else {
+            citta = binding.cittaSpinner
             data = binding.data
             orario = binding.orario
         }
@@ -319,11 +319,52 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         val dataSqlDate = convertToSqlDate(dataDate)
         val orarioSqlTime = convertToSqlTime(orarioTime)
 
-        dataPrenotazione(dataSqlDate)
-        orarioPrenotazione(orarioSqlTime)
+        //dataPrenotazione(dataSqlDate)
+        //orarioPrenotazione(orarioSqlTime)
 
-        // Continua con il resto del codice per gestire la conferma del volo
-        // ...
+        cercaTaxi(citta.selectedItem.toString(), dataSqlDate, orarioSqlTime)
+    }
+
+    private fun cercaTaxi(citta: String, dataSqlDate: Date, orarioSqlTime: Time) {
+        val query = "SELECT id_taxi, citta, data_disponibilita, orario_disponibilita, prezzo_orario \n" +
+                "FROM Taxi T\n" +
+                "WHERE citta = '$citta' \n" +
+                "  AND data_disponibilita = '$dataSqlDate' \n" +
+                "  AND orario_disponibilita >= '$orarioSqlTime' AND id_taxi NOT IN (SELECT id_taxi FROM Prenotazione);\n"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiTaxi = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiTaxi.size()) {
+                            val taxi = risultatiTaxi[i].toString()
+                            stringList.add(taxi)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragmentContainerView, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 
 
