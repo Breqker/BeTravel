@@ -34,13 +34,59 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             }
             else if(data.first().contains("nome_alloggio")) {
                 setUpRecyclerViewSoggiorni()
-
+            } else if(data.first().contains("nome_crociera")) {
+                setUpRecyclerViewCrociera()
             } else {
                 setUpRecyclerViewTaxi()
             }
         }
 
         return view
+    }
+
+    private fun setUpRecyclerViewCrociera() {
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        val data = ArrayList<ItemsViewModelPreferiti>()
+
+        val inputData = arguments?.getStringArrayList("data")
+        if (!inputData.isNullOrEmpty()) {
+            for (i in 0 until inputData.size) {
+                val crociera = inputData[i]
+                val crocieraDetails = formatCrocieraDetails(crociera)
+                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, crocieraDetails))
+            }
+        }
+
+        val adapter = CustomAdapterRisultati(data)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                when (position) {
+                    // Gestisci l'evento di clic
+                }
+            }
+        })
+    }
+
+    private fun formatCrocieraDetails(jsonString: String?): String {
+        val jsonObject = JSONObject(jsonString)
+
+        val nome_crociera = jsonObject.getString("nome_crociera")
+        val citta_partenza = jsonObject.getString("citta_partenza")
+        val data_partenza = jsonObject.getString("data_partenza")
+        val data_ritorno = jsonObject.getString("data_ritorno")
+        val prezzo_viaggio = jsonObject.getString("prezzo_viaggio")
+
+        val formattedString = StringBuilder()
+        formattedString.append("$nome_crociera")
+        formattedString.append("\nDa $citta_partenza")
+        formattedString.append("\nDal: $data_partenza\nal $data_ritorno")
+        formattedString.append("\nPrezzo viaggio: $prezzo_viaggio")
+
+        return formattedString.toString()
     }
 
     private fun setUpRecyclerViewTaxi() {

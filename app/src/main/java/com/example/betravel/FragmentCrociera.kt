@@ -135,9 +135,6 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-                childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView,FragmentRisultati())
-                    .commit()
             }
 
             return view
@@ -301,11 +298,14 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
     private fun handleConfermaClick() {
         val dataPartenza: EditText
         val dataRitorno: EditText
+        val citta: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             dataPartenza = bindingLand.dataPartenza
             dataRitorno = bindingLand.dataRitorno
+            citta = bindingLand.cittaPartenzaSpinner
         } else {
+            citta = binding.cittaPartenzaSpinner
             dataPartenza = binding.dataPartenza
             dataRitorno = binding.dataRitorno
         }
@@ -319,19 +319,58 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
             return
         }
 
-        if(ritornoDate < partenzaDate){
+        /*if(ritornoDate < partenzaDate){
             showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
-        }
+        }*/
 
         val partenzaSqlDate = convertToSqlDate(partenzaDate)
         val ritornoSqlDate = convertToSqlDate(ritornoDate)
 
-        dataPartenza(partenzaSqlDate)
-        dataRitorno(ritornoSqlDate)
+        //dataPartenza(partenzaSqlDate)
+        //dataRitorno(ritornoSqlDate)
 
-        // Continua con il resto del codice per gestire la conferma del volo
-        // ...
+        cercaCrociera(citta.selectedItem.toString(), partenzaSqlDate, ritornoSqlDate)
+    }
+
+    private fun cercaCrociera(citta: String, partenzaSqlDate: Date, ritornoSqlDate: Date) {
+        val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
+                "FROM Crociera\n" +
+                "WHERE citta_partenza = '$citta' AND data_partenza = '$partenzaSqlDate' AND data_ritorno = '$ritornoSqlDate';\n"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiCoricera = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiCoricera.size()) {
+                            val crociera = risultatiCoricera[i].toString()
+                            stringList.add(crociera)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragmentContainerView, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 
 
