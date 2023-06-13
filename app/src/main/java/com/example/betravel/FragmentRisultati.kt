@@ -5,21 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRisultatiBinding
-import com.google.gson.JsonObject
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
@@ -33,166 +27,17 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val view = binding.root
 
         val data = arguments?.getStringArrayList(ARG_DATA)
-        Log.d("DATA", "$data")
+
         if (!data.isNullOrEmpty()) {
-            if (data.first().contains("nome_volo")) {
+            val isVoliData = data.first().contains("nome_volo")
+            if (isVoliData) {
                 setUpRecyclerViewVoli()
-            }
-            else if(data.first().contains("nome_alloggio")) {
-                setUpRecyclerViewSoggiorni()
-            } else if(data.first().contains("nome_crociera")) {
-                setUpRecyclerViewCrociera()
-            } else if(data.first().contains("nome_auto")) {
-                setUpRecyclerViewAuto()
             } else {
-                setUpRecyclerViewTaxi()
+                setUpRecyclerViewSoggiorni()
             }
         }
 
         return view
-    }
-
-    private fun setUpRecyclerViewAuto() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-        val data = ArrayList<ItemsViewModelPreferiti>()
-
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val auto = inputData[i]
-                val autoDetails = formatAutoDetails(auto)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, autoDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
-            }
-        })
-    }
-
-    private fun formatAutoDetails(jsonString: String?): String {
-        val jsonObject = JSONObject(jsonString)
-
-        val nome_auto = jsonObject.getString("nome_auto")
-        val citta = jsonObject.getString("citta")
-        val data_inizio_disponibilita = jsonObject.getString("data_inizio_disponibilita")
-        val data_fine_disponibilita = jsonObject.getString("data_fine_disponibilita")
-        val prezzo_giornaliero = jsonObject.getString("prezzo_giornaliero")
-
-        val formattedString = StringBuilder()
-        formattedString.append("$nome_auto")
-        formattedString.append("\nIn $citta")
-        formattedString.append("\nDisponibile dal:\n$data_inizio_disponibilita\nal $data_fine_disponibilita")
-        formattedString.append("\nPrezzo giornaliero:\n$prezzo_giornaliero")
-
-        return formattedString.toString()
-    }
-
-    private fun setUpRecyclerViewCrociera() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-        val data = ArrayList<ItemsViewModelPreferiti>()
-
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val crociera = inputData[i]
-                val crocieraDetails = formatCrocieraDetails(crociera)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, crocieraDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
-            }
-        })
-    }
-
-    private fun formatCrocieraDetails(jsonString: String?): String {
-        val jsonObject = JSONObject(jsonString)
-
-        val nome_crociera = jsonObject.getString("nome_crociera")
-        val citta_partenza = jsonObject.getString("citta_partenza")
-        val data_partenza = jsonObject.getString("data_partenza")
-        val data_ritorno = jsonObject.getString("data_ritorno")
-        val prezzo_viaggio = jsonObject.getString("prezzo_viaggio")
-
-        val formattedString = StringBuilder()
-        formattedString.append("$nome_crociera")
-        formattedString.append("\nDa $citta_partenza")
-        formattedString.append("\nDal: $data_partenza\nal $data_ritorno")
-        formattedString.append("\nPrezzo viaggio: $prezzo_viaggio")
-
-        return formattedString.toString()
-    }
-
-    private fun setUpRecyclerViewTaxi() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-        val data = ArrayList<ItemsViewModelPreferiti>()
-
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val taxi = inputData[i]
-                val taxiDetails = formatTaxiDetails(taxi)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, taxiDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
-            }
-        })
-    }
-
-    private fun formatTaxiDetails(jsonString: String?): String {
-        val jsonObject = JSONObject(jsonString)
-
-        val citta = jsonObject.getString("citta")
-        val data_disponibilita = jsonObject.getString("data_disponibilita")
-        val orario_disponibilita = jsonObject.getString("orario_disponibilita")
-        val prezzo_orario = jsonObject.getString("prezzo_orario")
-
-        val formattedString = StringBuilder()
-        formattedString.append("Città: $citta")
-        formattedString.append("\nData disponibilità $data_disponibilita")
-        formattedString.append("\nOrario disponibilità: ${orario_disponibilita.substring(0, 5)}")
-        formattedString.append("\nPrezzo orario: $prezzo_orario")
-
-        return formattedString.toString()
     }
 
 
@@ -203,17 +48,12 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val data = ArrayList<ItemsViewModelPreferiti>()
 
         val inputData = arguments?.getStringArrayList("data")
-        Log.d("INPUT DATA", "$inputData")
         if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val volo = inputData[i]
-                Log.d("VOLO", "$volo")
                 val flightDetails = formatFlightDetails(volo)
                 data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
             }
-        } else {
-            binding.textView7.isVisible = true
         }
 
         val adapter = CustomAdapterRisultati(data)
@@ -278,7 +118,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
-                    requireActivity().supportFragmentManager.popBackStack()
+                    requireActivity().supportFragmentManager.popBackStack() // Rimuovi il FragmentRisultati dal back stack
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
@@ -297,14 +137,11 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val soggiorno = inputData[i]
                 val soggiorniDetails = formatSoggiorniDetails(soggiorno)
                 data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, soggiorniDetails))
             }
-        } else {
-            binding.textView7.isVisible = true
         }
 
         val adapter = CustomAdapterRisultati(data)
@@ -341,10 +178,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
         return requireActivity().onBackPressedDispatcher
-    }
-
-    private fun showMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

@@ -470,10 +470,13 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
                             val volo = risultatiVoli[i].toString()
                             stringList.add(volo)
                         }
+
+                        //val bundle = Bundle()
+                        //bundle.putStringArrayList("data", stringList)
                         val fragment = FragmentRisultati.newInstance(stringList)
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
-                        transaction.addToBackStack(null)
+                        transaction.addToBackStack(null) // Aggiungi il fragment al back stack
                         transaction.commit()
 
                     } else {

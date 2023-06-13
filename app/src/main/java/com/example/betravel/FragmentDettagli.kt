@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentDettagliBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,9 +32,25 @@ class FragmentDettagli : Fragment() {
             binding = FragmentDettagliBinding.inflate(inflater,container,false)
             val view = binding.root
 
-            binding.preferiti.setOnClickListener {
-
+            val data = arguments?.getString(ARG_DATA)
+            if (data != null) {
+                binding.textViewDettagli.text = data
             }
+
+
+            binding.preferiti.setOnClickListener {
+                preferitiVolo(id)
+            }
+
+            binding.prenota.setOnClickListener {
+                val textViewDettagli = binding.textViewDettagli.text.toString()
+                val fragment = FragmentPagamento.newPagamentoInstance(textViewDettagli)
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+
 
             return view
         }
@@ -48,9 +65,7 @@ class FragmentDettagli : Fragment() {
                 if (response.isSuccessful) {
                     val data = response.body()?.get("queryset") as JsonArray
 
-                    if(data.size() > 0){
-
-                    }else{
+                    if(data.size() < 0){
                         showMessage("Errore durante l'inserimento")
                     }
                 } else {
@@ -69,4 +84,25 @@ class FragmentDettagli : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    companion object {
+        private const val ARG_DATA = "data"
+        private const val DATA = "dataArray"
+        fun newDettagliInstance(data: String): FragmentDettagli {
+            val fragment = FragmentDettagli()
+            val bundle = Bundle()
+            bundle.putString(ARG_DATA, data)
+            fragment.arguments = bundle
+            return fragment
+        }
+
+
+        fun newDettagliInstanceSoggiorno(data: String,dataArray : ArrayList<String>): FragmentDettagli {
+            val fragment = FragmentDettagli()
+            val bundle = Bundle()
+            bundle.putString(ARG_DATA, data)
+            bundle.putStringArrayList(DATA,dataArray)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 }
