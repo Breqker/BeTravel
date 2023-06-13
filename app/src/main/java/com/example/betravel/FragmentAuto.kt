@@ -135,9 +135,6 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
-                childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView,FragmentRisultati())
-                    .commit()
             }
 
             return view
@@ -149,12 +146,11 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         super.onCreate(savedInstanceState)
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Verifica se ci sono fragment nello stack di backstack
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
-                    isEnabled = false // Disabilita il callback
-                    requireActivity().onBackPressed() // Esegui il comportamento di default del tasto indietro
+                    isEnabled = false
+                    requireActivity().onBackPressed()
                 }
             }
         }
@@ -329,11 +325,14 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
     private fun handleConfermaClick() {
         val dataInizio: EditText
         val dataRilascio: EditText
+        val citta: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             dataInizio = bindingLand.dataInizio
             dataRilascio = bindingLand.dataRilascio
+            citta = bindingLand.cittaSpinner
         } else {
+            citta = binding.cittaSpinner
             dataInizio = binding.dataInizio
             dataRilascio = binding.dataRilascio
         }
@@ -355,11 +354,50 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val inizioSqlDate = convertToSqlDate(inizioDate)
         val rilascioSqlDate = convertToSqlDate(rilascioDate)
 
-        dataInizio(inizioSqlDate)
-        dataRilascio(rilascioSqlDate)
+        //dataInizio(inizioSqlDate)
+        //dataRilascio(rilascioSqlDate)
 
-        // Continua con il resto del codice per gestire la conferma del volo
-        // ...
+        cercaAuto(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate)
+    }
+
+    private fun cercaAuto(citta: String, inizioSqlDate: Date, rilascioSqlDate: Date) {
+        val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
+                "FROM Auto\n" +
+                "WHERE citta = '$citta' AND data_inizio_disponibilita = '$inizioSqlDate' AND data_fine_disponibilita = '$rilascioSqlDate';\n"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiAuto = responseBody.getAsJsonArray("queryset")
+                        val stringList = ArrayList<String>()
+                        for (i in 0 until risultatiAuto.size()) {
+                            val auto = risultatiAuto[i].toString()
+                            stringList.add(auto)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragmentContainerView, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showMessage("Nessun risultato trovato")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante la query al database")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
     }
 
 

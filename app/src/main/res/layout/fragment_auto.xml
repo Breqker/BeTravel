@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
     android:focusable="true"
-    android:clickable="true"
-    android:padding="25dp">
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/imageViewLogo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:contentDescription="Logo dell'applicazione"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_launcher_round"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +28,8 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewLogo"
         android:textColorHint="@color/black"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="#ECECEC"
         app:layout_constraintHorizontal_bias="0.0">
 
@@ -63,6 +65,8 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:hint="Data di inizio"
         android:textColorHint="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/cittaLayout"
@@ -81,6 +85,8 @@
         android:drawableLeft="@drawable/baseline_edit_calendar_24"
         android:drawablePadding="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:textColorHint="@color/black"
         android:backgroundTint="#ECECEC"/>
 
@@ -93,6 +99,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataRilascio"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="#ECECEC">
 
         <EditText
@@ -129,5 +137,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etaConducenteLayout" />
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
