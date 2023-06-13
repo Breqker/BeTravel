@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -13,8 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRisultatiBinding
+import com.google.gson.JsonObject
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
@@ -28,7 +33,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val view = binding.root
 
         val data = arguments?.getStringArrayList(ARG_DATA)
-
+        Log.d("DATA", "$data")
         if (!data.isNullOrEmpty()) {
             if (data.first().contains("nome_volo")) {
                 setUpRecyclerViewVoli()
@@ -198,10 +203,12 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val data = ArrayList<ItemsViewModelPreferiti>()
 
         val inputData = arguments?.getStringArrayList("data")
+        Log.d("INPUT DATA", "$inputData")
         if (!inputData.isNullOrEmpty()) {
             binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val volo = inputData[i]
+                Log.d("VOLO", "$volo")
                 val flightDetails = formatFlightDetails(volo)
                 data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
             }
@@ -271,7 +278,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
-                    requireActivity().supportFragmentManager.popBackStack() // Rimuovi il FragmentRisultati dal back stack
+                    requireActivity().supportFragmentManager.popBackStack()
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
@@ -334,6 +341,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
         return requireActivity().onBackPressedDispatcher
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

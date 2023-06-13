@@ -385,6 +385,4 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         val seconds = 0
         return Time(hour, minute, seconds)
     }
-
-
 }

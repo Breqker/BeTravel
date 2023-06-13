@@ -7,13 +7,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.ActivityMainBinding
 import com.example.betravel.databinding.ActivityMainOrizzontaleBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Locale
 
 
@@ -63,8 +69,18 @@ class MainActivity : AppCompatActivity() {
                 val inputText = binding.editText.text.toString()
                 val categoriaViaggio = getCategorieDiViaggio(inputText)
                 val località = getLocalità(inputText)
-                Log.d("MainActivity", "Categoria viaggio: $categoriaViaggio")
-                Log.d("MainActivity", "Località: $località")
+
+                if (categoriaViaggio=="Volo") {
+                    cercaVoliBarraRicerca(località)
+                } else if(categoriaViaggio=="Crociera") {
+                    cercaCrociereBarraRicerca(località)
+                } else if(categoriaViaggio=="Taxi") {
+                    cercaTaxiBarraRicerca(località)
+                } else if(categoriaViaggio=="Auto") {
+                    cercaAutoBarraRicerca(località)
+                } else {
+                    cercaAlloggioBarraRicerca(località)
+                }
                 true
             } else {
                 false
@@ -72,29 +88,180 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun cercaAlloggioBarraRicerca(località: String?) {
+        val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti from Alloggio where citta = '$località';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiAlloggio = responseBody.getAsJsonArray("queryset")
+                        val stringList = java.util.ArrayList<String>()
+                        for (i in 0 until risultatiAlloggio.size()) {
+                            val alloggio = risultatiAlloggio[i].toString()
+                            stringList.add(alloggio)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+                }
 
-    private fun getCategorieDiViaggio(inputString: String): List<String> {
-        val categories = mutableListOf<String>()
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun cercaAutoBarraRicerca(località: String?) {
+        val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero from Auto where citta = '$località';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiAuto = responseBody.getAsJsonArray("queryset")
+                        val stringList = java.util.ArrayList<String>()
+                        for (i in 0 until risultatiAuto.size()) {
+                            val auto = risultatiAuto[i].toString()
+                            stringList.add(auto)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun cercaTaxiBarraRicerca(località: String?) {
+        val query = "SELECT citta, data_disponibilita, orario_disponibilita, prezzo_orario from Taxi where citta = '$località';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiTaxi = responseBody.getAsJsonArray("queryset")
+                        val stringList = java.util.ArrayList<String>()
+                        for (i in 0 until risultatiTaxi.size()) {
+                            val taxi = risultatiTaxi[i].toString()
+                            stringList.add(taxi)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun cercaCrociereBarraRicerca(località: String?) {
+        val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio from Crociera where citta_partenza = '$località';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiCrociera = responseBody.getAsJsonArray("queryset")
+                        val stringList = java.util.ArrayList<String>()
+                        for (i in 0 until risultatiCrociera.size()) {
+                            val crociera = risultatiCrociera[i].toString()
+                            stringList.add(crociera)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun cercaVoliBarraRicerca(località: String?) {
+        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_arrivo = '$località';"
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val risultatiVoli = responseBody.getAsJsonArray("queryset")
+                        val stringList = java.util.ArrayList<String>()
+                        for (i in 0 until risultatiVoli.size()) {
+                            val volo = risultatiVoli[i].toString()
+                            stringList.add(volo)
+                        }
+                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragment_container, fragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun showMessage(message: String) {
+        //Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getCategorieDiViaggio(inputString: String): String {
+        var categories: String = ""
 
         val lowerCaseInput = inputString.lowercase(Locale.getDefault())
 
-        // Verifica la presenza delle categorie di viaggio nella stringa di input
         if (lowerCaseInput.contains("volo") || lowerCaseInput.contains("voli") || lowerCaseInput.contains("aereo")) {
-            categories.add("volo")
+            categories = "Volo"
         }
         if (lowerCaseInput.contains("crociera") || lowerCaseInput.contains("crociere")) {
-            categories.add("crociera")
+            categories = "Crociera"
         }
         if (lowerCaseInput.contains("noleggio auto") || lowerCaseInput.contains("auto")) {
-            categories.add("noleggio auto")
+            categories = "Auto"
         }
         if (lowerCaseInput.contains("taxi")) {
-            categories.add("taxi")
+            categories = "Taxi"
         }
         if (lowerCaseInput.contains("alloggio") || lowerCaseInput.contains("case") || lowerCaseInput.contains("stanza") || lowerCaseInput.contains("casa") || lowerCaseInput.contains("camera")) {
-            categories.add("alloggio")
+            categories = "Alloggio"
         }
-
         return categories
     }
 
@@ -288,7 +455,7 @@ class MainActivity : AppCompatActivity() {
                         bundle.putInt("id_utente", idUtente)
                         fragment.arguments = bundle
                         transaction.replace(R.id.fragment_container, fragment)
-                        transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                        transaction.addToBackStack(null)
                         transaction.commit()
                         true
                     }
@@ -322,7 +489,7 @@ class MainActivity : AppCompatActivity() {
                     bundle.putInt("id_utente", idUtente)
                     fragment.arguments = bundle
                     transaction.replace(R.id.fragment_container, fragment)
-                    transaction.addToBackStack(null) // Aggiungi il fragment al back stack
+                    transaction.addToBackStack(null)
                     transaction.commit()
                     true
                 }

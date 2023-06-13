@@ -410,5 +410,4 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         calendar.set(year, month, day)
         return Date(calendar.timeInMillis)
     }
-
 }
