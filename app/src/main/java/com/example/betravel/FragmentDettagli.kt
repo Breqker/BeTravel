@@ -126,7 +126,6 @@ class FragmentDettagli : Fragment() {
             val fragment = FragmentDettagli()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)
-            //bundle.putStringArrayList(DATA,dataArray)
             fragment.arguments = bundle
             return fragment
         }

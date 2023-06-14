@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewDettagli">
+        app:layout_constraintTop_toBottomOf="@id/prenota">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -46,7 +46,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recensioni" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewDettagli" />
 
     <ImageButton
         android:id="@+id/preferiti"
