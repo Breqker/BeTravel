@@ -82,7 +82,15 @@ class ModificaProfiloFragment : Fragment(){
     }
 
     private fun modificaDati(nome: String,cognome: String,email: String,password: String){
-        val updateQuery = "UPDATE INTO webmobile.UTENTE (nome,cognome,email,password) VALUES ('$nome','$cognome','$email','$password') ; "
+        val id = Utente.getId()
+
+        val updateQuery = "UPDATE Utente\n" +
+                "SET \n" +
+                "    nome = COALESCE('$nome', nome),\n" +
+                "    cognome = COALESCE('$cognome', cognome),\n" +
+                "    email = COALESCE('$email', email),\n" +
+                "    password = COALESCE('$password', password)\n" +
+                "WHERE id = '$id'; "
 
         val updateCall = ClientNetwork.retrofit.update(updateQuery)
         updateCall.enqueue(object : Callback<JsonObject> {

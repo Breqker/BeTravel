@@ -55,13 +55,13 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+        val id = Utente.getId()
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             bindingOrizzontale = FragmentProfiloOrizzontaleBinding.inflate(inflater, container, false)
             val view = bindingOrizzontale.root
 
-            val inputData = arguments?.getInt("id")
-            datiProfilo(inputData)
+            datiProfilo(id)
 
 
             bindingOrizzontale.editButton.setOnClickListener {
@@ -82,8 +82,7 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
             binding = FragmentProfiloBinding.inflate(inflater, container, false)
             val view = binding.root
 
-            val inputData = arguments?.getInt("id")
-            datiProfilo(inputData)
+            datiProfilo(id)
 
             binding.editButton.setOnClickListener {
                 val fragmentProfilo = ModificaProfiloFragment()
@@ -114,7 +113,7 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    if(responseBody != null){
+                    if (responseBody != null) {
                         val data = responseBody.getAsJsonArray("queryset")
 
                         if (data.size() > 0) {
@@ -125,23 +124,25 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
                             val emailUtente = utente.get("email").asString
                             val passwordUtente = utente.get("password").asString
 
-                            requireActivity().runOnUiThread{
-                                binding.profileName.text = nomeUtente
-                                binding.profileCognome.text = cognomeUtente
-                                binding.profileEmail.text = emailUtente
-                                binding.profilePassword.text = passwordUtente
-
-                                bindingOrizzontale.profileName.text = nomeUtente
-                                bindingOrizzontale.profileCognome.text = cognomeUtente
-                                bindingOrizzontale.profileEmail.text = emailUtente
-                                bindingOrizzontale.profilePassword.text = passwordUtente
+                            requireActivity().runOnUiThread {
+                                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    bindingOrizzontale.profileName.text = nomeUtente
+                                    bindingOrizzontale.profileCognome.text = cognomeUtente
+                                    bindingOrizzontale.profileEmail.text = emailUtente
+                                    bindingOrizzontale.profilePassword.text = passwordUtente
+                                } else {
+                                    binding.profileName.text = nomeUtente
+                                    binding.profileCognome.text = cognomeUtente
+                                    binding.profileEmail.text = emailUtente
+                                    binding.profilePassword.text = passwordUtente
+                                }
                             }
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun profilo trovato")
                             }
                         }
-                    }else {
+                    } else {
                         requireActivity().runOnUiThread {
                             showMessage("Risposta del server vuota")
                         }

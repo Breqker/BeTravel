@@ -2,6 +2,7 @@ package com.example.betravel
 
 import Utente
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +22,6 @@ import retrofit2.Response
 class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private lateinit var binding: FragmentPreferitiBinding
-    private var currentFragment: Fragment? = null
-    val utente = Utente
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,18 +30,93 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
         binding = FragmentPreferitiBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        var preferiti = prendiPreferitiVolo()
-        preferiti += prendiPreferitiCrociera()
-        preferiti += prendiPreferitiTaxi()
-        preferiti += prendiPreferitiAuto()
-        preferiti += prendiPreferitiAlloggio()
+        prendiPreferiti()
+
         return view
     }
 
-    private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModel> {
+    private fun prendiPreferiti(): ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val preferiti = ArrayList<ItemsViewModel>()
+
+        val query = "SELECT 'Alloggio' AS tipo, nome_alloggio AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero\n" +
+                "            FROM Alloggio a, Preferito p\n" +
+                "            WHERE p.id_utente = '$id' AND a.codice_alloggio = p.codice_alloggio \n" +
+                "            UNION ALL\n" +
+                "SELECT 'Auto' AS tipo, nome_auto AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
+                "            FROM Auto a, Preferito p\n" +
+                "            WHERE p.id_utente = '$id' AND a.id_auto = p.id_auto\n" +
+                "            UNION ALL\n" +
+                "SELECT 'Taxi' AS tipo, '' AS nome, citta, data_disponibilita, orario_disponibilita, prezzo_orario\n" +
+                "            FROM Taxi t, Preferito p\n" +
+                "            WHERE p.id_utente = '$id' AND t.id_taxi=p.id_taxi\n" +
+                "            UNION ALL\n" +
+                "SELECT 'Crociera' AS tipo, nome_crociera AS nome, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
+                "            FROM Crociera c, Preferito p\n" +
+                "            WHERE p.id_utente = '$id' AND c.codice_crociera = p.codice_crociera\n" +
+                "            UNION ALL\n" +
+                "SELECT 'Volo' AS tipo, nome_volo AS nome, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno\n" +
+                "            FROM Volo v, Preferito p\n" +
+                "            WHERE p.id_utente = '$id' AND v.codice = p.id_volo\n"
+
+        val call = ClientNetwork.retrofit.select(query)
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val preferitiData = responseBody.getAsJsonArray("queryset")
+
+                        if (preferitiData.size() > 0) {
+                            for (i in 0 until preferitiData.size()) {
+                                val preferito = preferitiData[i].asJsonObject
+                                val tipo = preferito.get("tipo").asString
+                                val nome = preferito.get("nome").asString
+                                val citta = preferito.get("citta").asString
+                                val dataInizio = preferito.get("data_inizio_disponibilita").asString
+                                val dataFine = preferito.get("data_fine_disponibilita").asString
+                                val costo = preferito.get("costo_giornaliero").asString
+
+                                if (tipo=="Alloggio"){
+                                    val item = ItemsViewModel(R.drawable.soggiorno, "$nome\n$citta\nDal $dataInizio\nal ${dataFine.subSequence(0,10)} \nCosto giornaliero: $costo €")
+                                    preferiti.add(item)
+                                } else if(tipo=="Volo") {
+                                    val item = ItemsViewModel(R.drawable.volo, "$nome\nDa $citta\na $dataInizio\nPartenza${dataFine.subSequence(0,10)}\nRitorno: $costo")
+                                    preferiti.add(item)
+                                } else if(tipo=="Taxi") {
+                                    val item = ItemsViewModel(R.drawable.taxi, "$nome\n$citta\n$dataInizio\n${dataFine.subSequence(0,10)}\nOrario: ${dataFine.subSequence(0,10)}: ${dataFine.subSequence(11,16)}\nCosto: $costo €")
+                                    preferiti.add(item)
+                                } else if(tipo=="Crociera") {
+                                    val item = ItemsViewModel(R.drawable.crociera, "$nome\n$citta\nPartenza: $dataInizio\nRitorno: ${dataFine.subSequence(0,10)}\n$costo €")
+                                    preferiti.add(item)
+                                } else {
+                                    val item = ItemsViewModel(R.drawable.noleggio_auto, "$nome\n$citta\n$dataInizio\n${dataFine.subSequence(0,10)}")
+                                    preferiti.add(item)
+                                }
+                                val adapter = CustomAdapterPreferiti(preferiti)
+                                binding.recyclerView.adapter = adapter
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+            }
+        })
+
+        return preferiti
+    }
+
+
+    private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModel> {
+        val id = Utente.getId()
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero " +
@@ -73,6 +147,9 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                             "Costo giornaliero: $costo_giornaliero\n"
                                 )
                                 preferiti.add(item)
+                                val adapter = CustomAdapterPreferiti(preferiti)
+                                binding.recyclerView.adapter = adapter
+
                             }
 
                         } else {
@@ -103,8 +180,6 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun prendiPreferitiAuto():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero " +
@@ -138,6 +213,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                             }
                             val adapter = CustomAdapterPreferiti(preferiti)
                             binding.recyclerView.adapter = adapter
+
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun auto preferita trovata")
@@ -167,8 +243,6 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun prendiPreferitiTaxi():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT citta, data_disponibilita, orario_disponibilita, prezzo_orario " +
@@ -198,9 +272,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                             "Prezzo: $prezzo_orario\n"
                                 )
                                 preferiti.add(item)
+
                             }
                             val adapter = CustomAdapterPreferiti(preferiti)
                             binding.recyclerView.adapter = adapter
+
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun taxi preferito trovato")
@@ -230,8 +306,6 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun prendiPreferitiCrociera():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio " +
@@ -294,8 +368,6 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun prendiPreferitiVolo(): ArrayList<ItemsViewModel> {
         val id = Utente.getId()
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto " +
