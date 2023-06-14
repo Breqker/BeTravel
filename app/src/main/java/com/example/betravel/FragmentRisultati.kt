@@ -60,7 +60,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 val volo = inputData[i]
                 Log.d("VOLO", "$volo")
                 val flightDetails = formatFlightDetails(volo)
-                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, flightDetails))
+                data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -98,7 +98,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             for (i in 0 until inputData.size) {
                 val auto = inputData[i]
                 val autoDetails = formatAutoDetails(auto)
-                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, autoDetails))
+                val immagine = when(autoDetails){
+                    "Citroen C3" -> R.drawable.citroen_c3
+                    "Dacia Duster" -> R.drawable.dacia_duster
+                    "Jeep Renagade" -> R.drawable.jeep_renegade
+                    "Fiat Grande Punto" -> R.drawable.fiat_grande_punto
+                    else -> R.drawable.fiat_grande_punto
+                }
+                data.add(ItemsViewModel(immagine, autoDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -148,7 +155,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             for (i in 0 until inputData.size) {
                 val crociera = inputData[i]
                 val crocieraDetails = formatCrocieraDetails(crociera)
-                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, crocieraDetails))
+                val immagine = when (crocieraDetails){
+                    "Costa Smeralda" -> R.drawable.costa_smeralda
+                    "Costa Azzurra" -> R.drawable.costa_azzurra
+                    "Costa Favolosa" -> R.drawable.costa_favolosa
+                    "Costa fantastica" -> R.drawable.costa_fantastica
+                    else -> R.drawable.costa_azzurra
+                }
+                data.add(ItemsViewModel(immagine, crocieraDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -196,7 +210,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             for (i in 0 until inputData.size) {
                 val taxi = inputData[i]
                 val taxiDetails = formatTaxiDetails(taxi)
-                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, taxiDetails))
+                data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -307,7 +321,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             for (i in 0 until inputData.size) {
                 val soggiorno = inputData[i]
                 val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, soggiorniDetails))
+                val immagine = when(soggiorniDetails){
+                    "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
+                    "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
+                    "B & B Giovanni Biondo" -> R.drawable.bb
+                    "Resort Santa Maria" -> R.drawable.resort_santa_maria
+                    else -> R.drawable.resort_santa_maria
+                }
+                data.add(ItemsViewModel(immagine, soggiorniDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -333,6 +354,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             }
         })
     }
+
+
 
     private fun formatSoggiorniDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)

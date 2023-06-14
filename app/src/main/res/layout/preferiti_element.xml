@@ -35,9 +35,10 @@
         android:id="@+id/textView4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Descrizione"
         android:padding="10dp"
+        android:text="Descrizione"
         app:layout_constraintLeft_toRightOf="@id/cardView"
-    tools:ignore="MissingConstraints,NotSibling" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints,NotSibling" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
