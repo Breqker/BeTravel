@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="resortSantaFlaviaAnnalisa">
+        Annalisa Franchetti\n
+        Bellissimo! La location è davvero bellissima ed è facilmente raggiungibile dal centro città. Il personale è disponibile e gentile. Sicuramente tornerò.
+    </string>
+    <string name="resortSantaFlaviaGiovanni">
+        Giovanni Bellomo\n
+        Un resort a due passi dalla città con prezzi abbordabili e buon servizio, peccato per quanto riguarda il cibo che non è dei migliori.
+    </string>
+    <string name="resortSantaFlaviaGiuseppa">
+        Giuseppa Capuozzo\n
+        Posto stupendo dove passare un weekend rilassante.
+    </string>
+    <string name="baglioDeiNebrodiAlessandro">
+        Alessandro Toffani\n
+        Seppur di ragionevole prezzo la struttura, con il pacchetto base, non offre alcun servizio al di fuori della colazione.
+    </string>
+    <string name="baglioDeiNebrodiVittoria">
+        Vittoria Di Bernardo\n
+        Uno dei posti più economici di Milano! Davvero consigliato a chi ha intenzione di visitare la città e concedersi del relax allo stesso tempo.
+    </string>
+    <string name="bbGiovanniBiondoFederica">
+        Federica Battaglioni\n
+        Semplice, carino e davvero funzionale! Situato proprio al centro di Palermo è un posto perfetto per chi come me ama viaggiare tanto spendendo poco.
+    </string>
+    <string name="bbGiovanniBiondoBenedetta">
+        <![CDATA[
+        Benedetta Montalcino\n
+        Uno dei B&B migliori in cui ho soggiornato insieme alla mia famiglia. Eccellente nei servizi ha soddisfatto tutte le nostre esigenze e ci ha perfino fornito la culla.
+        ]]>
+    </string>
+    <string name="costaSmeraldaLuigi">
+        Luigi Perrone\n
+        Un buon compromesso tra durata e prezzo, perfetta per chi dispone di ferie brevi.
+    </string>
+    <string name="costaSmeraldaVincenzo">
+        Vincenzo Mannone\n
+        Breve ma coinvolgente, esperienza decisamente da rifare\!
+    </string>
+    <string name="costaAzzurraCostanza">
+        Costanza Civello\n
+        Deludente. Mi aspettavo molte più attività sulla nave per lo meno le tappe da visitare sono state all\'altezza del costo.
+    </string>
+    <string name="costaAzzurraOfelia">
+        <![CDATA[
+        Ofelia Guizzini\n
+        Una vacanza all\'insegna del relax e della cultura, sicuramente il modo migliore in cui avrei potuto festeggiare il 50° anniversario di matrimonio con mio marito.
+        ]]>
+    </string>
+    <string name="costaFavolosaAntonella">
+        Antonella Ferrari\n
+        Proprio come il nome che porta! La festa perpetua dal primo all\'ultimo giorno! La consiglio specialmente ai giovani
+    </string>
+    <string name="costaFavolosaPietro">
+        Pietro Hayez
+        Più che una crociera sembra il carnevale di Rio, piena di feste e attività tanto divertenti quanto coinvolgenti con un eccezionale rapporto qualità-prezzo.
+    </string>
+    <string name="costaFantasticaJessica">
+        Jessica Puccini
+        I miei figli hanno amato questa vacanza e anche io ho potuto riposare e dedicare un po\' di tempo a me stessa grazie agli animatori che hanno intrattenuto i miei figli nel migliore dei modi.
+    </string>
+    <string name="costaFantasticaNoemi">
+        Noemi Vizzini\n
+        Crociera bellissima e davvero coinvolgente con servizio eccellente e personale disponibilissimo.
+    </string>
+</resources>
