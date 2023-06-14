@@ -9,6 +9,7 @@ import com.example.betravel.databinding.PreferitiElementBinding
 class CustomAdapterPreferiti(private val myList: List<ItemsViewModelPreferiti>) : RecyclerView.Adapter<CustomAdapterPreferiti.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
+    private val preferiti = ArrayList<ItemsViewModelPreferiti>()
 
     class ViewHolder(binding: PreferitiElementBinding) : RecyclerView.ViewHolder(binding.root) {
         val imageView = binding.imagePreferiti

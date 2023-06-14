@@ -96,11 +96,11 @@ class FragmentDettagli : Fragment() {
         }
 
 
-        fun newDettagliInstanceSoggiorno(data: String,dataArray : ArrayList<String>): FragmentDettagli {
+        fun newDettagliInstanceSoggiorno(data : String): FragmentDettagli {
             val fragment = FragmentDettagli()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)
-            bundle.putStringArrayList(DATA,dataArray)
+            //bundle.putStringArrayList(DATA,dataArray)
             fragment.arguments = bundle
             return fragment
         }

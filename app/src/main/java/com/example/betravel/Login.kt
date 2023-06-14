@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import Utente
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -17,10 +18,6 @@ class Login : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var bindingLand: ActivityLoginLandBinding
-
-    companion object {
-        const val userId = "id_utente"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +84,10 @@ class Login : AppCompatActivity() {
 
                     if (data.size() == 1) {
                         val id = data[0].asJsonObject.get("id").asInt
+                        val nome = data[0].asJsonObject.get("nome").asString
+                        val cognome = data[0].asJsonObject.get("cognome").asString
+
+                        Utente.creaUtenteStaticoPersonalizzato(id, nome, cognome)
                         showMessage("Login effettuato con successo", id)
                     } else {
                         showErrorMessage("Credenziali non valide")
