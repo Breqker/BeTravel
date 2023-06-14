@@ -1,7 +1,6 @@
 package com.example.betravel
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRisultatiBinding
-import org.json.JSONArray
 import org.json.JSONObject
 
 class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
@@ -22,7 +20,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRisultatiBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -61,9 +59,12 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
+                val jsonString = data[position].text
+                val fragment = FragmentDettagli.newDettagliInstance(jsonString)
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
             }
         })
     }
@@ -147,16 +148,25 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val adapter = CustomAdapterRisultati(data)
         binding.recyclerView.adapter = adapter
 
+        val stringList: ArrayList<String> = ArrayList(data.size)
+        for (viewModel in data) {
+            val viewModelAsString = viewModel.toString()
+            stringList.add(viewModelAsString)
+        }
+
         adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                when (position) {
-                    // Gestisci l'evento di clic
-                }
+                val jsonString = data[position].text
+                val fragment = FragmentDettagli.newDettagliInstanceSoggiorno(jsonString,stringList)
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
             }
         })
     }
 
-    private fun formatSoggiorniDetails(jsonString: String?): String {
+    private fun formatSoggiorniDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
 
         val nomeAlloggio = jsonObject.getString("nome_alloggio")
