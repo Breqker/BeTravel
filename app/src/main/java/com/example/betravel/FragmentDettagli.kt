@@ -1,6 +1,6 @@
 package com.example.betravel
 
-import android.content.DialogInterface
+import ReviewsAdapter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.betravel.databinding.FragmentDettagliBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 
 class FragmentDettagli : Fragment() {
 
@@ -37,6 +36,7 @@ class FragmentDettagli : Fragment() {
                 binding.textViewDettagli.text = data
             }
 
+            recensioniSoggiorno()
 
             binding.preferiti.setOnClickListener {
                 preferitiVolo(id)
@@ -82,6 +82,32 @@ class FragmentDettagli : Fragment() {
 
     private fun showMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun recensioniSoggiorno(){
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recensioni.layoutManager = layoutManager
+
+        val reviewsList = listOf(
+            Review(getString(R.string.resortSantaFlaviaAnnalisa),5f),
+            Review(getString(R.string.resortSantaFlaviaGiovanni),4f),
+            Review(getString(R.string.resortSantaFlaviaGiuseppa),5f),
+            Review(getString(R.string.baglioDeiNebrodiAlessandro),3f),
+            Review(getString(R.string.baglioDeiNebrodiVittoria),5f),
+            Review(getString(R.string.bbGiovanniBiondoFederica),5f),
+            Review(getString(R.string.bbGiovanniBiondoBenedetta),5f),
+            Review(getString(R.string.costaSmeraldaLuigi),5f),
+            Review(getString(R.string.costaSmeraldaVincenzo),4f),
+            Review(getString(R.string.costaAzzurraCostanza),3f),
+            Review(getString(R.string.costaAzzurraOfelia),5f),
+            Review(getString(R.string.costaFavolosaAntonella),5f),
+            Review(getString(R.string.costaFavolosaPietro),5f),
+            Review(getString(R.string.costaFantasticaJessica),5f),
+            Review(getString(R.string.costaFantasticaNoemi),5f),
+        )
+
+        val adapter = ReviewsAdapter(reviewsList)
+        binding.recensioni.adapter = adapter
     }
 
     companion object {
