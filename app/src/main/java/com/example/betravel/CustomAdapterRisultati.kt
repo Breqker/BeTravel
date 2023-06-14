@@ -4,13 +4,9 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betravel.databinding.PacchettiRowItemsBinding
 import com.example.betravel.databinding.PreferitiElementBinding
 
-class CustomAdapterRisultati(private val myList: List<ItemsViewModelPreferiti>) : RecyclerView.Adapter<CustomAdapterRisultati.ViewHolder>() {
-
-    // Utilizzo ItemsViewModelPreferiti perché c'è una ImageView e un TextView.
-    // In caso si crea un altro ItemViewModel
+class CustomAdapterRisultati(private val myList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapterRisultati.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
 

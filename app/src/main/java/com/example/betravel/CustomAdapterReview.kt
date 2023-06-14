@@ -1,10 +1,10 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betravel.Review
+import com.example.betravel.ItemsViewModelReview
 import com.example.betravel.databinding.ItemReviewBinding
 
-class ReviewsAdapter(private val myList: List<Review>) : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
+class CustomAdapterReview(private val myList: List<ItemsViewModelReview>) : RecyclerView.Adapter<CustomAdapterReview.ViewHolder>() {
 
     class ViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         val reviewText = binding.reviewText

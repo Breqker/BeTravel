@@ -3,13 +3,12 @@ package com.example.betravel
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betravel.databinding.PacchettiRowItemsBinding
 import com.example.betravel.databinding.PreferitiElementBinding
 
-class CustomAdapterPreferiti(private val myList: List<ItemsViewModelPreferiti>) : RecyclerView.Adapter<CustomAdapterPreferiti.ViewHolder>() {
+class CustomAdapterPreferiti(private val myList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapterPreferiti.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
-    private val preferiti = ArrayList<ItemsViewModelPreferiti>()
+    private val preferiti = ArrayList<ItemsViewModel>()
 
     class ViewHolder(binding: PreferitiElementBinding) : RecyclerView.ViewHolder(binding.root) {
         val imageView = binding.imagePreferiti

@@ -2,7 +2,6 @@ package com.example.betravel
 
 import Utente
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentPreferitiBinding
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,11 +39,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
         return view
     }
 
-    private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModelPreferiti> {
+    private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val preferiti = ArrayList<ItemsViewModelPreferiti>()
+        val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero " +
                 "FROM Alloggio a, Preferito p " +
@@ -68,7 +66,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 val data_fine_disponibilita = alloggio.get("data_fine_disponibilita").asString
                                 val costo_giornaliero = alloggio.get("costo_giornaliero").asString
 
-                                val item = ItemsViewModelPreferiti(
+                                val item = ItemsViewModel(
                                     R.drawable.pacchetto_famiglia,
                                     "$nome_alloggio\nCittà: $citta\nDisponible dal\n$data_inizio_disponibilita\n" +
                                             "al: $data_fine_disponibilita\n" +
@@ -103,11 +101,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
         return preferiti
     }
 
-    private fun prendiPreferitiAuto():ArrayList<ItemsViewModelPreferiti> {
+    private fun prendiPreferitiAuto():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val preferiti = ArrayList<ItemsViewModelPreferiti>()
+        val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero " +
                 "FROM Auto a, Preferito p " +
@@ -130,7 +128,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 val data_fine_disponibilita = auto.get("data_fine_disponibilita").asString
                                 val prezzo_giornaliero = auto.get("prezzo_giornaliero").asString
 
-                                val item = ItemsViewModelPreferiti(
+                                val item = ItemsViewModel(
                                     R.drawable.pacchetto_famiglia,
                                     "$nome_auto\nCittà: $citta\nDisponible dal\n$data_inizio_disponibilita\n" +
                                             "al: $data_fine_disponibilita\n" +
@@ -167,11 +165,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     }
 
-    private fun prendiPreferitiTaxi():ArrayList<ItemsViewModelPreferiti> {
+    private fun prendiPreferitiTaxi():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val preferiti = ArrayList<ItemsViewModelPreferiti>()
+        val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT citta, data_disponibilita, orario_disponibilita, prezzo_orario " +
                 "FROM Taxi t, Preferito p " +
@@ -193,7 +191,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 val orario_disponibilita = taxi.get("orario_disponibilita").asString
                                 val prezzo_orario = taxi.get("prezzo_orario").asString
 
-                                val item = ItemsViewModelPreferiti(
+                                val item = ItemsViewModel(
                                     R.drawable.pacchetto_famiglia,
                                     "$citta\nDisponible il\n$data_disponibilita\n" +
                                             "Alle: $orario_disponibilita\n" +
@@ -230,11 +228,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     }
 
-    private fun prendiPreferitiCrociera():ArrayList<ItemsViewModelPreferiti> {
+    private fun prendiPreferitiCrociera():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val preferiti = ArrayList<ItemsViewModelPreferiti>()
+        val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio " +
                 "FROM Crociera c, Preferito p " +
@@ -257,7 +255,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 val data_ritorno = crociera.get("data_ritorno").asString
                                 val prezzo_viaggio = crociera.get("prezzo_viaggio").asString
 
-                                val item = ItemsViewModelPreferiti(
+                                val item = ItemsViewModel(
                                     R.drawable.pacchetto_famiglia,
                                     "$nome_crociera\nPartenza: $citta_partenza\n" +
                                             "Data partenza: $data_partenza\nData ritorno: $data_ritorno\n" +
@@ -294,11 +292,11 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     }
 
-    private fun prendiPreferitiVolo(): ArrayList<ItemsViewModelPreferiti> {
+    private fun prendiPreferitiVolo(): ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val preferiti = ArrayList<ItemsViewModelPreferiti>()
+        val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto " +
                 "FROM Volo v, Preferito p " +
@@ -324,7 +322,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 val oraArrivo = volo.get("ora_arrivo").asString
                                 val costoBiglietto = volo.get("costo_biglietto").asDouble
 
-                                val item = ItemsViewModelPreferiti(
+                                val item = ItemsViewModel(
                                     R.drawable.pacchetto_famiglia,
                                     "Volo: $nomeVolo\nPartenza: $aeroportoPartenza\nRitorno: $aeroportoArrivo\n" +
                                             "Data partenza: $dataPartenza\nData ritorno: $dataRitorno\n" +

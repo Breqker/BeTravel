@@ -51,7 +51,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        val data = ArrayList<ItemsViewModelPreferiti>()
+        val data = ArrayList<ItemsViewModel>()
 
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
@@ -60,7 +60,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 val volo = inputData[i]
                 Log.d("VOLO", "$volo")
                 val flightDetails = formatFlightDetails(volo)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, flightDetails))
+                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, flightDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -91,14 +91,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     private fun setUpRecyclerViewAuto() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModelPreferiti>()
+        val data = ArrayList<ItemsViewModel>()
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
             binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val auto = inputData[i]
                 val autoDetails = formatAutoDetails(auto)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, autoDetails))
+                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, autoDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -141,14 +141,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     private fun setUpRecyclerViewCrociera() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModelPreferiti>()
+        val data = ArrayList<ItemsViewModel>()
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
             binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val crociera = inputData[i]
                 val crocieraDetails = formatCrocieraDetails(crociera)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, crocieraDetails))
+                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, crocieraDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -189,14 +189,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     private fun setUpRecyclerViewTaxi() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModelPreferiti>()
+        val data = ArrayList<ItemsViewModel>()
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
             binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val taxi = inputData[i]
                 val taxiDetails = formatTaxiDetails(taxi)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, taxiDetails))
+                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, taxiDetails))
             }
         } else {
             binding.textView7.isVisible = true
@@ -299,7 +299,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        val data = ArrayList<ItemsViewModelPreferiti>()
+        val data = ArrayList<ItemsViewModel>()
 
         val inputData = arguments?.getStringArrayList("data")
         if (!inputData.isNullOrEmpty()) {
@@ -307,7 +307,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             for (i in 0 until inputData.size) {
                 val soggiorno = inputData[i]
                 val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                data.add(ItemsViewModelPreferiti(R.drawable.pacchetto_famiglia, soggiorniDetails))
+                data.add(ItemsViewModel(R.drawable.pacchetto_famiglia, soggiorniDetails))
             }
         } else {
             binding.textView7.isVisible = true

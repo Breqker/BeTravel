@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.PacchettiRowItemsBinding
 
-class CustomAdapterPacchetti(private val myList: List<ItemsViewModelPacchetti>) : RecyclerView.Adapter<CustomAdapterPacchetti.ViewHolder>() {
+class CustomAdapterPacchetti(private val myList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapterPacchetti.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
 

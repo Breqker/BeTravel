@@ -1,6 +1,6 @@
 package com.example.betravel
 
-import ReviewsAdapter
+import CustomAdapterReview
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -88,25 +88,25 @@ class FragmentDettagli : Fragment() {
         val layoutManager = LinearLayoutManager(requireContext())
         binding.recensioni.layoutManager = layoutManager
 
-        val reviewsList = listOf(
-            Review(getString(R.string.resortSantaFlaviaAnnalisa),5f),
-            Review(getString(R.string.resortSantaFlaviaGiovanni),4f),
-            Review(getString(R.string.resortSantaFlaviaGiuseppa),5f),
-            Review(getString(R.string.baglioDeiNebrodiAlessandro),3f),
-            Review(getString(R.string.baglioDeiNebrodiVittoria),5f),
-            Review(getString(R.string.bbGiovanniBiondoFederica),5f),
-            Review(getString(R.string.bbGiovanniBiondoBenedetta),5f),
-            Review(getString(R.string.costaSmeraldaLuigi),5f),
-            Review(getString(R.string.costaSmeraldaVincenzo),4f),
-            Review(getString(R.string.costaAzzurraCostanza),3f),
-            Review(getString(R.string.costaAzzurraOfelia),5f),
-            Review(getString(R.string.costaFavolosaAntonella),5f),
-            Review(getString(R.string.costaFavolosaPietro),5f),
-            Review(getString(R.string.costaFantasticaJessica),5f),
-            Review(getString(R.string.costaFantasticaNoemi),5f),
+        val reviewsLists = listOf(
+            ItemsViewModelReview(getString(R.string.resortSantaFlaviaAnnalisa),5f),
+            ItemsViewModelReview(getString(R.string.resortSantaFlaviaGiovanni),4f),
+            ItemsViewModelReview(getString(R.string.resortSantaFlaviaGiuseppa),5f),
+            ItemsViewModelReview(getString(R.string.baglioDeiNebrodiAlessandro),3f),
+            ItemsViewModelReview(getString(R.string.baglioDeiNebrodiVittoria),5f),
+            ItemsViewModelReview(getString(R.string.bbGiovanniBiondoFederica),5f),
+            ItemsViewModelReview(getString(R.string.bbGiovanniBiondoBenedetta),5f),
+            ItemsViewModelReview(getString(R.string.costaSmeraldaLuigi),5f),
+            ItemsViewModelReview(getString(R.string.costaSmeraldaVincenzo),4f),
+            ItemsViewModelReview(getString(R.string.costaAzzurraCostanza),3f),
+            ItemsViewModelReview(getString(R.string.costaAzzurraOfelia),5f),
+            ItemsViewModelReview(getString(R.string.costaFavolosaAntonella),5f),
+            ItemsViewModelReview(getString(R.string.costaFavolosaPietro),5f),
+            ItemsViewModelReview(getString(R.string.costaFantasticaJessica),5f),
+            ItemsViewModelReview(getString(R.string.costaFantasticaNoemi),5f),
         )
 
-        val adapter = ReviewsAdapter(reviewsList)
+        val adapter = CustomAdapterReview(reviewsLists)
         binding.recensioni.adapter = adapter
     }
 

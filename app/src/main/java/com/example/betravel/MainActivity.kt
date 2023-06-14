@@ -281,13 +281,13 @@ class MainActivity : AppCompatActivity() {
     private fun setupHorizontalRecyclerView1() {
             bindingOrizzontale.recyclerview1.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-            val data = ArrayList<ItemsViewModelCategorie>()
+            val data = ArrayList<ItemsViewModel>()
 
-            data.add(ItemsViewModelCategorie(R.drawable.volo, "Scopri tutti i voli"))
-            data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
-            data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
-            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
-            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto, "Noleggia un auto"))
+            data.add(ItemsViewModel(R.drawable.volo, "Scopri tutti i voli"))
+            data.add(ItemsViewModel(R.drawable.soggiorno, "Soggiorno"))
+            data.add(ItemsViewModel(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModel(R.drawable.taxi, "Prenota taxi"))
+            data.add(ItemsViewModel(R.drawable.noleggio_auto, "Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
             bindingOrizzontale.recyclerview1.adapter = adapter1
@@ -337,13 +337,13 @@ class MainActivity : AppCompatActivity() {
         private fun setupHorizontalRecyclerView2() {
             bindingOrizzontale.recyclerview2.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-            val data2 = ArrayList<ItemsViewModelPacchetti>()
+            val data2 = ArrayList<ItemsViewModel>()
 
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Soggiorno"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Prenota taxi"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Soggiorno"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Prenota taxi"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             bindingOrizzontale.recyclerview2.adapter = adapter2
@@ -360,13 +360,13 @@ class MainActivity : AppCompatActivity() {
         private fun setupRecyclerView1() {
             binding.recyclerview1.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-            val data = ArrayList<ItemsViewModelCategorie>()
+            val data = ArrayList<ItemsViewModel>()
 
-            data.add(ItemsViewModelCategorie(R.drawable.volo, "Scopri tutti i voli"))
-            data.add(ItemsViewModelCategorie(R.drawable.soggiorno, "Soggiorno"))
-            data.add(ItemsViewModelCategorie(R.drawable.crociera, "Scopri le crociere"))
-            data.add(ItemsViewModelCategorie(R.drawable.taxi, "Prenota taxi"))
-            data.add(ItemsViewModelCategorie(R.drawable.noleggio_auto, "Noleggia un auto"))
+            data.add(ItemsViewModel(R.drawable.volo, "Scopri tutti i voli"))
+            data.add(ItemsViewModel(R.drawable.soggiorno, "Soggiorno"))
+            data.add(ItemsViewModel(R.drawable.crociera, "Scopri le crociere"))
+            data.add(ItemsViewModel(R.drawable.taxi, "Prenota taxi"))
+            data.add(ItemsViewModel(R.drawable.noleggio_auto, "Noleggia un auto"))
 
             val adapter1 = CustomAdapter(data)
             binding.recyclerview1.adapter = adapter1
@@ -417,13 +417,13 @@ class MainActivity : AppCompatActivity() {
         private fun setupRecyclerView2() {
             binding.recyclerview2.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-            val data2 = ArrayList<ItemsViewModelPacchetti>()
+            val data2 = ArrayList<ItemsViewModel>()
 
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Soggiorno"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Prenota taxi"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
-            data2.add(ItemsViewModelPacchetti(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Soggiorno"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Prenota taxi"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             binding.recyclerview2.adapter = adapter2
