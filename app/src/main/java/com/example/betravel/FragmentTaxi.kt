@@ -343,7 +343,7 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
                             val taxi = risultatiTaxi[i].toString()
                             stringList.add(taxi)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentTaxi")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null)

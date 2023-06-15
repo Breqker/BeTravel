@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                             val alloggio = risultatiAlloggio[i].toString()
                             stringList.add(alloggio)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                             val auto = risultatiAuto[i].toString()
                             stringList.add(auto)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                             val taxi = risultatiTaxi[i].toString()
                             stringList.add(taxi)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)
@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                             val crociera = risultatiCrociera[i].toString()
                             stringList.add(crociera)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                             val volo = risultatiVoli[i].toString()
                             stringList.add(volo)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)
@@ -339,11 +339,10 @@ class MainActivity : AppCompatActivity() {
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data2 = ArrayList<ItemsViewModel>()
 
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Soggiorno"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Prenota taxi"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
+            data2.add(ItemsViewModel(R.drawable.personalizzato, "Personalizza un tuo viaggio"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Pacchetti famiglia"))
+            data2.add(ItemsViewModel(R.drawable.coppia, "Pacchetti coppia"))
+            data2.add(ItemsViewModel(R.drawable.amici, "Pacchetti amici"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             bindingOrizzontale.recyclerview2.adapter = adapter2
@@ -419,11 +418,10 @@ class MainActivity : AppCompatActivity() {
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             val data2 = ArrayList<ItemsViewModel>()
 
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri tutti i voli"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Soggiorno"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Prenota taxi"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Scopri le crociere"))
-            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Noleggia un auto"))
+            data2.add(ItemsViewModel(R.drawable.personalizzato, "Personalizza un tuo viaggio"))
+            data2.add(ItemsViewModel(R.drawable.pacchetto_famiglia, "Pacchetti famiglia"))
+            data2.add(ItemsViewModel(R.drawable.coppia, "Pacchetti coppia"))
+            data2.add(ItemsViewModel(R.drawable.amici, "Pacchetti amici"))
 
             val adapter2 = CustomAdapterPacchetti(data2)
             binding.recyclerview2.adapter = adapter2
@@ -431,7 +429,21 @@ class MainActivity : AppCompatActivity() {
             adapter2.setOnItemClickListener(object : CustomAdapterPacchetti.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     when (position) {
-                        //
+                        0 -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,FragmentPacchetto())
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                        1 -> {
+
+                        }
+                        2 -> {
+
+                        }
+                        4 -> {
+
+                        }
                     }
                 }
             })

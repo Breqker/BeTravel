@@ -349,7 +349,7 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
                             val crociera = risultatiCoricera[i].toString()
                             stringList.add(crociera)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentCrociera")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null)

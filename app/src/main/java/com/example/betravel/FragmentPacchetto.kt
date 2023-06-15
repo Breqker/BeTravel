@@ -14,7 +14,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.fragment.app.Fragment
-import com.example.betravel.databinding.FragmentVoloBinding
+import com.example.betravel.databinding.FragmentPacchettoBinding
 import com.example.betravel.databinding.FragmentVoloLandBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -24,10 +24,10 @@ import retrofit2.Response
 import java.sql.Date
 import java.util.*
 
-class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
+class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
 
-    private lateinit var binding: FragmentVoloBinding
-    private lateinit var bindingLand: FragmentVoloLandBinding
+    private lateinit var binding: FragmentPacchettoBinding
+    private lateinit var bindingLand: FragmentVoloLandBinding // DA FARE
     private val calendar = Calendar.getInstance()
 
     override fun onCreateView(
@@ -98,7 +98,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
             return view
         } else {
-            binding = FragmentVoloBinding.inflate(inflater,container,false)
+            binding = FragmentPacchettoBinding.inflate(inflater,container,false)
             val view = binding.root
 
             binding.aeroportoPartenza.isFocusable = false
@@ -191,7 +191,8 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        parentFragmentManager.setFragmentResultListener("risultatiKey", this) { _, bundle ->
+        }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
@@ -472,7 +473,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                         //val bundle = Bundle()
                         //bundle.putStringArrayList("data", stringList)
-                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentVolo")
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentPacchetto")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null) // Aggiungi il fragment al back stack
@@ -514,7 +515,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
 
                         //val bundle = Bundle()
                         //bundle.putStringArrayList("data", stringList)
-                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentVolo")
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentPacchetto")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null) // Aggiungi il fragment al back stack

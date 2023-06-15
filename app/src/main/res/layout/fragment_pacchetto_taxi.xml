@@ -1,0 +1,111 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/profilebkg"
+    android:focusable="true"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/archivo_black"
+        android:text="Scegli un taxi"
+        android:textSize="30dp"
+        android:padding="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/cittaLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:textColorHint="@color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="#ECECEC"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <EditText
+            android:id="@+id/citta"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/search_bg"
+            android:backgroundTint="#ECECEC"
+            android:inputType="textAutoComplete"
+            android:drawableLeft="@drawable/baseline_home_24"
+            android:drawablePadding="16dp"
+            android:hint="Città: "
+            android:textColorHint="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+
+        <Spinner
+            android:id="@+id/cittaSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/search_bg"
+            android:backgroundTint="#ECECEC"
+            android:spinnerMode="dropdown" />
+
+    </LinearLayout>
+
+
+
+    <EditText
+        android:id="@+id/data"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/search_bg"
+        android:backgroundTint="#ECECEC"
+        android:drawableLeft="@drawable/baseline_edit_calendar_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:hint="Data"
+        android:textColorHint="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/cittaLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/orario"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:hint="Orario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/data"
+        android:background="@drawable/search_bg"
+        android:drawableLeft="@drawable/baseline_timer_24"
+        android:drawablePadding="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:textColorHint="@color/black"
+        android:backgroundTint="#ECECEC"/>
+
+    <Button
+        android:id="@+id/cerca"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Cerca"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orario" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 package com.example.betravel
 
 import android.app.DatePickerDialog
-import android.content.DialogInterface
+import android.app.TimePickerDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,23 +14,23 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.example.betravel.databinding.FragmentAutoBinding
-import com.example.betravel.databinding.FragmentAutoLandBinding
+import com.example.betravel.databinding.FragmentPacchettoTaxiBinding
+import com.example.betravel.databinding.FragmentTaxiLandBinding
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Date
+import java.sql.Time
 import java.util.ArrayList
 import java.util.Calendar
 
-class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
+class FragmentPacchettoTaxi : Fragment(), OnBackPressedDispatcherOwner {
 
-    private lateinit var binding: FragmentAutoBinding
-    private lateinit var bindingLand: FragmentAutoLandBinding
+    private lateinit var binding: FragmentPacchettoTaxiBinding
+    private lateinit var bindingLand: FragmentTaxiLandBinding // DA FARE
     private val calendar = Calendar.getInstance()
 
     override fun onCreateView(
@@ -39,9 +39,8 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         savedInstanceState: Bundle?
     ): View {
         val orientation = resources.configuration.orientation
-
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            bindingLand = FragmentAutoLandBinding.inflate(inflater, container, false)
+            bindingLand = FragmentTaxiLandBinding.inflate(inflater, container, false)
             val view = bindingLand.root
 
             bindingLand.citta.isFocusable = false
@@ -55,42 +54,27 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
             citta(cittaAdapter)
 
-            bindingLand.dataInizio.isFocusable = false
-            bindingLand.dataInizio.isClickable = true
+            bindingLand.data.isFocusable = false
+            bindingLand.data.isClickable = true
 
-            bindingLand.dataInizio.setOnClickListener {
-                showDatePicker(bindingLand.dataInizio)
+            bindingLand.data.setOnClickListener {
+                showDatePicker(bindingLand.data)
             }
 
-            bindingLand.dataRilascio.isFocusable = false
-            bindingLand.dataRilascio.isClickable = true
+            bindingLand.orario.isFocusable = false
+            bindingLand.orario.isClickable = true
 
-            bindingLand.dataRilascio.setOnClickListener {
-                showDatePicker(bindingLand.dataRilascio)
+            bindingLand.orario.setOnClickListener {
+                showTimePicker(bindingLand.orario)
             }
-
-            val numbers = ArrayList<String>()
-            for (i in 18..99) {
-                numbers.add(i.toString())
-            }
-
-            bindingLand.etaConducente.isFocusable = false
-            bindingLand.etaConducente.isClickable = false
-
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            val numPersoneSpinner: Spinner = bindingLand.etaConducenteSpinner
-            numPersoneSpinner.adapter = adapter
-
 
             bindingLand.cerca.setOnClickListener {
                 handleConfermaClick()
             }
 
             return view
-        }else{
-            binding = FragmentAutoBinding.inflate(inflater, container, false)
+        } else {
+            binding = FragmentPacchettoTaxiBinding.inflate(inflater, container, false)
             val view = binding.root
 
             binding.citta.isFocusable = false
@@ -104,34 +88,19 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
             citta(cittaAdapter)
 
-            binding.dataInizio.isFocusable = false
-            binding.dataInizio.isClickable = true
+            binding.data.isFocusable = false
+            binding.data.isClickable = true
 
-            binding.dataInizio.setOnClickListener {
-                showDatePicker(binding.dataInizio)
+            binding.data.setOnClickListener {
+                showDatePicker(binding.data)
             }
 
-            binding.dataRilascio.isFocusable = false
-            binding.dataRilascio.isClickable = true
+            binding.orario.isFocusable = false
+            binding.orario.isClickable = true
 
-            binding.dataRilascio.setOnClickListener {
-                showDatePicker(binding.dataRilascio)
+            binding.orario.setOnClickListener {
+                showTimePicker(binding.orario)
             }
-
-            val numbers = ArrayList<String>()
-            for (i in 18..99) {
-                numbers.add(i.toString())
-            }
-
-            binding.etaConducente.isFocusable = false
-            binding.etaConducente.isClickable = false
-
-            val adapter =
-                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, numbers)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            val numPersoneSpinner: Spinner = binding.etaConducenteSpinner
-            numPersoneSpinner.adapter = adapter
 
             binding.cerca.setOnClickListener {
                 handleConfermaClick()
@@ -139,6 +108,7 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
 
             return view
         }
+
 
     }
 
@@ -154,7 +124,7 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
                 }
             }
         }
-
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
@@ -183,12 +153,28 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val formattedDay = if (day < 10) "0$day" else "$day"
         return "$formattedDay/$formattedMonth/$year"
     }
+
+    private fun showTimePicker(editText: EditText) {
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            { _, hourOfDay, minute ->
+                val selectedTime = String.format("%02d:%02d", hourOfDay, minute)
+                editText.setText(selectedTime)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        )
+
+        timePickerDialog.show()
+    }
+
     private fun showMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun citta(adapter: ArrayAdapter<String>) {
-        val query = "SELECT distinct citta FROM webmobile.Auto;"
+        val query = "SELECT distinct citta FROM webmobile.Taxi;"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
@@ -237,148 +223,60 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    private fun dataInizio(data: Date){
-        val query = "SELECT data_inizio from webmobile.Auto where data_inizio = '$data';"
-
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessuna data di inizio trovata")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero delle date di inizio")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-    }
-
-    private fun dataRilascio(data: Date){
-        val query = "SELECT data_rilascio from webmobile.Auto where data_rilascio = '$data';"
-
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessuna data di rilascio trovata")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero delle date di rilascio")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-    }
-
-    private fun etaConducente(eta: Int){
-        val query = "SELECT CASE WHEN eta_conducente < 26 THEN prezzo_giornaliero + (prezzo_giornaliero * 0.1) ELSE prezzo_giornaliero END AS nuovo_prezzo_giornaliero FROM webmobile.Auto WHERE eta_conducente = '$eta';"
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject>{
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if(response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessuna costo giornaliero trovato")
-                        }
-                    }
-                }else{
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero del costo giornaliero")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
     private fun handleConfermaClick() {
-        val dataInizio: EditText
-        val dataRilascio: EditText
+        val data: EditText
+        val orario: EditText
         val citta: Spinner
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            dataInizio = bindingLand.dataInizio
-            dataRilascio = bindingLand.dataRilascio
             citta = bindingLand.cittaSpinner
+            data = bindingLand.data
+            orario = bindingLand.orario
         } else {
             citta = binding.cittaSpinner
-            dataInizio = binding.dataInizio
-            dataRilascio = binding.dataRilascio
+            data = binding.data
+            orario = binding.orario
         }
 
 
-        val inizioDate = dataInizio.text.toString()
-        val rilascioDate = dataRilascio.text.toString()
+        val dataDate = data.text.toString()
+        val orarioTime = orario.text.toString()
 
-        if (inizioDate.isEmpty() || rilascioDate.isEmpty()) {
-            showMessage("Seleziona una data di inizio e/o di arrivo.")
+        if (dataDate.isEmpty()) {
+            showMessage("Seleziona una data.")
             return
         }
 
-        // DA FARE MEGLIO
+        if (orarioTime.isEmpty()){
+            showMessage("Seleziona un'orario.")
+            return
+        }
 
-        //if(rilascioDate < inizioDate){
-          //  showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
-            //return
-        //}
+        val dataSqlDate = convertToSqlDate(dataDate)
+        val orarioSqlTime = convertToSqlTime(orarioTime)
 
-        val inizioSqlDate = convertToSqlDate(inizioDate)
-        val rilascioSqlDate = convertToSqlDate(rilascioDate)
-
-        //dataInizio(inizioSqlDate)
-        //dataRilascio(rilascioSqlDate)
-
-        cercaAuto(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate)
+        cercaTaxi(citta.selectedItem.toString(), dataSqlDate, orarioSqlTime)
     }
 
-    private fun cercaAuto(citta: String, inizioSqlDate: Date, rilascioSqlDate: Date) {
-        val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
-                "FROM Auto\n" +
-                "WHERE citta = '$citta' AND data_inizio_disponibilita = '$inizioSqlDate' AND data_fine_disponibilita = '$rilascioSqlDate';\n"
+    private fun cercaTaxi(citta: String, dataSqlDate: Date, orarioSqlTime: Time) {
+        val query = "SELECT id_taxi, citta, data_disponibilita, orario_disponibilita, prezzo_orario \n" +
+                "FROM Taxi T\n" +
+                "WHERE citta = '$citta' \n" +
+                "  AND data_disponibilita = '$dataSqlDate' \n" +
+                "  AND orario_disponibilita >= '$orarioSqlTime' AND id_taxi NOT IN (SELECT id_taxi FROM Prenotazione);\n"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        val risultatiAuto = responseBody.getAsJsonArray("queryset")
+                        val risultatiTaxi = responseBody.getAsJsonArray("queryset")
                         val stringList = ArrayList<String>()
-                        for (i in 0 until risultatiAuto.size()) {
-                            val auto = risultatiAuto[i].toString()
-                            stringList.add(auto)
+                        for (i in 0 until risultatiTaxi.size()) {
+                            val taxi = risultatiTaxi[i].toString()
+                            stringList.add(taxi)
                         }
-                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentAuto")
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentPacchettoTaxi")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragmentContainerView, fragment)
                         transaction.addToBackStack(null)
@@ -411,5 +309,13 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
         val calendar = Calendar.getInstance()
         calendar.set(year, month, day)
         return Date(calendar.timeInMillis)
+    }
+
+    private fun convertToSqlTime(timeString: String): Time {
+        val parts = timeString.split(":")
+        val hour = parts[0].toInt()
+        val minute = parts[1].toInt()
+        val seconds = 0
+        return Time(hour, minute, seconds)
     }
 }

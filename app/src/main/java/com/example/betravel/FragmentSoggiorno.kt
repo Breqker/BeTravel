@@ -363,7 +363,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
                             stringList.add(soggiorno)
                         }
 
-                        val fragment = FragmentRisultati.newInstanceSoggiorno(stringList)
+                        val fragment = FragmentRisultati.newInstance(stringList, "FragmentAlloggio")
                         val transaction = requireActivity().supportFragmentManager.beginTransaction()
                         transaction.replace(R.id.fragment_container, fragment)
                         transaction.addToBackStack(null)

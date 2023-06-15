@@ -58,7 +58,6 @@ class FragmentDettagli : Fragment() {
 
     // perché c'è solo preferiti volo?
     private fun preferitiVolo(id: Int){
-
         val insertQuery = "INSERT INTO webmobile.Preferito (id_volo) values ('$id');"
 
         val insertCall = ClientNetwork.retrofit.insert(insertQuery)
