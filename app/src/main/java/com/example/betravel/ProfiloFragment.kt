@@ -25,17 +25,6 @@ class ProfiloFragment : Fragment(), OnBackPressedDispatcherOwner {
     private lateinit var binding: FragmentProfiloBinding
     private lateinit var bindingOrizzontale: FragmentProfiloOrizzontaleBinding
     private var currentFragment: Fragment? = null
-    companion object{
-        private const val idUtente = "id"
-        fun newInstance(id: Int): ProfiloFragment {
-            val fragment = ProfiloFragment()
-            val bundle = Bundle()
-            bundle.putInt(idUtente, id)
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

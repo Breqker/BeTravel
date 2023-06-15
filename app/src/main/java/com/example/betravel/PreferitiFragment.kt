@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentPreferitiBinding
@@ -70,6 +71,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                         val preferitiData = responseBody.getAsJsonArray("queryset")
 
                         if (preferitiData.size() > 0) {
+                            binding.textView .isVisible = false
                             for (i in 0 until preferitiData.size()) {
                                 val preferito = preferitiData[i].asJsonObject
                                 val tipo = preferito.get("tipo").asString
@@ -115,7 +117,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
     }
 
 
-    private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModel> {
+    /*private fun prendiPreferitiAlloggio():ArrayList<ItemsViewModel> {
         val id = Utente.getId()
         val preferiti = ArrayList<ItemsViewModel>()
 
@@ -430,7 +432,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
         })
 
         return preferiti
-    }
+    }*/
 
 
     private fun showMessage(message: String) {

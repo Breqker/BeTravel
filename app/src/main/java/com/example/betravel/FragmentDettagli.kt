@@ -56,6 +56,7 @@ class FragmentDettagli : Fragment() {
         }
     }
 
+    // perché c'è solo preferiti volo?
     private fun preferitiVolo(id: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_volo) values ('$id');"
@@ -85,6 +86,7 @@ class FragmentDettagli : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    // questo dovrebbe essere messo nel db, inoltre la rating bar dovrebbe essere fissa invece la posso modificare
     private fun recensioniSoggiorno(){
         val layoutManager = LinearLayoutManager(requireContext())
         binding.recensioni.layoutManager = layoutManager
@@ -113,7 +115,6 @@ class FragmentDettagli : Fragment() {
 
     companion object {
         private const val ARG_DATA = "data"
-        private const val DATA = "dataArray"
         fun newDettagliInstance(data: String): FragmentDettagli {
             val fragment = FragmentDettagli()
             val bundle = Bundle()
@@ -122,13 +123,5 @@ class FragmentDettagli : Fragment() {
             return fragment
         }
 
-
-        fun newDettagliInstanceSoggiorno(data : String): FragmentDettagli {
-            val fragment = FragmentDettagli()
-            val bundle = Bundle()
-            bundle.putString(ARG_DATA, data)
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }

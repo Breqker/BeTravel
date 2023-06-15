@@ -71,13 +71,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                // Ottenere l'elemento selezionato dalla lista dei dati
                 val selectedItem = data[position]
 
-                // Creare un'istanza del fragment dettagli e passare i dati necessari tramite argomenti
-                val detailsFragment = FragmentDettagli.newDettagliInstanceSoggiorno(selectedItem.toString())
+                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
-                // Sostituire il fragment corrente con il fragment dettagli utilizzando il FragmentManager
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, detailsFragment)
@@ -116,10 +113,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             override fun onItemClick(position: Int) {
                 val selectedItem = data[position]
 
-                // Creare un'istanza del fragment dettagli e passare i dati necessari tramite argomenti
-                val detailsFragment = FragmentDettagli.newDettagliInstanceSoggiorno(selectedItem.toString())
+                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
-                // Sostituire il fragment corrente con il fragment dettagli utilizzando il FragmentManager
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, detailsFragment)
@@ -173,16 +168,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             override fun onItemClick(position: Int) {
                 val selectedItem = data[position]
 
-                // Creare un'istanza del fragment dettagli e passare i dati necessari tramite argomenti
-                val detailsFragment = FragmentDettagli.newDettagliInstanceSoggiorno(selectedItem.toString())
+                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
-                // Sostituire il fragment corrente con il fragment dettagli utilizzando il FragmentManager
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, detailsFragment)
                     .addToBackStack(null)
                     .commit()
-
             }
         })
     }
@@ -221,10 +213,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             override fun onItemClick(position: Int) {
                 val selectedItem = data[position]
 
-                // Creare un'istanza del fragment dettagli e passare i dati necessari tramite argomenti
-                val detailsFragment = FragmentDettagli.newDettagliInstanceSoggiorno(selectedItem.toString())
+                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
-                // Sostituire il fragment corrente con il fragment dettagli utilizzando il FragmentManager
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, detailsFragment)
@@ -298,7 +288,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
-                    requireActivity().supportFragmentManager.popBackStack() // Rimuovi il FragmentRisultati dal back stack
+                    requireActivity().supportFragmentManager.popBackStack()
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
@@ -341,10 +331,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             override fun onItemClick(position: Int) {
                 val selectedItem = data[position]
 
-                // Creare un'istanza del fragment dettagli e passare i dati necessari tramite argomenti
-                val detailsFragment = FragmentDettagli.newDettagliInstanceSoggiorno(selectedItem.toString())
+                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
-                // Sostituire il fragment corrente con il fragment dettagli utilizzando il FragmentManager
                 val fragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, detailsFragment)

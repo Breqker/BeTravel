@@ -335,7 +335,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
     private fun cercaSoggiorni(citta: String, inizioDate: Date, rilascioDate: Date, numeroOspiti: String) {
         val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti\n" +
-                "FROM Soggiorno\n" +
+                "FROM Alloggio\n" +
                 "WHERE data_inizio_disponibilita <= '$inizioDate'\n" +
                 "  AND data_fine_disponibilita >= '$rilascioDate'\n" +
                 "  AND citta = '$citta'\n" +

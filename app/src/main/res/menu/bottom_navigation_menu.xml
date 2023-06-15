@@ -15,4 +15,8 @@
         android:icon="@drawable/baseline_bookmark_24"
         android:title="Preferiti" />
 
+    <item
+        android:id="@+id/Prenotazioni"
+        android:icon="@drawable/baseline_airplanemode_active_24"
+        android:title="Prenotazioni" />
 </menu>

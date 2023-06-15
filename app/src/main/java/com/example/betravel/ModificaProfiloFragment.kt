@@ -99,6 +99,7 @@ class ModificaProfiloFragment : Fragment(){
             updateFields.add("password = '$password'")
         }
 
+
         val updateQuery = "UPDATE Utente SET ${updateFields.joinToString(", ")} WHERE id = '$id';"
 
         val updateCall = ClientNetwork.retrofit.update(updateQuery)

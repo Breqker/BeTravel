@@ -448,21 +448,23 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.Profilo -> {
-                        val idUtente = intent.getIntExtra(EXTRA_ID_UTENTE, -1)
-                        val fragment = ProfiloFragment.newInstance(idUtente)
-                        val transaction = supportFragmentManager.beginTransaction()
-                        val bundle = Bundle()
-                        bundle.putInt("id_utente", idUtente)
-                        fragment.arguments = bundle
-                        transaction.replace(R.id.fragment_container, fragment)
-                        transaction.addToBackStack(null)
-                        transaction.commit()
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, ProfiloFragment())
+                            .addToBackStack(null)
+                            .commit()
                         true
                     }
 
                     R.id.Preferiti -> {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container,PreferitiFragment())
+                            .addToBackStack(null)
+                            .commit()
+                        true
+                    }
+                    R.id.Prenotazioni -> {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, FragmentPrenotazioni())
                             .addToBackStack(null)
                             .commit()
                         true
@@ -482,15 +484,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.Profilo -> {
-                    val idUtente = intent.getIntExtra(EXTRA_ID_UTENTE, -1)
-                    val fragment = ProfiloFragment.newInstance(idUtente)
-                    val transaction = supportFragmentManager.beginTransaction()
-                    val bundle = Bundle()
-                    bundle.putInt("id_utente", idUtente)
-                    fragment.arguments = bundle
-                    transaction.replace(R.id.fragment_container, fragment)
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_orizzontale, ProfiloFragment())
+                        .addToBackStack(null)
+                        .commit()
                     true
                 }
 
@@ -502,6 +499,13 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.Prenotazioni -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_orizzontale, FragmentPrenotazioni())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
                 else -> false
             }
         }
