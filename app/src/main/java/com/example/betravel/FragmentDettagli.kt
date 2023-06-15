@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentDettagliBinding
 import com.example.betravel.databinding.FragmentDettagliOrizzontaleBinding
 import com.google.gson.JsonArray
@@ -252,6 +251,12 @@ class FragmentDettagli : Fragment() {
 
                         if (data.size() > 0) {
                             val recensioniList = ArrayList<ItemsViewModelReview>()
+                            val layoutManager = LinearLayoutManager(requireContext())
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.layoutManager = layoutManager
+                            } else {
+                                binding.recensioni.layoutManager = layoutManager
+                            }
 
                             for (i in 0 until data.size()) {
                                 val recensioneObject = data.get(i).asJsonObject
@@ -263,7 +268,13 @@ class FragmentDettagli : Fragment() {
                                 recensioniList.add(reviewItem)
                             }
 
-                            recensioniSoggiornoList(recensioniList)
+                            val adapter = CustomAdapterReview(recensioniList)
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.adapter = adapter
+                            } else {
+                                binding.recensioni.adapter = adapter
+                            }
+
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna recensione trovata")
@@ -289,19 +300,6 @@ class FragmentDettagli : Fragment() {
         })
     }
 
-    private fun recensioniSoggiornoList(recensioniList: List<ItemsViewModelReview>) {
-        val adapter = CustomAdapterReview(recensioniList)
-
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            bindingOrizzontale.recensioni.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            bindingOrizzontale.recensioni.adapter = adapter
-        } else {
-            binding.recensioni.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            binding.recensioni.adapter = adapter
-        }
-    }
 
     private fun recensioniCrociera() {
         val query = "SELECT descrizione, stelle, id_utente, codice_crociera FROM webmobile.Recensione WHERE codice_alloggio is NULL';"
@@ -316,6 +314,12 @@ class FragmentDettagli : Fragment() {
 
                         if (data.size() > 0) {
                             val recensioniList = ArrayList<ItemsViewModelReview>()
+                            val layoutManager = LinearLayoutManager(requireContext())
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.layoutManager = layoutManager
+                            } else {
+                                binding.recensioni.layoutManager = layoutManager
+                            }
 
                             for (i in 0 until data.size()) {
                                 val recensioneObject = data.get(i).asJsonObject
@@ -327,7 +331,12 @@ class FragmentDettagli : Fragment() {
                                 recensioniList.add(reviewItem)
                             }
 
-                            recensioniCrocieraList(recensioniList)
+                            val adapter = CustomAdapterReview(recensioniList)
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.adapter = adapter
+                            } else {
+                                binding.recensioni.adapter = adapter
+                            }
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna recensione trovata")
@@ -352,17 +361,6 @@ class FragmentDettagli : Fragment() {
             }
         })
     }
-
-    private fun recensioniCrocieraList(recensioniList: List<ItemsViewModelReview>) {
-        val adapter = CustomAdapterReview(recensioniList)
-
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            bindingOrizzontale.recensioni.adapter = adapter
-        } else {
-            binding.recensioni.adapter = adapter
-        }
-    }
-
 
     companion object {
         private const val ARG_DATA = "data"
