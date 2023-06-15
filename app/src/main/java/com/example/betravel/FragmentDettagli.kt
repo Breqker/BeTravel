@@ -37,6 +37,23 @@ class FragmentDettagli : Fragment() {
 
             if (data != null) {
                 bindingOrizzontale.textViewDettagli.text = data
+
+                val primoElemento = data[0].toInt()
+                val secondoElemento = data[1].toString()
+
+                when(secondoElemento){
+                    "nome_volo" -> preferitiVolo(id,primoElemento)
+                    "codice_alloggio" -> {
+                        preferitiAlloggio(id,primoElemento)
+                        recensioniSoggiorno(id,primoElemento)
+                    }
+                    "id_taxi" -> preferitiTaxi(id,primoElemento)
+                    "id_auto" -> preferitiAuto(id,primoElemento)
+                    "codice_crociera" -> {
+                        preferitiCrociera(id,primoElemento)
+                        recensioniCrociera(id,primoElemento)
+                    }
+                }
             }
 
 
@@ -59,8 +76,24 @@ class FragmentDettagli : Fragment() {
 
             if (data != null) {
                 binding.textViewDettagli.text = data
-            }
 
+                val primoElemento = data[0].toInt()
+                val secondoElemento = data[1].toString()
+
+                when(secondoElemento){
+                    "nome_volo" -> preferitiVolo(id,primoElemento)
+                    "codice_alloggio" -> {
+                        preferitiAlloggio(id,primoElemento)
+                        recensioniSoggiorno(id,primoElemento)
+                    }
+                    "id_taxi" -> preferitiTaxi(id,primoElemento)
+                    "id_auto" -> preferitiAuto(id,primoElemento)
+                    "codice_crociera" -> {
+                        preferitiCrociera(id,primoElemento)
+                        recensioniCrociera(id,primoElemento)
+                    }
+                }
+            }
 
             binding.prenota.setOnClickListener {
                 val textViewDettagli = binding.textViewDettagli.text.toString()
@@ -76,7 +109,7 @@ class FragmentDettagli : Fragment() {
         }
     }
 
-    private fun preferitiVolo(id: Int,codice: Int){
+    private fun preferitiVolo(id: Int?,codice: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_volo) values ('$id','$codice');"
 
@@ -101,7 +134,7 @@ class FragmentDettagli : Fragment() {
 
     }
 
-    private fun preferitiAlloggio(id: Int,codice: Int){
+    private fun preferitiAlloggio(id: Int?,codice: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,codice_alloggio) values ('$id','$codice');"
 
@@ -126,7 +159,7 @@ class FragmentDettagli : Fragment() {
 
     }
 
-    private fun preferitiCrociera(id: Int,codice: Int){
+    private fun preferitiCrociera(id: Int?,codice: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,codice_crociera) values ('$id','$codice');"
 
@@ -151,7 +184,7 @@ class FragmentDettagli : Fragment() {
 
     }
 
-    private fun preferitiTaxi(id: Int,codice: Int){
+    private fun preferitiTaxi(id: Int?,codice: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_taxi) values ('$id','$codice');"
 
@@ -176,7 +209,7 @@ class FragmentDettagli : Fragment() {
 
     }
 
-    private fun preferitiAuto(id: Int,codice: Int){
+    private fun preferitiAuto(id: Int?,codice: Int){
 
         val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_auto) values ('$id','$codice');"
 
@@ -205,7 +238,7 @@ class FragmentDettagli : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun recensioniSoggiorno(id: Int,codice: Int){
+    private fun recensioniSoggiorno(id: Int?,codice: Int){
         val query = "SELECT descrizione,stelle,id_utente,codice_alloggio from webmobile.Prenotazione where id_utente = '$id' and codice_alloggio = '$codice';"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -230,7 +263,7 @@ class FragmentDettagli : Fragment() {
                             val adapter = CustomAdapterReview(list)
 
                             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                //bindingOrizzontale.recensioni.adapter = adapter
+                                bindingOrizzontale.recensioni.adapter = adapter
                             } else {
                                 binding.recensioni.adapter = adapter
                             }
@@ -259,7 +292,7 @@ class FragmentDettagli : Fragment() {
         })
     }
 
-    private fun recensioniCrociera(id: Int,codice: Int){
+    private fun recensioniCrociera(id: Int?,codice: Int){
         val query = "SELECT descrizione,stelle,id_utente,codice_crociera from webmobile.Prenotazione where id_utente = '$id' and codice_crociera = '$codice';"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -284,7 +317,7 @@ class FragmentDettagli : Fragment() {
                             val adapter = CustomAdapterReview(list)
 
                             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                //bindingOrizzontale.recensioni.adapter = adapter
+                                bindingOrizzontale.recensioni.adapter = adapter
                             } else {
                                 binding.recensioni.adapter = adapter
                             }
@@ -315,12 +348,10 @@ class FragmentDettagli : Fragment() {
 
     companion object {
         private const val ARG_DATA = "data"
-        fun newDettagliInstance(data: String,id: Int,codice: Int): FragmentDettagli {
+        fun newDettagliInstance(data: String): FragmentDettagli {
             val fragment = FragmentDettagli()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)
-            bundle.putInt(ARG_DATA,id)
-            bundle.putInt(ARG_DATA,codice)
             fragment.arguments = bundle
             return fragment
         }

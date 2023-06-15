@@ -363,7 +363,7 @@ class FragmentAuto: Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaAuto(citta: String, inizioSqlDate: Date, rilascioSqlDate: Date) {
-        val query = "SELECT nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
+        val query = "SELECT id_auto,nome_auto, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
                 "FROM Auto\n" +
                 "WHERE citta = '$citta' AND data_inizio_disponibilita = '$inizioSqlDate' AND data_fine_disponibilita = '$rilascioSqlDate';\n"
         val call = ClientNetwork.retrofit.select(query)

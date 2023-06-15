@@ -96,7 +96,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
-
                     val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
                     val fragmentManager = requireActivity().supportFragmentManager
@@ -156,7 +155,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 for (i in 0 until inputData.size) {
                     val auto = inputData[i]
                     val autoDetails = formatAutoDetails(auto)
-                    val immagine = when(autoDetails){
+                    val nomeAuto = getNomeAuto(autoDetails)
+                    val immagine = when (nomeAuto) {
                         "Citroen C3" -> R.drawable.citroen_c3
                         "Dacia Duster" -> R.drawable.dacia_duster
                         "Jeep Renagade" -> R.drawable.jeep_renegade
@@ -181,10 +181,9 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                         .replace(R.id.fragmentContainerView, detailsFragment)
                         .addToBackStack(null)
                         .commit()
-
                 }
             })
-        }else{
+        } else {
             binding.recyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             val data = ArrayList<ItemsViewModel>()
@@ -194,7 +193,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 for (i in 0 until inputData.size) {
                     val auto = inputData[i]
                     val autoDetails = formatAutoDetails(auto)
-                    val immagine = when(autoDetails){
+                    val nomeAuto = getNomeAuto(autoDetails)
+                    val immagine = when (nomeAuto) {
                         "Citroen C3" -> R.drawable.citroen_c3
                         "Dacia Duster" -> R.drawable.dacia_duster
                         "Jeep Renagade" -> R.drawable.jeep_renegade
@@ -219,7 +219,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                         .replace(R.id.fragmentContainerView, detailsFragment)
                         .addToBackStack(null)
                         .commit()
-
                 }
             })
         }
@@ -227,6 +226,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun formatAutoDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
+        val id_auto = jsonObject.getInt("id_auto")
         val nome_auto = jsonObject.getString("nome_auto")
         val citta = jsonObject.getString("citta")
         val data_inizio_disponibilita = jsonObject.getString("data_inizio_disponibilita")
@@ -240,6 +240,11 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         return formattedString.toString()
     }
 
+    private fun getNomeAuto(autoDetails: String): String {
+        return autoDetails.substringAfter(":").trim()
+    }
+
+
     private fun setUpRecyclerViewCrociera() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             bindingOrizzontale.recyclerView.layoutManager =
@@ -251,7 +256,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 for (i in 0 until inputData.size) {
                     val crociera = inputData[i]
                     val crocieraDetails = formatCrocieraDetails(crociera)
-                    val immagine = when (crocieraDetails){
+                    val nomeCrociera = getNomeCrociera(crocieraDetails)
+                    val immagine = when(nomeCrociera){
                         "Costa Smeralda" -> R.drawable.costa_smeralda
                         "Costa Azzurra" -> R.drawable.costa_azzurra
                         "Costa Favolosa" -> R.drawable.costa_favolosa
@@ -288,7 +294,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 for (i in 0 until inputData.size) {
                     val crociera = inputData[i]
                     val crocieraDetails = formatCrocieraDetails(crociera)
-                    val immagine = when (crocieraDetails){
+                    val nomeCrociera = getNomeCrociera(crocieraDetails)
+                    val immagine = when(nomeCrociera){
                         "Costa Smeralda" -> R.drawable.costa_smeralda
                         "Costa Azzurra" -> R.drawable.costa_azzurra
                         "Costa Favolosa" -> R.drawable.costa_favolosa
@@ -319,6 +326,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
     private fun formatCrocieraDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
+        val codice_crociera = jsonObject.getInt("codice_crociera")
         val nome_crociera = jsonObject.getString("nome_crociera")
         val citta_partenza = jsonObject.getString("citta_partenza")
         val data_partenza = jsonObject.getString("data_partenza")
@@ -330,6 +338,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         formattedString.append("\nDal: $data_partenza\nal $data_ritorno")
         formattedString.append("\nPrezzo viaggio: $prezzo_viaggio")
         return formattedString.toString()
+    }
+
+    private fun getNomeCrociera(crocieraDetails: String): String {
+        return crocieraDetails.substringAfter(":").trim()
     }
     private fun setUpRecyclerViewTaxi() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -352,7 +364,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
-
                     val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
 
                     val fragmentManager = requireActivity().supportFragmentManager
@@ -375,6 +386,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                     val taxiDetails = formatTaxiDetails(taxi)
                     data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
                 }
+
+
             } else {
                 binding.textView7.isVisible = true
             }
@@ -398,6 +411,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
     private fun formatTaxiDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
+        val id_taxi = jsonObject.getInt("id_taxi")
         val citta = jsonObject.getString("citta")
         val data_disponibilita = jsonObject.getString("data_disponibilita")
         val orario_disponibilita = jsonObject.getString("orario_disponibilita")
@@ -414,6 +428,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val jsonObject = JSONObject(jsonString)
 
         if (jsonObject.has("data_ritorno")) {
+            val codice = jsonObject.getInt("codice")
             val nomeVolo = jsonObject.getString("nome_volo")
             val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
             val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
@@ -434,6 +449,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
             return formattedString.toString()
         } else {
+            val codice = jsonObject.getInt("codice")
             val nomeVolo = jsonObject.getString("nome_volo")
             val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
             val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
@@ -484,7 +500,8 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 for (i in 0 until inputData.size) {
                     val soggiorno = inputData[i]
                     val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                    val immagine = when(soggiorniDetails){
+                    val nomeAlloggio = getNomeAlloggio(soggiorniDetails)
+                    val immagine = when(nomeAlloggio){
                         "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
                         "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
                         "B & B Giovanni Biondo" -> R.drawable.bb
@@ -519,14 +536,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
             val data = ArrayList<ItemsViewModel>()
-
             val inputData = arguments?.getStringArrayList("data")
             if (!inputData.isNullOrEmpty()) {
                 binding.textView7.isVisible = false
                 for (i in 0 until inputData.size) {
                     val soggiorno = inputData[i]
                     val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                    val immagine = when(soggiorniDetails){
+                    val nomeAlloggio = getNomeAlloggio(soggiorniDetails)
+                    val immagine = when(nomeAlloggio){
                         "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
                         "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
                         "B & B Giovanni Biondo" -> R.drawable.bb
@@ -563,7 +580,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun formatSoggiorniDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
-
+        val codice_alloggio = jsonObject.getInt("codice_alloggio")
         val nomeAlloggio = jsonObject.getString("nome_alloggio")
         val citta = jsonObject.getString("citta")
         val dataInizio = jsonObject.getString("data_inizio_disponibilita")
@@ -579,6 +596,10 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         formattedString.append("\nNumero ospiti: $numOspiti")
 
         return formattedString.toString()
+    }
+
+    private fun getNomeAlloggio(soggiornoDetails: String): String {
+        return soggiornoDetails.substringAfter(":").trim()
     }
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
