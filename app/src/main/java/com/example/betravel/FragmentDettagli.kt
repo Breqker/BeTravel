@@ -1,6 +1,5 @@
 package com.example.betravel
 
-import CustomAdapterReview
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentDettagliBinding
 import com.example.betravel.databinding.FragmentDettagliOrizzontaleBinding
 import com.google.gson.JsonArray
@@ -292,8 +293,12 @@ class FragmentDettagli : Fragment() {
         val adapter = CustomAdapterReview(recensioniList)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recensioni.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             bindingOrizzontale.recensioni.adapter = adapter
         } else {
+            binding.recensioni.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             binding.recensioni.adapter = adapter
         }
     }
