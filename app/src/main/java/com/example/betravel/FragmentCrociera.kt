@@ -334,7 +334,7 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaCrociera(citta: String, partenzaSqlDate: Date, ritornoSqlDate: Date) {
-        val query = "SELECT codice_crociera,nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
+        val query = "SELECT codice_crociera, nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
                 "FROM Crociera\n" +
                 "WHERE citta_partenza = '$citta' AND data_partenza = '$partenzaSqlDate' AND data_ritorno = '$ritornoSqlDate';\n"
         val call = ClientNetwork.retrofit.select(query)

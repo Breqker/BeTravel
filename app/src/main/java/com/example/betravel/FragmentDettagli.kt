@@ -2,6 +2,7 @@ package com.example.betravel
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,24 +35,20 @@ class FragmentDettagli : Fragment() {
             val view = bindingOrizzontale.root
 
             val data = arguments?.getString(ARG_DATA)
+            val tipo = arguments?.getString(ARG_TIPO)
 
             if (data != null) {
                 bindingOrizzontale.textViewDettagli.text = data
 
-                val primoElemento = data[0].toInt()
-                val secondoElemento = data[1].toString()
-
-                when(secondoElemento){
-                    "nome_volo" -> preferitiVolo(id,primoElemento)
-                    "codice_alloggio" -> {
-                        preferitiAlloggio(id,primoElemento)
-                        recensioniSoggiorno()
-                    }
-                    "id_taxi" -> preferitiTaxi(id,primoElemento)
-                    "id_auto" -> preferitiAuto(id,primoElemento)
-                    "codice_crociera" -> {
-                        preferitiCrociera(id,primoElemento)
-                        recensioniCrociera()
+                if (tipo=="FragmentCrociera"){
+                    val id = getIdSoggiorno(data)
+                    // metti preferiti crociera
+                    setUpRecyclerViewRecensioniCrociera(id)
+                } else {
+                    val id = getIdSoggiorno(data)
+                    //metti preferiti soggiorni
+                    if (id != null) {
+                        setUpRecyclerViewRecensioniSoggiorni(id)
                     }
                 }
             }
@@ -73,14 +70,26 @@ class FragmentDettagli : Fragment() {
             val view = binding.root
 
             val data = arguments?.getString(ARG_DATA)
-
+            val tipo = arguments?.getString(ARG_TIPO)
             if (data != null) {
-                binding.textViewDettagli.text = data
+                binding.textViewDettagli.text = getData(data)
 
-                val primoElemento = data[0].toInt()
-                val secondoElemento = data[1].toString()
 
-                when(secondoElemento){
+
+                if (tipo=="FragmentCrociera"){
+                    val id = getIdSoggiorno(data)
+                    // metti preferiti crociera
+                    setUpRecyclerViewRecensioniCrociera(id)
+                } else {
+                    val id = getIdSoggiorno(data)
+                    //metti preferiti soggiorni
+                    if (id != null) {
+                        setUpRecyclerViewRecensioniSoggiorni(id)
+                    }
+                }
+
+
+                /*when(secondoElemento){
                     "nome_volo" -> preferitiVolo(id,primoElemento)
                     "codice_alloggio" -> {
                         preferitiAlloggio(id,primoElemento)
@@ -92,7 +101,7 @@ class FragmentDettagli : Fragment() {
                         preferitiCrociera(id,primoElemento)
                         recensioniCrociera()
                     }
-                }
+                }*/
             }
 
             binding.prenota.setOnClickListener {
@@ -107,6 +116,140 @@ class FragmentDettagli : Fragment() {
 
             return view
         }
+    }
+
+    private fun getData(data: String): String {
+        return data.substringAfter("\n")
+
+    }
+
+    private fun setUpRecyclerViewRecensioniCrociera(id: String) {
+        val query = "SELECT descrizione, stelle, id_utente, codice_crociera FROM webmobile.Recensione WHERE codice_alloggio is NULL and codice_crociera='$id';"
+
+        val queryCall = ClientNetwork.retrofit.select(query)
+        queryCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val data = responseBody.getAsJsonArray("queryset")
+
+                        if (data.size() > 0) {
+                            val recensioniList = ArrayList<ItemsViewModelReview>()
+                            val layoutManager = LinearLayoutManager(requireContext())
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.layoutManager = layoutManager
+                            } else {
+                                binding.recensioni.layoutManager = layoutManager
+                            }
+
+                            for (i in 0 until data.size()) {
+                                val recensioneObject = data.get(i).asJsonObject
+
+                                val descrizione = recensioneObject.get("descrizione").asString
+                                val stelle = recensioneObject.get("stelle").asFloat
+
+                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
+                                recensioniList.add(reviewItem)
+                            }
+
+                            val adapter = CustomAdapterReview(recensioniList)
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.adapter = adapter
+                            } else {
+                                binding.recensioni.adapter = adapter
+                            }
+
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showMessage("Nessuna recensione trovata")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante il recupero dei dati")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+            }
+        })
+    }
+
+    fun getIdSoggiorno(soggiornoDetails: String): String {
+        return soggiornoDetails.substringBefore("\n")
+    }
+
+    private fun setUpRecyclerViewRecensioniSoggiorni(id: String) {
+
+        val query = "SELECT descrizione, stelle, id_utente, codice_alloggio FROM webmobile.Recensione WHERE codice_crociera is NULL and codice_alloggio='$id';"
+
+        val queryCall = ClientNetwork.retrofit.select(query)
+        queryCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val data = responseBody.getAsJsonArray("queryset")
+
+                        if (data.size() > 0) {
+                            val recensioniList = ArrayList<ItemsViewModelReview>()
+                            val layoutManager = LinearLayoutManager(requireContext())
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.layoutManager = layoutManager
+                            } else {
+                                binding.recensioni.layoutManager = layoutManager
+                            }
+
+                            for (i in 0 until data.size()) {
+                                val recensioneObject = data.get(i).asJsonObject
+
+                                val descrizione = recensioneObject.get("descrizione").asString
+                                val stelle = recensioneObject.get("stelle").asFloat
+
+                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
+                                recensioniList.add(reviewItem)
+                            }
+
+                            val adapter = CustomAdapterReview(recensioniList)
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.recensioni.adapter = adapter
+                            } else {
+                                binding.recensioni.adapter = adapter
+                            }
+
+                        } else {
+                            requireActivity().runOnUiThread {
+                                showMessage("Nessuna recensione trovata")
+                            }
+                        }
+                    } else {
+                        requireActivity().runOnUiThread {
+                            showMessage("Risposta del server vuota")
+                        }
+                    }
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante il recupero dei dati")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+            }
+        })
     }
 
     private fun preferitiVolo(id: Int?,codice: Int){
@@ -238,69 +381,6 @@ class FragmentDettagli : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun recensioniSoggiorno() {
-        val query = "SELECT descrizione, stelle, id_utente, codice_alloggio FROM webmobile.Recensione WHERE codice_crociera is NULL';"
-
-        val queryCall = ClientNetwork.retrofit.select(query)
-        queryCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        val data = responseBody.getAsJsonArray("queryset")
-
-                        if (data.size() > 0) {
-                            val recensioniList = ArrayList<ItemsViewModelReview>()
-                            val layoutManager = LinearLayoutManager(requireContext())
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.layoutManager = layoutManager
-                            } else {
-                                binding.recensioni.layoutManager = layoutManager
-                            }
-
-                            for (i in 0 until data.size()) {
-                                val recensioneObject = data.get(i).asJsonObject
-
-                                val descrizione = recensioneObject.get("descrizione").asString
-                                val stelle = recensioneObject.get("stelle").asFloat
-
-                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
-                                recensioniList.add(reviewItem)
-                            }
-
-                            val adapter = CustomAdapterReview(recensioniList)
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.adapter = adapter
-                            } else {
-                                binding.recensioni.adapter = adapter
-                            }
-
-                        } else {
-                            requireActivity().runOnUiThread {
-                                showMessage("Nessuna recensione trovata")
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Risposta del server vuota")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero dei dati")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                requireActivity().runOnUiThread {
-                    showMessage("Errore di connessione: ${t.message}")
-                }
-            }
-        })
-    }
-
-
     private fun recensioniCrociera() {
         val query = "SELECT descrizione, stelle, id_utente, codice_crociera FROM webmobile.Recensione WHERE codice_alloggio is NULL';"
 
@@ -364,10 +444,13 @@ class FragmentDettagli : Fragment() {
 
     companion object {
         private const val ARG_DATA = "data"
-        fun newDettagliInstance(data: String): FragmentDettagli {
+        private const val ARG_TIPO = "tipo"
+
+        fun newDettagliInstance(data: String, fragmentTipo: String): FragmentDettagli {
             val fragment = FragmentDettagli()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)
+            bundle.putString(ARG_TIPO,fragmentTipo)
             fragment.arguments = bundle
             return fragment
         }

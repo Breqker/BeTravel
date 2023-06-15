@@ -186,7 +186,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
 
 
     private fun citta(adapter: ArrayAdapter<String>) {
-        val query = "SELECT distinct citta FROM webmobile.Soggiorno;"
+        val query = "SELECT distinct citta FROM webmobile.Alloggio;"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
@@ -319,10 +319,10 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
             return
         }
 
-        if(rilascioDate < inizioDate){
+        /*if(rilascioDate < inizioDate){
             showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
-        }
+        }*/
 
         val inizioSqlDate = convertToSqlDate(inizioDate)
         val rilascioSqlDate = convertToSqlDate(rilascioDate)

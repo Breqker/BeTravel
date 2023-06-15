@@ -233,7 +233,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVoli")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -268,7 +268,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVoli")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -311,7 +311,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentAuto")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -349,7 +349,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentAuto")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -363,7 +363,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun formatAutoDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
-        val id_auto = jsonObject.getInt("id_auto")
+        //val id_auto = jsonObject.getInt("id_auto")
         val nome_auto = jsonObject.getString("nome_auto")
         val citta = jsonObject.getString("citta")
         val data_inizio_disponibilita = jsonObject.getString("data_inizio_disponibilita")
@@ -412,7 +412,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentCrociera")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -450,7 +450,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentCrociera")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -469,7 +469,9 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val data_partenza = jsonObject.getString("data_partenza")
         val data_ritorno = jsonObject.getString("data_ritorno")
         val prezzo_viaggio = jsonObject.getString("prezzo_viaggio")
+
         val formattedString = StringBuilder()
+        formattedString.append("$codice_crociera\n")
         formattedString.append("$nome_crociera")
         formattedString.append("\nDa $citta_partenza")
         formattedString.append("\nDal: $data_partenza\nal $data_ritorno")
@@ -501,7 +503,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentTaxi")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -534,7 +536,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentTaxi")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -658,7 +660,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentAlloggio")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -700,7 +702,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentAlloggio")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -717,7 +719,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun formatSoggiorniDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
-        //val codice_alloggio = jsonObject.getInt("codice_alloggio")
+        val codice_alloggio = jsonObject.getInt("codice_alloggio")
         val nomeAlloggio = jsonObject.getString("nome_alloggio")
         val citta = jsonObject.getString("citta")
         val dataInizio = jsonObject.getString("data_inizio_disponibilita")
@@ -726,6 +728,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val numOspiti = jsonObject.getString("num_ospiti")
 
         val formattedString = StringBuilder()
+        formattedString.append("$codice_alloggio\n")
         formattedString.append("$nomeAlloggio")
         formattedString.append("\nCittà: $citta")
         formattedString.append("\nDisponibile dal\n$dataInizio \nal $dataRilascio")
@@ -735,7 +738,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         return formattedString.toString()
     }
 
-    private fun getNomeAlloggio(soggiornoDetails: String): String {
+    fun getNomeAlloggio(soggiornoDetails: String): String {
         return soggiornoDetails.substringAfter(":").trim()
     }
 

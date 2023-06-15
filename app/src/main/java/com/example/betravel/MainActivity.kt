@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cercaCrociereBarraRicerca(località: String?) {
-        val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio from Crociera where citta_partenza = '$località';"
+        val query = "SELECT codice_crociera, nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio from Crociera where citta_partenza = '$località';"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
