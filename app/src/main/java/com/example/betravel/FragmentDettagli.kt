@@ -45,13 +45,13 @@ class FragmentDettagli : Fragment() {
                     "nome_volo" -> preferitiVolo(id,primoElemento)
                     "codice_alloggio" -> {
                         preferitiAlloggio(id,primoElemento)
-                        recensioniSoggiorno(id,primoElemento)
+                        recensioniSoggiorno()
                     }
                     "id_taxi" -> preferitiTaxi(id,primoElemento)
                     "id_auto" -> preferitiAuto(id,primoElemento)
                     "codice_crociera" -> {
                         preferitiCrociera(id,primoElemento)
-                        recensioniCrociera(id,primoElemento)
+                        recensioniCrociera()
                     }
                 }
             }
@@ -84,13 +84,13 @@ class FragmentDettagli : Fragment() {
                     "nome_volo" -> preferitiVolo(id,primoElemento)
                     "codice_alloggio" -> {
                         preferitiAlloggio(id,primoElemento)
-                        recensioniSoggiorno(id,primoElemento)
+                        recensioniSoggiorno()
                     }
                     "id_taxi" -> preferitiTaxi(id,primoElemento)
                     "id_auto" -> preferitiAuto(id,primoElemento)
                     "codice_crociera" -> {
                         preferitiCrociera(id,primoElemento)
-                        recensioniCrociera(id,primoElemento)
+                        recensioniCrociera()
                     }
                 }
             }
@@ -238,11 +238,11 @@ class FragmentDettagli : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun recensioniSoggiorno(id: Int?,codice: Int){
-        val query = "SELECT descrizione,stelle,id_utente,codice_alloggio from webmobile.Prenotazione where id_utente = '$id' and codice_alloggio = '$codice';"
+    private fun recensioniSoggiorno() {
+        val query = "SELECT descrizione, stelle, id_utente, codice_alloggio FROM webmobile.Recensione WHERE codice_crociera is NULL';"
 
         val queryCall = ClientNetwork.retrofit.select(query)
-        queryCall.enqueue(object : Callback<JsonObject>{
+        queryCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
@@ -250,23 +250,19 @@ class FragmentDettagli : Fragment() {
                         val data = responseBody.getAsJsonArray("queryset")
 
                         if (data.size() > 0) {
-                            val utente = data.get(0).asJsonObject
+                            val recensioniList = ArrayList<ItemsViewModelReview>()
 
-                            val descrizione = utente.get("descrizione").asString
-                            val stelle = utente.get("stelle").asFloat
+                            for (i in 0 until data.size()) {
+                                val recensioneObject = data.get(i).asJsonObject
 
-                            val reviewItem = ItemsViewModelReview(descrizione,stelle)
+                                val descrizione = recensioneObject.get("descrizione").asString
+                                val stelle = recensioneObject.get("stelle").asFloat
 
-                            val list = mutableListOf<ItemsViewModelReview>()
-                            list.add(reviewItem)
-
-                            val adapter = CustomAdapterReview(list)
-
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.adapter = adapter
-                            } else {
-                                binding.recensioni.adapter = adapter
+                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
+                                recensioniList.add(reviewItem)
                             }
+
+                            recensioniSoggiornoList(recensioniList)
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna recensione trovata")
@@ -292,11 +288,21 @@ class FragmentDettagli : Fragment() {
         })
     }
 
-    private fun recensioniCrociera(id: Int?,codice: Int){
-        val query = "SELECT descrizione,stelle,id_utente,codice_crociera from webmobile.Prenotazione where id_utente = '$id' and codice_crociera = '$codice';"
+    private fun recensioniSoggiornoList(recensioniList: List<ItemsViewModelReview>) {
+        val adapter = CustomAdapterReview(recensioniList)
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recensioni.adapter = adapter
+        } else {
+            binding.recensioni.adapter = adapter
+        }
+    }
+
+    private fun recensioniCrociera() {
+        val query = "SELECT descrizione, stelle, id_utente, codice_crociera FROM webmobile.Recensione WHERE codice_alloggio is NULL';"
 
         val queryCall = ClientNetwork.retrofit.select(query)
-        queryCall.enqueue(object : Callback<JsonObject>{
+        queryCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
@@ -304,23 +310,19 @@ class FragmentDettagli : Fragment() {
                         val data = responseBody.getAsJsonArray("queryset")
 
                         if (data.size() > 0) {
-                            val utente = data.get(0).asJsonObject
+                            val recensioniList = ArrayList<ItemsViewModelReview>()
 
-                            val descrizione = utente.get("descrizione").asString
-                            val stelle = utente.get("stelle").asFloat
+                            for (i in 0 until data.size()) {
+                                val recensioneObject = data.get(i).asJsonObject
 
-                            val reviewItem = ItemsViewModelReview(descrizione,stelle)
+                                val descrizione = recensioneObject.get("descrizione").asString
+                                val stelle = recensioneObject.get("stelle").asFloat
 
-                            val list = mutableListOf<ItemsViewModelReview>()
-                            list.add(reviewItem)
-
-                            val adapter = CustomAdapterReview(list)
-
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.adapter = adapter
-                            } else {
-                                binding.recensioni.adapter = adapter
+                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
+                                recensioniList.add(reviewItem)
                             }
+
+                            recensioniCrocieraList(recensioniList)
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna recensione trovata")
@@ -345,6 +347,17 @@ class FragmentDettagli : Fragment() {
             }
         })
     }
+
+    private fun recensioniCrocieraList(recensioniList: List<ItemsViewModelReview>) {
+        val adapter = CustomAdapterReview(recensioniList)
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recensioni.adapter = adapter
+        } else {
+            binding.recensioni.adapter = adapter
+        }
+    }
+
 
     companion object {
         private const val ARG_DATA = "data"
