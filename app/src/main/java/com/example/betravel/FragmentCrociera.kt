@@ -334,7 +334,7 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaCrociera(citta: String, partenzaSqlDate: Date, ritornoSqlDate: Date) {
-        val query = "SELECT nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
+        val query = "SELECT codice_crociera,nome_crociera, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
                 "FROM Crociera\n" +
                 "WHERE citta_partenza = '$citta' AND data_partenza = '$partenzaSqlDate' AND data_ritorno = '$ritornoSqlDate';\n"
         val call = ClientNetwork.retrofit.select(query)
@@ -343,10 +343,10 @@ class FragmentCrociera: Fragment(), OnBackPressedDispatcherOwner {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        val risultatiCoricera = responseBody.getAsJsonArray("queryset")
+                        val risultatiCrociera = responseBody.getAsJsonArray("queryset")
                         val stringList = ArrayList<String>()
-                        for (i in 0 until risultatiCoricera.size()) {
-                            val crociera = risultatiCoricera[i].toString()
+                        for (i in 0 until risultatiCrociera.size()) {
+                            val crociera = risultatiCrociera[i].toString()
                             stringList.add(crociera)
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "FragmentCrociera")

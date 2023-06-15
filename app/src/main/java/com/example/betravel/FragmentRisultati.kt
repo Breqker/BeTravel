@@ -27,148 +27,23 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val view = binding.root
 
         val data = arguments?.getStringArrayList(ARG_DATA)
-        val tipo = arguments?.getString(ARG_TIPO)
-        Log.d("TIPO", "$tipo")
-        if (!data.isNullOrEmpty()) {
 
+        if (!data.isNullOrEmpty()) {
             if (data.first().contains("nome_volo")) {
-                if (tipo=="FragmentVolo") {
-                    setUpRecyclerViewVoli()
-                } else {
-                    setUpRecyclerViewVoliPacchetti()
-                }
+                setUpRecyclerViewVoli()
             }
             else if(data.first().contains("nome_alloggio")) {
-                if (tipo=="FragmentAlloggio"){
-                    setUpRecyclerViewSoggiorni()
-                } else {
-                    setUpRecyclerViewPacchettiSoggiorni()
-                }
+                setUpRecyclerViewSoggiorni()
             } else if(data.first().contains("nome_crociera")) {
                 setUpRecyclerViewCrociera()
             } else if(data.first().contains("nome_auto")) {
                 setUpRecyclerViewAuto()
             } else {
-                if (tipo=="FragmentTaxi"){
-                    setUpRecyclerViewTaxi()
-                } else {
-                    setUpRecyclerViewPacchettoTaxi()
-                }
+                setUpRecyclerViewTaxi()
             }
         }
 
         return view
-    }
-
-    private fun setUpRecyclerViewPacchettoTaxi() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModel>()
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val taxi = inputData[i]
-                val taxiDetails = formatTaxiDetails(taxi)
-                data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                dati?.add(selectedItem)
-
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainerView, FragmentRiepilogo())
-                transaction.addToBackStack(null) // Aggiungi il fragment al back stack
-                transaction.commit()
-            }
-        })
-    }
-
-    private fun setUpRecyclerViewPacchettiSoggiorni() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-        val data = ArrayList<ItemsViewModel>()
-
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val soggiorno = inputData[i]
-                val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                val immagine = when(soggiorniDetails){
-                    "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
-                    "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
-                    "B & B Giovanni Biondo" -> R.drawable.bb
-                    "Resort Santa Maria" -> R.drawable.resort_santa_maria
-                    else -> R.drawable.resort_santa_maria
-                }
-                data.add(ItemsViewModel(immagine, soggiorniDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                dati?.add(selectedItem)
-
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainerView, FragmentPacchettoTaxi())
-                transaction.addToBackStack(null)
-                transaction.commit()
-
-            }
-        })
-    }
-
-    private fun setUpRecyclerViewVoliPacchetti() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-
-        val data = ArrayList<ItemsViewModel>()
-
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val volo = inputData[i]
-                val flightDetails = formatFlightDetails(volo)
-                data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
-            }
-        } else {
-            binding.textView7.isVisible = true
-        }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-        if (dati == null) {
-            dati = ArrayList()
-        }
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                dati?.add(selectedItem)
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainerView, FragmentPacchettoAlloggio())
-                transaction.addToBackStack(null) // Aggiungi il fragment al back stack
-                transaction.commit()
-
-            }
-        })
     }
 
 
@@ -183,6 +58,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             binding.textView7.isVisible = false
             for (i in 0 until inputData.size) {
                 val volo = inputData[i]
+                Log.d("VOLO", "$volo")
                 val flightDetails = formatFlightDetails(volo)
                 data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
             }
@@ -348,7 +224,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             }
         })
     }
-
     private fun formatTaxiDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
         val citta = jsonObject.getString("citta")
@@ -414,7 +289,6 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             override fun handleOnBackPressed() {
                 if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                     requireActivity().supportFragmentManager.popBackStack()
-
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressed()
@@ -497,18 +371,21 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     companion object {
         private const val ARG_DATA = "data"
-        private const val ARG_TIPO = "tipo"
 
-        fun newInstance(data: ArrayList<String>, fragmentTipo: String): FragmentRisultati {
+        fun newInstance(data: ArrayList<String>): FragmentRisultati {
             val fragment = FragmentRisultati()
             val bundle = Bundle()
             bundle.putStringArrayList(ARG_DATA, data)
-            bundle.putString(ARG_TIPO ,fragmentTipo)
             fragment.arguments = bundle
             return fragment
         }
 
-        var dati: ArrayList<ItemsViewModel>? = null
-
+        fun newInstanceSoggiorno(data: ArrayList<String>): FragmentRisultati {
+            val fragment = FragmentRisultati()
+            val bundle = Bundle()
+            bundle.putStringArrayList(ARG_DATA, data)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

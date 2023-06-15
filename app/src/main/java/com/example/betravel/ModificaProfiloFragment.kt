@@ -68,19 +68,6 @@ class ModificaProfiloFragment : Fragment(){
     private fun showMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-    private fun showMessageConferma(message: String) {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Attenzione")
-            .setMessage(message)
-            .setPositiveButton("No") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .setNegativeButton("Si") { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            .create()
-        alertDialog.show()
-    }
 
     private fun modificaDati(nome: String,cognome: String,email: String,password: String){
         val id = Utente.getId()
