@@ -1,7 +1,7 @@
 package com.example.betravel
 
+import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,116 +13,216 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRisultatiBinding
+import com.example.betravel.databinding.FragmentRisultatiOrizzontaleBinding
 import org.json.JSONObject
 
 class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private lateinit var binding: FragmentRisultatiBinding
+    private lateinit var bindingOrizzontale : FragmentRisultatiOrizzontaleBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRisultatiBinding.inflate(inflater, container, false)
-        val view = binding.root
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale = FragmentRisultatiOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
 
-        val data = arguments?.getStringArrayList(ARG_DATA)
+            val data = arguments?.getStringArrayList(ARG_DATA)
 
-        if (!data.isNullOrEmpty()) {
-            if (data.first().contains("nome_volo")) {
-                setUpRecyclerViewVoli()
+            if (!data.isNullOrEmpty()) {
+                if (data.first().contains("nome_volo")) {
+                    setUpRecyclerViewVoli()
+                } else if (data.first().contains("nome_alloggio")) {
+                    setUpRecyclerViewSoggiorni()
+                } else if (data.first().contains("nome_crociera")) {
+                    setUpRecyclerViewCrociera()
+                } else if (data.first().contains("nome_auto")) {
+                    setUpRecyclerViewAuto()
+                } else {
+                    setUpRecyclerViewTaxi()
+                }
             }
-            else if(data.first().contains("nome_alloggio")) {
-                setUpRecyclerViewSoggiorni()
-            } else if(data.first().contains("nome_crociera")) {
-                setUpRecyclerViewCrociera()
-            } else if(data.first().contains("nome_auto")) {
-                setUpRecyclerViewAuto()
-            } else {
-                setUpRecyclerViewTaxi()
+
+            return view
+        }else{
+            binding = FragmentRisultatiBinding.inflate(inflater, container, false)
+            val view = binding.root
+
+            val data = arguments?.getStringArrayList(ARG_DATA)
+
+            if (!data.isNullOrEmpty()) {
+                if (data.first().contains("nome_volo")) {
+                    setUpRecyclerViewVoli()
+                } else if (data.first().contains("nome_alloggio")) {
+                    setUpRecyclerViewSoggiorni()
+                } else if (data.first().contains("nome_crociera")) {
+                    setUpRecyclerViewCrociera()
+                } else if (data.first().contains("nome_auto")) {
+                    setUpRecyclerViewAuto()
+                } else {
+                    setUpRecyclerViewTaxi()
+                }
             }
+
+            return view
         }
-
-        return view
     }
 
 
     private fun setUpRecyclerViewVoli() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        val data = ArrayList<ItemsViewModel>()
+            val data = ArrayList<ItemsViewModel>()
 
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val volo = inputData[i]
-                Log.d("VOLO", "$volo")
-                val flightDetails = formatFlightDetails(volo)
-                data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                bindingOrizzontale.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val volo = inputData[i]
+                    val flightDetails = formatFlightDetails(volo)
+                    data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
+                }
+            } else {
+                bindingOrizzontale.textView7.isVisible = true
             }
-        } else {
-            binding.textView7.isVisible = true
+
+            val adapter = CustomAdapterRisultati(data)
+            bindingOrizzontale.recyclerView.adapter = adapter
+
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+            val data = ArrayList<ItemsViewModel>()
+
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                binding.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val volo = inputData[i]
+                    val flightDetails = formatFlightDetails(volo)
+                    data.add(ItemsViewModel(R.drawable.aereo, flightDetails))
+                }
+            } else {
+                binding.textView7.isVisible = true
+            }
+
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
         }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
-
-                val fragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, detailsFragment)
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-        })
     }
 
     private fun setUpRecyclerViewAuto() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModel>()
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val auto = inputData[i]
-                val autoDetails = formatAutoDetails(auto)
-                val immagine = when(autoDetails){
-                    "Citroen C3" -> R.drawable.citroen_c3
-                    "Dacia Duster" -> R.drawable.dacia_duster
-                    "Jeep Renagade" -> R.drawable.jeep_renegade
-                    "Fiat Grande Punto" -> R.drawable.fiat_grande_punto
-                    else -> R.drawable.fiat_grande_punto
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                bindingOrizzontale.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val auto = inputData[i]
+                    val autoDetails = formatAutoDetails(auto)
+                    val immagine = when(autoDetails){
+                        "Citroen C3" -> R.drawable.citroen_c3
+                        "Dacia Duster" -> R.drawable.dacia_duster
+                        "Jeep Renagade" -> R.drawable.jeep_renegade
+                        "Fiat Grande Punto" -> R.drawable.fiat_grande_punto
+                        else -> R.drawable.fiat_grande_punto
+                    }
+                    data.add(ItemsViewModel(immagine, autoDetails))
                 }
-                data.add(ItemsViewModel(immagine, autoDetails))
+            } else {
+                bindingOrizzontale.textView7.isVisible = true
             }
-        } else {
-            binding.textView7.isVisible = true
+            val adapter = CustomAdapterRisultati(data)
+            bindingOrizzontale.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                binding.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val auto = inputData[i]
+                    val autoDetails = formatAutoDetails(auto)
+                    val immagine = when(autoDetails){
+                        "Citroen C3" -> R.drawable.citroen_c3
+                        "Dacia Duster" -> R.drawable.dacia_duster
+                        "Jeep Renagade" -> R.drawable.jeep_renegade
+                        "Fiat Grande Punto" -> R.drawable.fiat_grande_punto
+                        else -> R.drawable.fiat_grande_punto
+                    }
+                    data.add(ItemsViewModel(immagine, autoDetails))
+                }
+            } else {
+                binding.textView7.isVisible = true
+            }
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
         }
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
-
-                val fragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, detailsFragment)
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-        })
     }
 
     private fun formatAutoDetails(jsonString: String): String {
@@ -141,42 +241,81 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun setUpRecyclerViewCrociera() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModel>()
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val crociera = inputData[i]
-                val crocieraDetails = formatCrocieraDetails(crociera)
-                val immagine = when (crocieraDetails){
-                    "Costa Smeralda" -> R.drawable.costa_smeralda
-                    "Costa Azzurra" -> R.drawable.costa_azzurra
-                    "Costa Favolosa" -> R.drawable.costa_favolosa
-                    "Costa fantastica" -> R.drawable.costa_fantastica
-                    else -> R.drawable.costa_azzurra
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                bindingOrizzontale.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val crociera = inputData[i]
+                    val crocieraDetails = formatCrocieraDetails(crociera)
+                    val immagine = when (crocieraDetails){
+                        "Costa Smeralda" -> R.drawable.costa_smeralda
+                        "Costa Azzurra" -> R.drawable.costa_azzurra
+                        "Costa Favolosa" -> R.drawable.costa_favolosa
+                        "Costa fantastica" -> R.drawable.costa_fantastica
+                        else -> R.drawable.costa_azzurra
+                    }
+                    data.add(ItemsViewModel(immagine, crocieraDetails))
                 }
-                data.add(ItemsViewModel(immagine, crocieraDetails))
+            } else {
+                bindingOrizzontale.textView7.isVisible = true
             }
-        } else {
-            binding.textView7.isVisible = true
+            val adapter = CustomAdapterRisultati(data)
+            bindingOrizzontale.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            })
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                binding.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val crociera = inputData[i]
+                    val crocieraDetails = formatCrocieraDetails(crociera)
+                    val immagine = when (crocieraDetails){
+                        "Costa Smeralda" -> R.drawable.costa_smeralda
+                        "Costa Azzurra" -> R.drawable.costa_azzurra
+                        "Costa Favolosa" -> R.drawable.costa_favolosa
+                        "Costa fantastica" -> R.drawable.costa_fantastica
+                        else -> R.drawable.costa_azzurra
+                    }
+                    data.add(ItemsViewModel(immagine, crocieraDetails))
+                }
+            } else {
+                binding.textView7.isVisible = true
+            }
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            })
         }
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
-
-                val fragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, detailsFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        })
     }
     private fun formatCrocieraDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
@@ -193,36 +332,69 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         return formattedString.toString()
     }
     private fun setUpRecyclerViewTaxi() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val data = ArrayList<ItemsViewModel>()
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val taxi = inputData[i]
-                val taxiDetails = formatTaxiDetails(taxi)
-                data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                bindingOrizzontale.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val taxi = inputData[i]
+                    val taxiDetails = formatTaxiDetails(taxi)
+                    data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
+                }
+            } else {
+                bindingOrizzontale.textView7.isVisible = true
             }
-        } else {
-            binding.textView7.isVisible = true
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            val data = ArrayList<ItemsViewModel>()
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                binding.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val taxi = inputData[i]
+                    val taxiDetails = formatTaxiDetails(taxi)
+                    data.add(ItemsViewModel(R.drawable.taxi2, taxiDetails))
+                }
+            } else {
+                binding.textView7.isVisible = true
+            }
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
         }
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
-
-                val fragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, detailsFragment)
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-        })
     }
     private fun formatTaxiDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
@@ -300,47 +472,91 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun setUpRecyclerViewSoggiorni() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        val data = ArrayList<ItemsViewModel>()
+            val data = ArrayList<ItemsViewModel>()
 
-        val inputData = arguments?.getStringArrayList("data")
-        if (!inputData.isNullOrEmpty()) {
-            binding.textView7.isVisible = false
-            for (i in 0 until inputData.size) {
-                val soggiorno = inputData[i]
-                val soggiorniDetails = formatSoggiorniDetails(soggiorno)
-                val immagine = when(soggiorniDetails){
-                    "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
-                    "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
-                    "B & B Giovanni Biondo" -> R.drawable.bb
-                    "Resort Santa Maria" -> R.drawable.resort_santa_maria
-                    else -> R.drawable.resort_santa_maria
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                bindingOrizzontale.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val soggiorno = inputData[i]
+                    val soggiorniDetails = formatSoggiorniDetails(soggiorno)
+                    val immagine = when(soggiorniDetails){
+                        "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
+                        "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
+                        "B & B Giovanni Biondo" -> R.drawable.bb
+                        "Resort Santa Maria" -> R.drawable.resort_santa_maria
+                        else -> R.drawable.resort_santa_maria
+                    }
+                    data.add(ItemsViewModel(immagine, soggiorniDetails))
                 }
-                data.add(ItemsViewModel(immagine, soggiorniDetails))
+            } else {
+                bindingOrizzontale.textView7.isVisible = true
             }
-        } else {
-            binding.textView7.isVisible = true
+
+            val adapter = CustomAdapterRisultati(data)
+            bindingOrizzontale.recyclerView.adapter = adapter
+
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+            val data = ArrayList<ItemsViewModel>()
+
+            val inputData = arguments?.getStringArrayList("data")
+            if (!inputData.isNullOrEmpty()) {
+                binding.textView7.isVisible = false
+                for (i in 0 until inputData.size) {
+                    val soggiorno = inputData[i]
+                    val soggiorniDetails = formatSoggiorniDetails(soggiorno)
+                    val immagine = when(soggiorniDetails){
+                        "Resort Santa Flavia" -> R.drawable.resort_santa_flavia
+                        "Baglio dei Nebrodi" -> R.drawable.baglio_dei_nebrodi
+                        "B & B Giovanni Biondo" -> R.drawable.bb
+                        "Resort Santa Maria" -> R.drawable.resort_santa_maria
+                        else -> R.drawable.resort_santa_maria
+                    }
+                    data.add(ItemsViewModel(immagine, soggiorniDetails))
+                }
+            } else {
+                binding.textView7.isVisible = true
+            }
+
+            val adapter = CustomAdapterRisultati(data)
+            binding.recyclerView.adapter = adapter
+
+            adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                override fun onItemClick(position: Int) {
+                    val selectedItem = data[position]
+
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
+
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, detailsFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
+            })
         }
-
-        val adapter = CustomAdapterRisultati(data)
-        binding.recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                val selectedItem = data[position]
-
-                val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString())
-
-                val fragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, detailsFragment)
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-        })
     }
 
 

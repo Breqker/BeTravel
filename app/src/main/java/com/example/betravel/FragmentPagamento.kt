@@ -16,20 +16,85 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentPagamentoBinding
+import com.example.betravel.databinding.FragmentPagamentoOrizzontaleBinding
 import java.io.File
 import java.io.FileWriter
 
 class FragmentPagamento : Fragment() {
 
     private lateinit var binding: FragmentPagamentoBinding
+    private lateinit var bindingOrizzontale : FragmentPagamentoOrizzontaleBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return super.onCreateView(inflater, container, savedInstanceState)
+            bindingOrizzontale = FragmentPagamentoOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
+
+            val data = arguments?.getString(ARG_DATA)
+            if (data != null) {
+                bindingOrizzontale.textViewDettagli.text = data
+            }
+
+            bindingOrizzontale.numero.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // Non è necessario implementare questa funzione
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Non è necessario implementare questa funzione
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    val maxLength = 16
+                    if ((s?.length ?: 0) > maxLength) {
+                        s?.delete(maxLength, s.length)
+                    }
+                }
+            })
+
+            bindingOrizzontale.cvv.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // Non è necessario implementare questa funzione
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Non è necessario implementare questa funzione
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    val maxLength = 3
+                    if ((s?.length ?: 0) > maxLength) {
+                        s?.delete(maxLength, s.length)
+                    }
+                }
+            })
+
+            bindingOrizzontale.pagamento.setOnClickListener {
+                val nomeCarta = bindingOrizzontale.nome.text.toString()
+                val numeroCarta = bindingOrizzontale.numero.text.toString()
+                val cvv = bindingOrizzontale.cvv.text.toString()
+
+                if(nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()){
+                    // Controlla se il permesso è già stato concesso
+                    if (isWriteExternalStoragePermissionGranted()) {
+                        // Il permesso è già stato concesso, salva il file
+                        saveTextAsFile()
+                    } else {
+                        // Il permesso non è stato ancora concesso, richiedilo all'utente
+                        requestWriteExternalStoragePermission()
+                    }
+                }else{
+                    showMessage("Compilare tutti i campi")
+                }
+
+
+            }
+
+            return view
         } else {
             binding = FragmentPagamentoBinding.inflate(inflater, container, false)
             val view = binding.root
