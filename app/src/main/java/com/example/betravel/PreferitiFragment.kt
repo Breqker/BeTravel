@@ -58,7 +58,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                 "            FROM Crociera c, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND c.codice_crociera = p.codice_crociera\n" +
                 "            UNION ALL\n" +
-                "SELECT distinct 'Volo' AS tipo, nome_volo AS nome, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno\n" +
+                "SELECT distinct 'Volo' AS tipo, nome_volo AS nome, aeroporto_partenza, aeroporto_arrivo, data_partenza, costo_biglietto\n" +
                 "            FROM Volo v, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND v.codice = p.id_volo\n"
 

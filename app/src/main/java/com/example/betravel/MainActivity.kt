@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cercaAlloggioBarraRicerca(località: String?) {
-        val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti from Alloggio where citta = '$località';"
+        val query = "SELECT codice_alloggio, nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti from Alloggio where citta = '$località';"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cercaTaxiBarraRicerca(località: String?) {
-        val query = "SELECT citta, data_disponibilita, orario_disponibilita, prezzo_orario from Taxi where citta = '$località';"
+        val query = "SELECT id_taxi, citta, data_disponibilita, orario_disponibilita, prezzo_orario from Taxi where citta = '$località';"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cercaVoliBarraRicerca(località: String?) {
-        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_arrivo = '$località';"
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_arrivo = '$località';"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

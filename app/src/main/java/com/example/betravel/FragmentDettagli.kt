@@ -77,7 +77,7 @@ class FragmentDettagli : Fragment() {
             if (data != null) {
                 binding.textViewDettagli.text = getData(data)
 
-
+                Log.d("DATA", "$data")
 
                 if (tipo=="FragmentCrociera"){
                     val id = getIdViaggio(data)
@@ -105,6 +105,7 @@ class FragmentDettagli : Fragment() {
 
             binding.preferiti.setOnClickListener {
                 if (data!=null && tipo!=null) {
+                    Log.d("ID VIAGGIO", "${getIdViaggio(data)}")
                     mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
                 }
             }
@@ -118,7 +119,7 @@ class FragmentDettagli : Fragment() {
 
         when(tipo) {
             "FragmentVolo" -> insertQuery = "INSERT INTO Preferito (id_utente, id_volo) values ('$idUtente','$idViaggio');"
-            "FragmentSoggiorno" -> insertQuery = "INSERT INTO Preferito (id_utente, codice_alloggio) values ('$idUtente','$idViaggio');"
+            "FragmentAlloggio" -> insertQuery = "INSERT INTO Preferito (id_utente, codice_alloggio) values ('$idUtente','$idViaggio');"
             "FragmentTaxi" -> insertQuery = "INSERT INTO Preferito (id_utente, id_taxi) values ('$idUtente','$idViaggio');"
             "FragmentAuto" -> insertQuery = "INSERT INTO Preferito (id_utente, id_auto) values ('$idUtente','$idViaggio');"
             "FragmentCrociera" -> insertQuery = "INSERT INTO Preferito (id_utente, codice_crociera) values ('$idUtente','$idViaggio');"
@@ -127,11 +128,7 @@ class FragmentDettagli : Fragment() {
         insertCall.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
+                    showMessage("Aggiunto ai preferiti")
                 } else {
                     showMessage("Risposta dal server vuota")
                 }

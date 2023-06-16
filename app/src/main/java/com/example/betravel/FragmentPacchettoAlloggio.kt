@@ -262,10 +262,10 @@ class FragmentPacchettoAlloggio: Fragment(), OnBackPressedDispatcherOwner {
             return
         }
 
-        if(rilascioDate < inizioDate){
+        /*if(rilascioDate < inizioDate){
             showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
             return
-        }
+        }*/
 
         val inizioSqlDate = convertToSqlDate(inizioDate)
         val rilascioSqlDate = convertToSqlDate(rilascioDate)

@@ -456,7 +456,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaVoliSoloAndata(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date) {
-        val query = "SELECT codice,nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno is null;"
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno is null;"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -497,7 +497,7 @@ class FragmentVolo : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date) {
-        val query = "SELECT codice,nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno = '$data_ritorno';"
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno = '$data_ritorno';"
 
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {

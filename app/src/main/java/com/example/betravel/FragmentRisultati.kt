@@ -363,13 +363,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
     private fun formatAutoDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
-        //val id_auto = jsonObject.getInt("id_auto")
+        val id_auto = jsonObject.getInt("id_auto")
         val nome_auto = jsonObject.getString("nome_auto")
         val citta = jsonObject.getString("citta")
         val data_inizio_disponibilita = jsonObject.getString("data_inizio_disponibilita")
         val data_fine_disponibilita = jsonObject.getString("data_fine_disponibilita")
         val prezzo_giornaliero = jsonObject.getString("prezzo_giornaliero")
         val formattedString = StringBuilder()
+        formattedString.append("$id_auto\n")
         formattedString.append("$nome_auto")
         formattedString.append("\nIn $citta")
         formattedString.append("\nDisponibile dal:\n$data_inizio_disponibilita\nal $data_fine_disponibilita")
@@ -550,12 +551,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
     }
     private fun formatTaxiDetails(jsonString: String): String {
         val jsonObject = JSONObject(jsonString)
-        //val id_taxi = jsonObject.getInt("id_taxi")
+        val id_taxi = jsonObject.getInt("id_taxi")
         val citta = jsonObject.getString("citta")
         val data_disponibilita = jsonObject.getString("data_disponibilita")
         val orario_disponibilita = jsonObject.getString("orario_disponibilita")
         val prezzo_orario = jsonObject.getString("prezzo_orario")
         val formattedString = StringBuilder()
+        formattedString.append("$id_taxi\n")
         formattedString.append("Città: $citta")
         formattedString.append("\nData disponibilità $data_disponibilita")
         formattedString.append("\nOrario disponibilità: ${orario_disponibilita.substring(0, 5)}")
@@ -567,7 +569,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val jsonObject = JSONObject(jsonString)
 
         if (jsonObject.has("data_ritorno")) {
-            //val codice = jsonObject.getInt("codice")
+            val codice = jsonObject.getInt("codice")
             val nomeVolo = jsonObject.getString("nome_volo")
             val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
             val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
@@ -578,6 +580,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             val costoBiglietto = jsonObject.getDouble("costo_biglietto")
 
             val formattedString = StringBuilder()
+            formattedString.append("$codice\n")
             formattedString.append("Nome Volo: $nomeVolo")
             formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
             formattedString.append("\nData partenza: $dataPartenza")
@@ -588,7 +591,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
             return formattedString.toString()
         } else {
-            //val codice = jsonObject.getInt("codice")
+            val codice = jsonObject.getInt("codice")
             val nomeVolo = jsonObject.getString("nome_volo")
             val aeroportoPartenza = jsonObject.getString("aeroporto_partenza")
             val aeroportoArrivo = jsonObject.getString("aeroporto_arrivo")
@@ -598,6 +601,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             val costoBiglietto = jsonObject.getDouble("costo_biglietto")
 
             val formattedString = StringBuilder()
+            formattedString.append("$codice\n")
             formattedString.append("Nome Volo: $nomeVolo")
             formattedString.append("\nDa $aeroportoPartenza a $aeroportoArrivo")
             formattedString.append("\nData partenza: $dataPartenza")
