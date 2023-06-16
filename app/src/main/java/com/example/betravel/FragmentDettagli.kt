@@ -2,7 +2,6 @@ package com.example.betravel
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +44,7 @@ class FragmentDettagli : Fragment() {
                 } else {
                     val id = getIdViaggio(data)
                     //metti preferiti soggiorni
-                    if (id != null) {
-                        setUpRecyclerViewRecensioniSoggiorni(id)
-                    }
+                    setUpRecyclerViewRecensioniSoggiorni(id)
                 }
             }
 
@@ -86,9 +83,7 @@ class FragmentDettagli : Fragment() {
                 } else {
                     val id = getIdViaggio(data)
                     //metti preferiti soggiorni
-                    if (id != null) {
-                        setUpRecyclerViewRecensioniSoggiorni(id)
-                    }
+                    setUpRecyclerViewRecensioniSoggiorni(id)
                 }
 
 
