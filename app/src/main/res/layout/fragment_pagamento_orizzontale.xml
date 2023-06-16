@@ -31,67 +31,65 @@
 
             <TextView
                 android:id="@+id/textViewDettagli"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/archivo_black"
                 android:text="TextView"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/editTextContainer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textView" />
 
-            <EditText
-                android:id="@+id/nome"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/editTextContainer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:background="@color/white"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="text"
-                android:hint="Nome sulla carta"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewDettagli" />
+                app:layout_constraintStart_toEndOf="@id/textViewDettagli"
+                app:layout_constraintTop_toBottomOf="@id/textView">
 
-            <EditText
-                android:id="@+id/numero"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nome"
-                android:background="@color/white"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:hint="Numero sulla carta" />
+                <EditText
+                    android:id="@+id/nome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:hint="Nome sulla carta" />
 
+                <EditText
+                    android:id="@+id/numero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:hint="Numero sulla carta" />
 
-            <EditText
-                android:id="@+id/cvv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@color/white"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:hint="CVV"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/numero" />
+                <EditText
+                    android:id="@+id/cvv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:hint="CVV" />
 
-            <Button
-                android:id="@+id/pagamento"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Effettua il pagamento"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="30dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cvv" />
+                <Button
+                    android:id="@+id/pagamento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="Effettua il pagamento" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

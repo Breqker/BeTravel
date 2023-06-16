@@ -62,28 +62,55 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun setupEditText() {
-        binding.editText.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)
-            ) {
-                val inputText = binding.editText.text.toString()
-                val categoriaViaggio = getCategorieDiViaggio(inputText)
-                val località = getLocalità(inputText)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.editText.setOnEditorActionListener { _, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)
+                ) {
+                    val inputText = bindingOrizzontale.editText.text.toString()
+                    val categoriaViaggio = getCategorieDiViaggio(inputText)
+                    val località = getLocalità(inputText)
 
-                if (categoriaViaggio=="Volo") {
-                    cercaVoliBarraRicerca(località)
-                } else if(categoriaViaggio=="Crociera") {
-                    cercaCrociereBarraRicerca(località)
-                } else if(categoriaViaggio=="Taxi") {
-                    cercaTaxiBarraRicerca(località)
-                } else if(categoriaViaggio=="Auto") {
-                    cercaAutoBarraRicerca(località)
+                    if (categoriaViaggio=="Volo") {
+                        cercaVoliBarraRicerca(località)
+                    } else if(categoriaViaggio=="Crociera") {
+                        cercaCrociereBarraRicerca(località)
+                    } else if(categoriaViaggio=="Taxi") {
+                        cercaTaxiBarraRicerca(località)
+                    } else if(categoriaViaggio=="Auto") {
+                        cercaAutoBarraRicerca(località)
+                    } else {
+                        cercaAlloggioBarraRicerca(località)
+                    }
+                    true
                 } else {
-                    cercaAlloggioBarraRicerca(località)
+                    false
                 }
-                true
-            } else {
-                false
+            }
+        }else{
+            binding.editText.setOnEditorActionListener { _, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)
+                ) {
+                    val inputText = binding.editText.text.toString()
+                    val categoriaViaggio = getCategorieDiViaggio(inputText)
+                    val località = getLocalità(inputText)
+
+                    if (categoriaViaggio=="Volo") {
+                        cercaVoliBarraRicerca(località)
+                    } else if(categoriaViaggio=="Crociera") {
+                        cercaCrociereBarraRicerca(località)
+                    } else if(categoriaViaggio=="Taxi") {
+                        cercaTaxiBarraRicerca(località)
+                    } else if(categoriaViaggio=="Auto") {
+                        cercaAutoBarraRicerca(località)
+                    } else {
+                        cercaAlloggioBarraRicerca(località)
+                    }
+                    true
+                } else {
+                    false
+                }
             }
         }
     }
@@ -104,7 +131,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            transaction.replace(R.id.fragment_container_orizzontale, fragment)
+                        }else{
+                            transaction.replace(R.id.fragment_container, fragment)
+                        }
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
@@ -134,7 +165,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            transaction.replace(R.id.fragment_container_orizzontale, fragment)
+                        }else{
+                            transaction.replace(R.id.fragment_container, fragment)
+                        }
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
@@ -164,7 +199,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            transaction.replace(R.id.fragment_container_orizzontale, fragment)
+                        }else{
+                            transaction.replace(R.id.fragment_container, fragment)
+                        }
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
@@ -194,7 +233,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            transaction.replace(R.id.fragment_container_orizzontale, fragment)
+                        }else{
+                            transaction.replace(R.id.fragment_container, fragment)
+                        }
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
@@ -224,7 +267,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val fragment = FragmentRisultati.newInstance(stringList, "MainActivity")
                         val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragment_container, fragment)
+                        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            transaction.replace(R.id.fragment_container_orizzontale, fragment)
+                        }else{
+                            transaction.replace(R.id.fragment_container, fragment)
+                        }
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
@@ -350,7 +397,30 @@ class MainActivity : AppCompatActivity() {
             adapter2.setOnItemClickListener(object : CustomAdapterPacchetti.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     when (position) {
-                        //
+                        0 -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container_orizzontale,FragmentPacchetto())
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                        1-> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container_orizzontale,FragmentFamiglia())
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                        2 -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container_orizzontale,FragmentCoppia())
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                        3 -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container_orizzontale,FragmentAmici())
+                                .addToBackStack(null)
+                                .commit()
+                        }
                     }
                 }
             })
@@ -436,13 +506,22 @@ class MainActivity : AppCompatActivity() {
                                 .commit()
                         }
                         1 -> {
-
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,FragmentFamiglia())
+                                .addToBackStack(null)
+                                .commit()
                         }
                         2 -> {
-
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,FragmentCoppia())
+                                .addToBackStack(null)
+                                .commit()
                         }
-                        4 -> {
-
+                        3 -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,FragmentAmici())
+                                .addToBackStack(null)
+                                .commit()
                         }
                     }
                 }
