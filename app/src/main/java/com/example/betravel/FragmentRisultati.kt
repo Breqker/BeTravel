@@ -34,13 +34,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
             if (data != null) {
                 if (data.first().contains("nome_volo")) {
-                    if (tipo=="FragmentVolo") {
+                    if (tipo=="FragmentVolo" || tipo=="MainActivity") {
                         setUpRecyclerViewVoli()
                     } else {
                         setUpRecyclerViewVoliPacchetti()
                     }
                 } else if(data.first().contains("nome_alloggio")) {
-                    if (tipo=="FragmentAlloggio"){
+                    if (tipo=="FragmentAlloggio" || tipo=="MainActivity"){
                         setUpRecyclerViewSoggiorni()
                     } else {
                         setUpRecyclerViewPacchettiSoggiorni()
@@ -50,7 +50,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 } else if(data.first().contains("nome_auto")) {
                     setUpRecyclerViewAuto()
                 } else {
-                    if (tipo=="FragmentTaxi"){
+                    if (tipo=="FragmentTaxi" || tipo=="MainActivity"){
                         setUpRecyclerViewTaxi()
                     } else {
                         setUpRecyclerViewPacchettoTaxi()
@@ -68,14 +68,14 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
             if (!data.isNullOrEmpty()) {
                 if (data.first().contains("nome_volo")) {
-                    if (tipo=="FragmentVolo") {
+                    if (tipo=="FragmentVolo" || tipo=="MainActivity") {
                         setUpRecyclerViewVoli()
                     } else {
                         setUpRecyclerViewVoliPacchetti()
                     }
                 }
                 else if(data.first().contains("nome_alloggio")) {
-                    if (tipo=="FragmentAlloggio"){
+                    if (tipo=="FragmentAlloggio" || tipo=="MainActivity"){
                         setUpRecyclerViewSoggiorni()
                     } else {
                         setUpRecyclerViewPacchettiSoggiorni()
@@ -85,7 +85,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 } else if(data.first().contains("nome_auto")) {
                     setUpRecyclerViewAuto()
                 } else {
-                    if (tipo=="FragmentTaxi"){
+                    if (tipo=="FragmentTaxi" || tipo=="MainActivity"){
                         setUpRecyclerViewTaxi()
                     } else {
                         setUpRecyclerViewPacchettoTaxi()
@@ -233,7 +233,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             adapter.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVoli")
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVolo")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()
@@ -268,7 +268,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
                 override fun onItemClick(position: Int) {
                     val selectedItem = data[position]
 
-                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVoli")
+                    val detailsFragment = FragmentDettagli.newDettagliInstance(selectedItem.toString(), "FragmentVolo")
 
                     val fragmentManager = requireActivity().supportFragmentManager
                     fragmentManager.beginTransaction()

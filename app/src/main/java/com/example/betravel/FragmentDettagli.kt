@@ -28,8 +28,6 @@ class FragmentDettagli : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val id = Utente.getId()
-
         if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             bindingOrizzontale = FragmentDettagliOrizzontaleBinding.inflate(inflater,container,false)
             val view = bindingOrizzontale.root
@@ -41,11 +39,11 @@ class FragmentDettagli : Fragment() {
                 bindingOrizzontale.textViewDettagli.text = data
 
                 if (tipo=="FragmentCrociera"){
-                    val id = getIdSoggiorno(data)
+                    val id = getIdViaggio(data)
                     // metti preferiti crociera
                     setUpRecyclerViewRecensioniCrociera(id)
                 } else {
-                    val id = getIdSoggiorno(data)
+                    val id = getIdViaggio(data)
                     //metti preferiti soggiorni
                     if (id != null) {
                         setUpRecyclerViewRecensioniSoggiorni(id)
@@ -63,6 +61,11 @@ class FragmentDettagli : Fragment() {
                 transaction.commit()
             }
 
+            bindingOrizzontale.preferiti.setOnClickListener {
+                if (data!=null && tipo!=null) {
+                    mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
+                }
+            }
 
             return view
         }else{
@@ -77,11 +80,11 @@ class FragmentDettagli : Fragment() {
 
 
                 if (tipo=="FragmentCrociera"){
-                    val id = getIdSoggiorno(data)
+                    val id = getIdViaggio(data)
                     // metti preferiti crociera
                     setUpRecyclerViewRecensioniCrociera(id)
                 } else {
-                    val id = getIdSoggiorno(data)
+                    val id = getIdViaggio(data)
                     //metti preferiti soggiorni
                     if (id != null) {
                         setUpRecyclerViewRecensioniSoggiorni(id)
@@ -89,19 +92,6 @@ class FragmentDettagli : Fragment() {
                 }
 
 
-                /*when(secondoElemento){
-                    "nome_volo" -> preferitiVolo(id,primoElemento)
-                    "codice_alloggio" -> {
-                        preferitiAlloggio(id,primoElemento)
-                        recensioniSoggiorno()
-                    }
-                    "id_taxi" -> preferitiTaxi(id,primoElemento)
-                    "id_auto" -> preferitiAuto(id,primoElemento)
-                    "codice_crociera" -> {
-                        preferitiCrociera(id,primoElemento)
-                        recensioniCrociera()
-                    }
-                }*/
             }
 
             binding.prenota.setOnClickListener {
@@ -113,9 +103,48 @@ class FragmentDettagli : Fragment() {
                 transaction.commit()
             }
 
+            binding.preferiti.setOnClickListener {
+                if (data!=null && tipo!=null) {
+                    mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
+                }
+            }
 
             return view
         }
+    }
+
+    private fun mettiTraIPreferiti(idViaggio: String, idUtente: Int?, tipo: String) {
+        var insertQuery = ""
+
+        when(tipo) {
+            "FragmentVolo" -> insertQuery = "INSERT INTO Preferito (id_utente, id_volo) values ('$idUtente','$idViaggio');"
+            "FragmentSoggiorno" -> insertQuery = "INSERT INTO Preferito (id_utente, codice_alloggio) values ('$idUtente','$idViaggio');"
+            "FragmentTaxi" -> insertQuery = "INSERT INTO Preferito (id_utente, id_taxi) values ('$idUtente','$idViaggio');"
+            "FragmentAuto" -> insertQuery = "INSERT INTO Preferito (id_utente, id_auto) values ('$idUtente','$idViaggio');"
+            "FragmentCrociera" -> insertQuery = "INSERT INTO Preferito (id_utente, codice_crociera) values ('$idUtente','$idViaggio');"
+        }
+        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
+        insertCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val data = response.body()?.get("queryset") as JsonArray
+
+                    if(data.size() < 0){
+                        showMessage("Errore durante l'inserimento")
+                    }
+                } else {
+                    showMessage("Risposta dal server vuota")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+    }
+
+    private fun getIdUtente(): Int? {
+        return Utente.getId()
     }
 
     private fun getData(data: String): String {
@@ -185,7 +214,7 @@ class FragmentDettagli : Fragment() {
         })
     }
 
-    fun getIdSoggiorno(soggiornoDetails: String): String {
+    fun getIdViaggio(soggiornoDetails: String): String {
         return soggiornoDetails.substringBefore("\n")
     }
 
@@ -252,194 +281,8 @@ class FragmentDettagli : Fragment() {
         })
     }
 
-    private fun preferitiVolo(id: Int?,codice: Int){
-
-        val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_volo) values ('$id','$codice');"
-
-        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
-        insertCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
-                } else {
-                    showMessage("Risposta dal server vuota")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
-    private fun preferitiAlloggio(id: Int?,codice: Int){
-
-        val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,codice_alloggio) values ('$id','$codice');"
-
-        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
-        insertCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
-                } else {
-                    showMessage("Risposta dal server vuota")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
-    private fun preferitiCrociera(id: Int?,codice: Int){
-
-        val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,codice_crociera) values ('$id','$codice');"
-
-        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
-        insertCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
-                } else {
-                    showMessage("Risposta dal server vuota")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
-    private fun preferitiTaxi(id: Int?,codice: Int){
-
-        val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_taxi) values ('$id','$codice');"
-
-        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
-        insertCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
-                } else {
-                    showMessage("Risposta dal server vuota")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
-    private fun preferitiAuto(id: Int?,codice: Int){
-
-        val insertQuery = "INSERT INTO webmobile.Preferito (id_utente,id_auto) values ('$id','$codice');"
-
-        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
-        insertCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val data = response.body()?.get("queryset") as JsonArray
-
-                    if(data.size() < 0){
-                        showMessage("Errore durante l'inserimento")
-                    }
-                } else {
-                    showMessage("Risposta dal server vuota")
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-
-    }
-
     private fun showMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun recensioniCrociera() {
-        val query = "SELECT descrizione, stelle, id_utente, codice_crociera FROM webmobile.Recensione WHERE codice_alloggio is NULL';"
-
-        val queryCall = ClientNetwork.retrofit.select(query)
-        queryCall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        val data = responseBody.getAsJsonArray("queryset")
-
-                        if (data.size() > 0) {
-                            val recensioniList = ArrayList<ItemsViewModelReview>()
-                            val layoutManager = LinearLayoutManager(requireContext())
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.layoutManager = layoutManager
-                            } else {
-                                binding.recensioni.layoutManager = layoutManager
-                            }
-
-                            for (i in 0 until data.size()) {
-                                val recensioneObject = data.get(i).asJsonObject
-
-                                val descrizione = recensioneObject.get("descrizione").asString
-                                val stelle = recensioneObject.get("stelle").asFloat
-
-                                val reviewItem = ItemsViewModelReview(descrizione, stelle)
-                                recensioniList.add(reviewItem)
-                            }
-
-                            val adapter = CustomAdapterReview(recensioniList)
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                bindingOrizzontale.recensioni.adapter = adapter
-                            } else {
-                                binding.recensioni.adapter = adapter
-                            }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                showMessage("Nessuna recensione trovata")
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Risposta del server vuota")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero dei dati")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                requireActivity().runOnUiThread {
-                    showMessage("Errore di connessione: ${t.message}")
-                }
-            }
-        })
     }
 
     companion object {

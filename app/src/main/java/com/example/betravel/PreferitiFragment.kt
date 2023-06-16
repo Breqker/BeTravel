@@ -42,23 +42,23 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val preferiti = ArrayList<ItemsViewModel>()
 
-        val query = "SELECT 'Alloggio' AS tipo, nome_alloggio AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero\n" +
+        val query = "SELECT distinct 'Alloggio' AS tipo, nome_alloggio AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero\n" +
                 "            FROM Alloggio a, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND a.codice_alloggio = p.codice_alloggio \n" +
                 "            UNION ALL\n" +
-                "SELECT 'Auto' AS tipo, nome_auto AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
+                "SELECT distinct 'Auto' AS tipo, nome_auto AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, prezzo_giornaliero\n" +
                 "            FROM Auto a, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND a.id_auto = p.id_auto\n" +
                 "            UNION ALL\n" +
-                "SELECT 'Taxi' AS tipo, '' AS nome, citta, data_disponibilita, orario_disponibilita, prezzo_orario\n" +
+                "SELECT distinct 'Taxi' AS tipo, '' AS nome, citta, data_disponibilita, orario_disponibilita, prezzo_orario\n" +
                 "            FROM Taxi t, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND t.id_taxi=p.id_taxi\n" +
                 "            UNION ALL\n" +
-                "SELECT 'Crociera' AS tipo, nome_crociera AS nome, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
+                "SELECT distinct 'Crociera' AS tipo, nome_crociera AS nome, citta_partenza, data_partenza, data_ritorno, prezzo_viaggio\n" +
                 "            FROM Crociera c, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND c.codice_crociera = p.codice_crociera\n" +
                 "            UNION ALL\n" +
-                "SELECT 'Volo' AS tipo, nome_volo AS nome, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno\n" +
+                "SELECT distinct 'Volo' AS tipo, nome_volo AS nome, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno\n" +
                 "            FROM Volo v, Preferito p\n" +
                 "            WHERE p.id_utente = '$id' AND v.codice = p.id_volo\n"
 
