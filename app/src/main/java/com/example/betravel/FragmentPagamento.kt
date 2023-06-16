@@ -1,6 +1,8 @@
 package com.example.betravel
 
 import android.Manifest
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.MediaScannerConnection
@@ -13,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentPagamentoBinding
@@ -78,20 +81,26 @@ class FragmentPagamento : Fragment() {
                 val numeroCarta = bindingOrizzontale.numero.text.toString()
                 val cvv = bindingOrizzontale.cvv.text.toString()
 
-                if(nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()){
-                    // Controlla se il permesso è già stato concesso
-                    if (isWriteExternalStoragePermissionGranted()) {
-                        // Il permesso è già stato concesso, salva il file
-                        saveTextAsFile()
-                    } else {
-                        // Il permesso non è stato ancora concesso, richiedilo all'utente
-                        requestWriteExternalStoragePermission()
+                if (nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()) {
+                    showMessageConfirm("Procedere al pagamento?") { button ->
+                        if (button) {
+                            if (isWriteExternalStoragePermissionGranted()) {
+                                saveTextAsFile()
+                            } else {
+                                requestWriteExternalStoragePermission()
+                            }
+                            showMessage("Pagamento effettuato con successo")
+
+                            // Apri la MainActivity
+                            val intent = Intent(context, MainActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            // non fai niente
+                        }
                     }
-                }else{
+                } else {
                     showMessage("Compilare tutti i campi")
                 }
-
-
             }
 
             return view
@@ -143,18 +152,27 @@ class FragmentPagamento : Fragment() {
                 val numeroCarta = binding.numero.text.toString()
                 val cvv = binding.cvv.text.toString()
 
-                if(nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()){
-                    // Controlla se il permesso è già stato concesso
-                    if (isWriteExternalStoragePermissionGranted()) {
-                        // Il permesso è già stato concesso, salva il file
-                        saveTextAsFile()
-                    } else {
-                        // Il permesso non è stato ancora concesso, richiedilo all'utente
-                        requestWriteExternalStoragePermission()
+                if (nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()) {
+                    showMessageConfirm("Procedere al pagamento?") { button ->
+                        if (button) {
+                            if (isWriteExternalStoragePermissionGranted()) {
+                                saveTextAsFile()
+                            } else {
+                                requestWriteExternalStoragePermission()
+                            }
+                            showMessage("Pagamento effettuato con successo")
+
+                            // Apri la MainActivity
+                            val intent = Intent(context, MainActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            // non fai niente
+                        }
                     }
-                }else{
+                } else {
                     showMessage("Compilare tutti i campi")
                 }
+
 
 
             }
@@ -164,9 +182,25 @@ class FragmentPagamento : Fragment() {
     }
 
     private fun getPrintableText(): String {
-        val data = arguments?.getString(ARG_DATA) ?: ""
+        val data = arguments?.getString(ARG_DATA)
         val text = "Resoconto : $data"
         return text
+    }
+
+    private fun showMessageConfirm(message: String, callback: (Boolean) -> Unit) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Attenzione")
+            .setMessage(message)
+            .setPositiveButton("No") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+                callback(false)
+            }
+            .setNegativeButton("Si") { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+                callback(true)
+            }
+            .create()
+        alertDialog.show()
     }
 
     private fun saveTextAsFile() {
@@ -242,14 +276,6 @@ class FragmentPagamento : Fragment() {
         private const val PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1
 
         fun newPagamentoInstance(data: String): FragmentPagamento {
-            val fragment = FragmentPagamento()
-            val bundle = Bundle()
-            bundle.putString(ARG_DATA, data)
-            fragment.arguments = bundle
-            return fragment
-        }
-
-        fun newPagamentoInstanceSoggiorno(data: String): FragmentPagamento {
             val fragment = FragmentPagamento()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)

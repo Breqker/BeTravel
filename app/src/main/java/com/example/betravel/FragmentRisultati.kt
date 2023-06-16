@@ -587,7 +587,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             formattedString.append("\nData ritorno: $dataRitorno")
             formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
             formattedString.append("\nOra arrivo: ${oraArrivo.substring(0, 5)}")
-            formattedString.append("\nCosto biglietto: $costoBiglietto")
+            formattedString.append("\nCosto biglietto: $costoBiglietto €")
 
             return formattedString.toString()
         } else {
@@ -607,7 +607,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
             formattedString.append("\nData partenza: $dataPartenza")
             formattedString.append("\nOra partenza: ${oraPartenza.substring(0, 5)}")
             formattedString.append("\nOra arrivo: ${oraArrivo.substring(0, 5)}")
-            formattedString.append("\nCosto biglietto: $costoBiglietto")
+            formattedString.append("\nCosto biglietto: $costoBiglietto €")
 
             return formattedString.toString()
         }

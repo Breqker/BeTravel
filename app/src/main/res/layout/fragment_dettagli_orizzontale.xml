@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textView"
             android:layout_marginTop="20dp"
+            android:textSize="22dp"
             android:fontFamily="@font/archivo_black"
             android:text="TextView" />
 

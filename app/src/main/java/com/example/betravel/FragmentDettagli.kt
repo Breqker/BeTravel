@@ -74,8 +74,6 @@ class FragmentDettagli : Fragment() {
             if (data != null) {
                 binding.textViewDettagli.text = getData(data)
 
-                Log.d("DATA", "$data")
-
                 if (tipo=="FragmentCrociera"){
                     val id = getIdViaggio(data)
                     // metti preferiti crociera
@@ -100,7 +98,6 @@ class FragmentDettagli : Fragment() {
 
             binding.preferiti.setOnClickListener {
                 if (data!=null && tipo!=null) {
-                    Log.d("ID VIAGGIO", "${getIdViaggio(data)}")
                     mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
                 }
             }

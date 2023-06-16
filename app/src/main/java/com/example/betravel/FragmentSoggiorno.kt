@@ -118,7 +118,7 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
             }
 
             val numbers = ArrayList<String>()
-            for (i in 1..10) {
+            for (i in 1..6) {
                 numbers.add(i.toString())
             }
 
@@ -232,63 +232,6 @@ class FragmentSoggiorno: Fragment(), OnBackPressedDispatcherOwner {
                 }
             }
 
-        })
-    }
-
-    private fun dataInizio(data: Date){
-        val query = "SELECT data_inizio_disponibilita from webmobile.Soggiorno where data_inizio_disponibilita = '$data';"
-
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessuna data di inizio trovata")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero delle date di inizio")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-        })
-    }
-
-    private fun dataRilascio(data: Date){
-        val query = "SELECT data_fine_disponibilita from webmobile.Soggiorno where data_fine_disponibilita = '$data';"
-
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessuna data di rilascio trovata")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero delle date di rilascio")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
         })
     }
 

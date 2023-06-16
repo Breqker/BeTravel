@@ -29,6 +29,7 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
     private lateinit var binding: FragmentPacchettoBinding
     private lateinit var bindingLand: FragmentVoloLandBinding // DA FARE
     private val calendar = Calendar.getInstance()
+    private val fragmentVolo = FragmentVolo()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -310,7 +311,7 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    private fun dataPartenza(data: Date,aeroporto : String){
+    /*private fun dataPartenza(data: Date,aeroporto : String){
         val query = "SELECT data_partenza from webmobile.Volo where data_partenza = '$data' and aeroporto_partenza = '$aeroporto';"
 
         val call = ClientNetwork.retrofit.select(query)
@@ -393,9 +394,7 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
                 showMessage("Errore di connessione: ${t.message}")
             }
         })
-    }
-
-
+    }*/
 
     private fun handleConfermaClick() {
         val aeroportoPartenza: Spinner
@@ -409,19 +408,18 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
             aeroportoArrivo = bindingLand.aeroportoArrivoSpinner
             dataPartenza = bindingLand.dataPartenza
             dataRitorno = bindingLand.dataRitorno
-            //numPersone = bindingLand.numPersoneSpinner
+            numPersone = bindingLand.numPersoneSpinner
         } else {
             aeroportoPartenza = binding.aeroportoPartenzaSpinner
             aeroportoArrivo = binding.aeroportoArrivoSpinner
             dataPartenza = binding.dataPartenza
             dataRitorno = binding.dataRitorno
-            //numPersone = binding.numPersoneSpinner
+            numPersone = binding.numPersoneSpinner
         }
 
         val selectedPartenza = aeroportoPartenza.selectedItem.toString()
         val selectedArrivo = aeroportoArrivo.selectedItem.toString()
-        //val selectedPersone = numPersone.selectedItem.toString()
-
+        val selectedPersone = numPersone.selectedItem.toString().toInt()
 
         if (selectedPartenza == selectedArrivo) {
             // Gli aeroporti di partenza e ritorno sono uguali, mostra un messaggio di errore
@@ -438,10 +436,12 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
         }
 
         val partenzaSqlDate = convertToSqlDate(partenzaDate)
-        dataPartenza(partenzaSqlDate, selectedPartenza)
+        fragmentVolo.dataPartenza(partenzaSqlDate, selectedPartenza)
+        //dataPartenza(partenzaSqlDate, selectedPartenza)
 
         if (ritornoDate.isEmpty()) {
-            cercaVoliSoloAndata(selectedPartenza, selectedArrivo, partenzaSqlDate)
+            //fragmentVolo.cercaVoliSoloAndata(selectedPartenza, selectedArrivo, partenzaSqlDate, selectedPersone)
+            cercaVoliSoloAndata(selectedPartenza, selectedArrivo, partenzaSqlDate, selectedPersone)
         } else {
             val ritornoSqlDate = convertToSqlDate(ritornoDate)
 
@@ -450,14 +450,22 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
                 return
             }
 
-            dataArrivo(ritornoSqlDate, selectedArrivo)
-            cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, ritornoSqlDate)
+            fragmentVolo.dataArrivo(ritornoSqlDate, selectedArrivo)
+            //dataArrivo(ritornoSqlDate, selectedArrivo)
+            //fragmentVolo.cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, ritornoSqlDate, selectedPersone)
+            cercaVoli(selectedPartenza, selectedArrivo, partenzaSqlDate, ritornoSqlDate, selectedPersone)
         }
 
     }
 
-    private fun cercaVoliSoloAndata(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date) {
-        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno is null;"
+    private fun cercaVoliSoloAndata(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, num_persone: Int) {
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, \n" +
+                "    costo_biglietto * '$num_persone' AS costo_biglietto\n" +
+                "FROM webmobile.Volo\n" +
+                "WHERE aeroporto_partenza = '$aeroporto_partenza' \n" +
+                "    AND aeroporto_arrivo = '$aeroporto_arrivo' \n" +
+                "    AND data_partenza = '$data_partenza' \n" +
+                "    AND data_ritorno IS NULL"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -497,9 +505,15 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date) {
-        val query = "SELECT nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, costo_biglietto from webmobile.Volo where aeroporto_partenza = '$aeroporto_partenza' AND aeroporto_arrivo = '$aeroporto_arrivo' AND data_partenza = '$data_partenza' AND data_ritorno = '$data_ritorno';"
-
+    private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date, num_persone: Int) {
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, \n" +
+                "    costo_biglietto * '$num_persone' AS costo_biglietto\n" +
+                "FROM webmobile.Volo\n" +
+                "WHERE aeroporto_partenza = '$aeroporto_partenza' \n" +
+                "    AND aeroporto_arrivo = '$aeroporto_arrivo' \n" +
+                "    AND data_partenza = '$data_partenza' \n" +
+                "    AND data_ritorno = '$data_ritorno' \n" +
+                "    AND data_ritorno IS NULL"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -538,8 +552,6 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
             }
         })
     }
-
-
 
     private fun convertToSqlDate(dateString: String): Date {
         val parts = dateString.split("/")
@@ -550,6 +562,4 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
         calendar.set(year, month, day)
         return Date(calendar.timeInMillis)
     }
-
-
 }
