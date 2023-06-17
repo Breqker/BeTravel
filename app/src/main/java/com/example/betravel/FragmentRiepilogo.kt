@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,10 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentRiepilogoBinding
+import com.example.betravel.databinding.FragmentRiepilogoOrizzontaleBinding
 
 class FragmentRiepilogo: Fragment() {
 
     private lateinit var binding: FragmentRiepilogoBinding
+    private lateinit var bindingOrizzontale : FragmentRiepilogoOrizzontaleBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +40,26 @@ class FragmentRiepilogo: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRiepilogoBinding.inflate(inflater, container, false)
-        val view = binding.root
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale = FragmentRiepilogoOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
+
+            Log.d("FragmentRisultati.dati", "${FragmentRisultati.dati.toString()}")
+
+            setUpRecyclerView(FragmentRisultati.dati)
+
+            bindingOrizzontale.button.setOnClickListener {
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, FragmentPagamento())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+
+            return view
+        }else{
+            binding = FragmentRiepilogoBinding.inflate(inflater, container, false)
+            val view = binding.root
 
         setUpRecyclerView(FragmentRisultati.dati)
 
@@ -50,16 +71,25 @@ class FragmentRiepilogo: Fragment() {
             binding.textView.isVisible = false
         }
 
-        return view
+            return view
+        }
     }
 
     private fun setUpRecyclerView(dati: ArrayList<ItemsViewModel>?) {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        val adapter = dati?.let { CustomAdapterRisultati(it) }
-        binding.recyclerView.adapter = adapter
+            val adapter = dati?.let { CustomAdapterRisultati(it) }
+            bindingOrizzontale.recyclerView.adapter = adapter
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
+            val adapter = dati?.let { CustomAdapterRisultati(it) }
+            binding.recyclerView.adapter = adapter
+        }
     }
 
     companion object {

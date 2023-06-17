@@ -1,5 +1,6 @@
 package com.example.betravel
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentPrenotazioneBinding
+import com.example.betravel.databinding.FragmentPrenotazioneOrizzontaleBinding
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +21,7 @@ import retrofit2.Response
 class FragmentPrenotazioni: Fragment() {
 
     private lateinit var binding: FragmentPrenotazioneBinding
+    private lateinit var bindingOrizzontale : FragmentPrenotazioneOrizzontaleBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,22 +42,40 @@ class FragmentPrenotazioni: Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentPrenotazioneBinding.inflate(inflater, container, false)
-        val view = binding.root
+    ): View {
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale = FragmentPrenotazioneOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
 
-        setUpRecyclerView()
+            setUpRecyclerView()
 
-        return view
+            return view
+        }else{
+            binding = FragmentPrenotazioneBinding.inflate(inflater, container, false)
+            val view = binding.root
+
+            setUpRecyclerView()
+
+            return view
+        }
+
     }
 
     private fun setUpRecyclerView() {
         val prenotazioneList = ArrayList<ItemsViewModel>()
         val id = Utente.getId()
-        binding.text.isVisible = false
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val query = "SELECT 'Alloggio' AS tipo, a.nome_alloggio AS nome, a.citta, a.data_inizio_disponibilita AS data_inizio, a.data_fine_disponibilita AS data_fine, a.costo_giornaliero\n" +
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.text.isVisible = false
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }else{
+            binding.text.isVisible = false
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
+        val query = "SELECT 'Alloggio' AS tipo, a.nome_alloggio AS nome, a.citta, p.data_inizio_prenotazione, p.data_fine_prenotazione, a.costo_giornaliero\n" +
                 "FROM Alloggio a\n" +
                 "JOIN Prenotazione p ON p.codice_alloggio = a.codice_alloggio\n" +
                 "WHERE p.id_utente = '$id'\n" +
@@ -118,11 +139,21 @@ class FragmentPrenotazioni: Fragment() {
                                     prenotazioneList.add(item)
                                 }
                                 val adapter = CustomAdapterPreferiti(prenotazioneList)
-                                binding.recyclerView.adapter = adapter
+                                val orientation = resources.configuration.orientation
+                                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    bindingOrizzontale.recyclerView.adapter = adapter
+                                }else{
+                                    binding.recyclerView.adapter = adapter
+                                }
 
                             }
                         } else {
-                            binding.text.isVisible = true
+                            val orientation = resources.configuration.orientation
+                            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.text.isVisible = true
+                            }else{
+                                binding.text.isVisible = true
+                            }
                         }
 
                     }
