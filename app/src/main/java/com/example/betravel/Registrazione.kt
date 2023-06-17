@@ -57,10 +57,12 @@ class Registrazione : AppCompatActivity() {
             val confermaPassword = bindingLand.editTextConfermaPassword.text.toString()
 
             if (nome.isNotEmpty() && cognome.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confermaPassword.isNotEmpty()) {
-                if (checkPassword(password, confermaPassword)) {
-                    registerUser(nome, cognome, email, password)
-                } else {
+                if (!checkPassword(password, confermaPassword)) {
                     showErrorMessage("Password non coincidenti")
+                } else if (!checkRegex(password, confermaPassword)) {
+                    showErrorMessage("La password deve contenere un carattere maiuscolo, dei numeri e dei caratteri speciali")
+                } else {
+                    registerUser(nome, cognome, email, password)
                 }
             } else {
                 showErrorMessage("Compilare tutti i campi")
@@ -69,10 +71,14 @@ class Registrazione : AppCompatActivity() {
     }
 
     private fun checkPassword(password: String, confermaPassword: String): Boolean {
-        val passwordRegex = Regex("(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}")
-
-        return password == confermaPassword && password.matches(passwordRegex)
+        return password == confermaPassword
     }
+
+    private fun checkRegex(password: String, confermaPassword: String): Boolean {
+        val passwordRegex = Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$")
+        return passwordRegex.matches(password) && passwordRegex.matches(confermaPassword)
+    }
+
 
     private fun registerUser(nome: String, cognome: String, email: String, password: String) {
         val checkQuery = "SELECT * FROM webmobile.Utente WHERE email = '$email';"

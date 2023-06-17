@@ -321,6 +321,7 @@ class FragmentPagamento : Fragment() {
         private const val ARG_DATA = "data"
         private const val ARG_TIPO = "tipo"
         private const val PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1
+        var dati: ArrayList<ItemsViewModel>? = null
 
         fun newPagamentoInstance(data: String, tipo: String): FragmentPagamento {
             val fragment = FragmentPagamento()

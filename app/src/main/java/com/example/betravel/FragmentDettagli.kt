@@ -241,8 +241,11 @@ class FragmentDettagli : Fragment() {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    val trovato = responseBody != null
-                    callback(trovato)
+                    if (responseBody != null) {
+                        if (responseBody.size() > 0) {
+                            callback(true)
+                        }
+                    }
                 } else {
                     requireActivity().runOnUiThread {
                         showMessage("Errore durante il recupero dei dati")
@@ -259,6 +262,7 @@ class FragmentDettagli : Fragment() {
             }
         })
     }
+
 
 
 

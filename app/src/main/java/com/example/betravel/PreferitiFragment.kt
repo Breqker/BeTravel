@@ -137,7 +137,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                 }
                             }
                             val adapter = CustomAdapterPreferiti(preferiti)
-                            val orientation = resources.configuration.orientation
+
                             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                                 bindingOrizzontale.recyclerView.adapter = adapter
                             adapter?.setOnItemClickListener(object : CustomAdapterPreferiti.OnItemClickListener {
@@ -290,7 +290,7 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                                 .commit()
                                         }
                                     }
-                                }
+                                })
                             }
                         }
                     }

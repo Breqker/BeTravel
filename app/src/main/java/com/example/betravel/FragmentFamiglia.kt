@@ -124,6 +124,16 @@ class FragmentFamiglia : Fragment() {
                 val dataVolo = getFlightList()
                 val adapterVolo = CustomAdapterRisultati(dataVolo)
                 binding.volo.adapter = adapterVolo
+
+                adapterVolo.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val selectedItem = dataVolo[position]
+
+                        FragmentPagamento.dati?.add(selectedItem)
+
+
+                    }
+                })
             }
 
             binding.alloggio.layoutManager =
@@ -133,6 +143,16 @@ class FragmentFamiglia : Fragment() {
                 val dataAlloggio = getAlloggioList()
                 val adapterAlloggio = CustomAdapterRisultati(dataAlloggio)
                 binding.alloggio.adapter = adapterAlloggio
+
+                adapterAlloggio.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val selectedItem = dataAlloggio[position]
+
+                        FragmentPagamento.dati?.add(selectedItem)
+
+
+                    }
+                })
             }
 
             binding.crociera.layoutManager =
@@ -142,6 +162,16 @@ class FragmentFamiglia : Fragment() {
                val dataCrociera = getCruiseList()
                val adapterCrociera = CustomAdapterRisultati(dataCrociera)
                binding.crociera.adapter = adapterCrociera
+
+               adapterCrociera.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                   override fun onItemClick(position: Int) {
+                       val selectedItem = dataCrociera[position]
+
+                       FragmentPagamento.dati?.add(selectedItem)
+
+
+                   }
+               })
            }
 
             binding.taxi.layoutManager =
@@ -151,6 +181,16 @@ class FragmentFamiglia : Fragment() {
                 val dataTaxi = getTaxiList()
                 val adapterTaxi = CustomAdapterRisultati(dataTaxi)
                 binding.taxi.adapter = adapterTaxi
+
+                adapterTaxi.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val selectedItem = dataTaxi[position]
+
+                        FragmentPagamento.dati?.add(selectedItem)
+
+
+                    }
+                })
             }
 
             binding.auto.layoutManager =
@@ -160,42 +200,32 @@ class FragmentFamiglia : Fragment() {
                 val dataAuto = getAutoList()
                 val adapterAuto = CustomAdapterRisultati(dataAuto)
                 binding.auto.adapter = adapterAuto
+
+                adapterAuto.setOnItemClickListener(object : CustomAdapterRisultati.OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val selectedItem = dataAuto[position]
+
+                        FragmentPagamento.dati?.add(selectedItem)
+
+                    }
+                })
             }
 
 
 
             binding.buttonPrenota.setOnClickListener {
-                val selectVolo = getFlightList().find { it.isItemSelected }
-                val selectedAlloggio = getAlloggioList().find { it.isItemSelected }
-                val selectedCrociera = getCruiseList().find { it.isItemSelected }
-                val selectedTaxi = getTaxiList().find { it.isItemSelected }
-                val selectedAuto = getAutoList().find { it.isItemSelected }
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, FragmentPagamento())
+                transaction.addToBackStack(null)
+                transaction.commit()
 
-                val dataList = ArrayList<String>()
-
-                if(selectVolo != null && selectedAlloggio != null){
-
-                    dataList.add(selectVolo.toString())
-                    dataList.add(selectedAlloggio.toString())
-                    dataList.add(selectedCrociera.toString())
-                    dataList.add(selectedTaxi.toString())
-                    dataList.add(selectedAuto.toString())
-
-                    val fragmentPagamentoPacchetto = FragmentPagamentoPacchetto.newPagamentoInstance(dataList)
-
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container,fragmentPagamentoPacchetto)
-                        .addToBackStack(null)
-                        .commit()
-               }else{
-                   showMessage("Seleziona un volo e un alloggio")
-               }
             }
 
             return view
 
         }
     }
+
 
     private fun showMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
