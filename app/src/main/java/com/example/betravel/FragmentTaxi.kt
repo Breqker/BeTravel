@@ -256,37 +256,6 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
         })
     }
 
-    private fun orarioPrenotazione(orario: Time) {
-        val query =
-            "SELECT orario_prenotazione from webmobile.Taxi where orario_prenotazione = '$orario';"
-
-        val call = ClientNetwork.retrofit.select(query)
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.get("queryset") as JsonArray
-
-                    if (responseBody.size() > 0) {
-
-                    } else {
-                        requireActivity().runOnUiThread {
-                            showMessage("Nessun orario trovato")
-                        }
-                    }
-                } else {
-                    requireActivity().runOnUiThread {
-                        showMessage("Errore durante il recupero degli orari")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                showMessage("Errore di connessione: ${t.message}")
-            }
-
-        })
-    }
-
     private fun handleConfermaClick() {
         val data: EditText
         val orario: EditText
@@ -326,11 +295,11 @@ class FragmentTaxi : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaTaxi(citta: String, dataSqlDate: Date, orarioSqlTime: Time) {
-        val query = "SELECT id_taxi, citta, data_disponibilita, orario_disponibilita, prezzo_orario \n" +
-                "FROM Taxi T\n" +
-                "WHERE citta = '$citta' \n" +
-                "  AND data_disponibilita = '$dataSqlDate' \n" +
-                "  AND orario_disponibilita >= '$orarioSqlTime' AND id_taxi NOT IN (SELECT id_taxi FROM Prenotazione);\n"
+        val query = "SELECT T.id_taxi, T.citta, T.data_disponibilita, T.orario_disponibilita, T.prezzo_orario \n" +
+                "                FROM Taxi T\n" +
+                "                WHERE T.citta = '$citta' \n" +
+                "                  AND T.data_disponibilita = '$dataSqlDate' \n" +
+                "                  AND T.orario_disponibilita >= '$orarioSqlTime' AND T.id_taxi NOT IN (SELECT P.id_taxi FROM Prenotazione P WHERE P.id_taxi=T.id_taxi);"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

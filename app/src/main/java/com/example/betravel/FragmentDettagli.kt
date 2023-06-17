@@ -2,15 +2,22 @@ package com.example.betravel
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.RatingBar
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.betravel.databinding.FragmentDettagliBinding
 import com.example.betravel.databinding.FragmentDettagliOrizzontaleBinding
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,6 +27,8 @@ class FragmentDettagli : Fragment() {
 
     private lateinit var binding: FragmentDettagliBinding
     private lateinit var bindingOrizzontale : FragmentDettagliOrizzontaleBinding
+    private lateinit var editText: EditText
+    private lateinit var ratingBar: RatingBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +50,7 @@ class FragmentDettagli : Fragment() {
                     val id = getIdViaggio(data)
                     // metti preferiti crociera
                     setUpRecyclerViewRecensioniCrociera(id)
-                } else {
+                } else if (tipo=="FragmentAlloggio"){
                     val id = getIdViaggio(data)
                     //metti preferiti soggiorni
                     setUpRecyclerViewRecensioniSoggiorni(id)
@@ -50,8 +59,10 @@ class FragmentDettagli : Fragment() {
 
 
             bindingOrizzontale.prenota.setOnClickListener {
-                val textViewDettagli = bindingOrizzontale.textViewDettagli.text.toString()
-                val fragment = FragmentPagamento.newPagamentoInstance(textViewDettagli)
+                var fragment = FragmentPagamento()
+                if(tipo!=null && data!=null) {
+                    fragment = FragmentPagamento.newPagamentoInstance(data, tipo)
+                }
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragmentContainerView, fragment)
                 transaction.addToBackStack(null)
@@ -59,8 +70,17 @@ class FragmentDettagli : Fragment() {
             }
 
             bindingOrizzontale.preferiti.setOnClickListener {
-                if (data!=null && tipo!=null) {
-                    mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
+                val idUtente = getIdUtente()
+                if (data!=null && tipo!=null && idUtente!=null) {
+                    controllaPreferiti(getIdViaggio(data), idUtente) { trovato ->
+                        if (trovato) {
+                            eliminaDaIPreferiti(getIdViaggio(data), idUtente) // altrimenti toglilo dai preferiti
+
+                        } else {
+                            // Il viaggio non è presente nei preferiti dell'utente
+                            mettiTraIPreferiti(getIdViaggio(data), idUtente, tipo) // se non è già tra i preferiti allora inseriscilo
+                        }
+                    }
                 }
             }
 
@@ -71,6 +91,7 @@ class FragmentDettagli : Fragment() {
 
             val data = arguments?.getString(ARG_DATA)
             val tipo = arguments?.getString(ARG_TIPO)
+
             if (data != null) {
                 binding.textViewDettagli.text = getData(data)
 
@@ -78,7 +99,7 @@ class FragmentDettagli : Fragment() {
                     val id = getIdViaggio(data)
                     // metti preferiti crociera
                     setUpRecyclerViewRecensioniCrociera(id)
-                } else {
+                } else if (tipo=="FragmentAlloggio"){
                     val id = getIdViaggio(data)
                     //metti preferiti soggiorni
                     setUpRecyclerViewRecensioniSoggiorni(id)
@@ -88,8 +109,10 @@ class FragmentDettagli : Fragment() {
             }
 
             binding.prenota.setOnClickListener {
-                val textViewDettagli = binding.textViewDettagli.text.toString()
-                val fragment = FragmentPagamento.newPagamentoInstance(textViewDettagli)
+                var fragment = FragmentPagamento()
+                if(tipo!=null && data!=null) {
+                    fragment = FragmentPagamento.newPagamentoInstance(data, tipo)
+                }
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragmentContainerView, fragment)
                 transaction.addToBackStack(null)
@@ -97,14 +120,147 @@ class FragmentDettagli : Fragment() {
             }
 
             binding.preferiti.setOnClickListener {
-                if (data!=null && tipo!=null) {
-                    mettiTraIPreferiti(getIdViaggio(data), getIdUtente(), tipo)
+                val idUtente = getIdUtente()
+                if (data!=null && tipo!=null && idUtente!=null) {
+                    controllaPreferiti(getIdViaggio(data), idUtente) { trovato ->
+                        if (trovato) {
+                            eliminaDaIPreferiti(getIdViaggio(data), idUtente) // altrimenti toglilo dai preferiti
+                        } else {
+                            // Il viaggio non è presente nei preferiti dell'utente
+                            mettiTraIPreferiti(getIdViaggio(data), idUtente, tipo) // se non è già tra i preferiti allora inseriscilo
+                        }
+                    }
                 }
             }
+
+            if (tipo == "FragmentAlloggio" || tipo == "FragmentCrociera") {
+            binding.recensione.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val text = s.toString()
+                    // Fai qualcosa con il testo
+                    // ...
+                }
+            })
+
+
+                binding.recensione.setOnEditorActionListener { _, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE || (event?.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        // L'utente ha premuto il tasto "Invio" o ha completato l'input con l'evento "KEYCODE_ENTER"
+                        val text = binding.recensione.text.toString()
+                        val rating = binding.reviewRating.rating
+                        if (data!=null){
+                            inserisciRecensione(text, rating, Utente.getId(), tipo, getIdViaggio(data))
+                        }
+                        return@setOnEditorActionListener true
+                    }
+                    return@setOnEditorActionListener false
+                }
+
+                binding.reviewRating.setOnRatingBarChangeListener { _, rating, _ ->
+                    // Fai qualcosa con la valutazione
+                    // ...
+                }
+            } else {
+                binding.recensione.isVisible = false
+                binding.reviewRating.isVisible = false
+            }
+
 
             return view
         }
     }
+
+    private fun inserisciRecensione(text: String, rating: Float, id: Int?, tipo: String, idViaggio: String) {
+        var query = ""
+
+        when (tipo) {
+            "FragmentAlloggio" -> query = "insert into Recensione (descrizione, stelle, id_utente, codice_alloggio) values ('$text', '${rating.toInt()}', '$id', '$idViaggio')"
+            "FragmentCrociera" -> query = "insert into Recensione (descrizione, stelle, id_utente, codice_crociera) values ('$text', '${rating.toInt()}', '$id', '$idViaggio')"
+        }
+
+        val queryCall = ClientNetwork.retrofit.insert(query)
+        queryCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    showMessage("Recensione inserita")
+                } else {
+                    showMessage("Errore durante l'inserimento della recensione")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+            }
+        })
+    }
+
+    private fun eliminaDaIPreferiti(idViaggio: String, idUtente: Int) {
+        val query = "DELETE FROM Preferito\n" +
+                "WHERE id_utente='$idUtente' and id_volo = '$idViaggio'\n" +
+                "   OR codice_alloggio = '$idViaggio'\n" +
+                "   OR codice_crociera = '$idViaggio'\n" +
+                "   OR id_taxi = '$idViaggio'\n" +
+                "   OR id_auto = '$idViaggio';"
+        val queryCall = ClientNetwork.retrofit.remove(query)
+        queryCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    showMessage("Elemento rimosso dai preferiti")
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante la rimozione")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+            }
+        })
+    }
+
+    private fun controllaPreferiti(idViaggio: String, idUtente: Int, callback: (Boolean) -> Unit) {
+        val query = "SELECT *\n" +
+                "FROM Preferito\n" +
+                "WHERE id_utente='$idUtente' and id_volo = '$idViaggio'\n" +
+                "   OR codice_alloggio = '$idViaggio'\n" +
+                "   OR codice_crociera = '$idViaggio'\n" +
+                "   OR id_taxi = '$idViaggio'\n" +
+                "   OR id_auto = '$idViaggio';"
+
+        val queryCall = ClientNetwork.retrofit.select(query)
+        queryCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    val trovato = responseBody != null
+                    callback(trovato)
+                } else {
+                    requireActivity().runOnUiThread {
+                        showMessage("Errore durante il recupero dei dati")
+                    }
+                    callback(false)
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                requireActivity().runOnUiThread {
+                    showMessage("Errore di connessione: ${t.message}")
+                }
+                callback(false)
+            }
+        })
+    }
+
+
 
     private fun mettiTraIPreferiti(idViaggio: String, idUtente: Int?, tipo: String) {
         var insertQuery = ""

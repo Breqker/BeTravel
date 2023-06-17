@@ -506,14 +506,13 @@ class FragmentPacchetto : Fragment(), OnBackPressedDispatcherOwner {
     }
 
     private fun cercaVoli(aeroporto_partenza: String, aeroporto_arrivo: String, data_partenza: Date, data_ritorno: Date, num_persone: Int) {
-        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, ora_partenza, ora_arrivo, \n" +
+        val query = "SELECT codice, nome_volo, aeroporto_partenza, aeroporto_arrivo, data_partenza, data_ritorno, ora_partenza, ora_arrivo, \n" +
                 "    costo_biglietto * '$num_persone' AS costo_biglietto\n" +
                 "FROM webmobile.Volo\n" +
                 "WHERE aeroporto_partenza = '$aeroporto_partenza' \n" +
                 "    AND aeroporto_arrivo = '$aeroporto_arrivo' \n" +
                 "    AND data_partenza = '$data_partenza' \n" +
-                "    AND data_ritorno = '$data_ritorno' \n" +
-                "    AND data_ritorno IS NULL"
+                "    AND data_ritorno = '$data_ritorno';"
         val call = ClientNetwork.retrofit.select(query)
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

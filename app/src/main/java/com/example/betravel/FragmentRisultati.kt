@@ -728,7 +728,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         val citta = jsonObject.getString("citta")
         val dataInizio = jsonObject.getString("data_inizio_disponibilita")
         val dataRilascio = jsonObject.getString("data_fine_disponibilita")
-        val costoGiornaliero = jsonObject.getString("costo_giornaliero")
+        val costoGiornaliero = jsonObject.getString("costo")
         val numOspiti = jsonObject.getString("num_ospiti")
 
         val formattedString = StringBuilder()
@@ -736,7 +736,7 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
         formattedString.append("$nomeAlloggio")
         formattedString.append("\nCittà: $citta")
         formattedString.append("\nDisponibile dal\n$dataInizio \nal $dataRilascio")
-        formattedString.append("\nCosto giornaliero: $costoGiornaliero")
+        formattedString.append("\nCosto: $costoGiornaliero")
         formattedString.append("\nNumero ospiti: $numOspiti")
 
         return formattedString.toString()
@@ -765,5 +765,13 @@ class FragmentRisultati : Fragment(), OnBackPressedDispatcherOwner {
 
         var dati: ArrayList<ItemsViewModel>? = null
 
+        fun newInstance(data: String, fragmentTipo: String): FragmentRisultati {
+            val fragment = FragmentRisultati()
+            val bundle = Bundle()
+            bundle.putString(ARG_DATA, data)
+            bundle.putString(ARG_TIPO ,fragmentTipo)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

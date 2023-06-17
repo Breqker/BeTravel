@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,8 +40,6 @@ class FragmentRiepilogo: Fragment() {
         binding = FragmentRiepilogoBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        Log.d("FragmentRisultati.dati", "${FragmentRisultati.dati.toString()}")
-
         setUpRecyclerView(FragmentRisultati.dati)
 
         binding.button.setOnClickListener {
@@ -48,6 +47,7 @@ class FragmentRiepilogo: Fragment() {
             transaction.replace(R.id.fragmentContainerView, FragmentPagamento())
             transaction.addToBackStack(null)
             transaction.commit()
+            binding.textView.isVisible = false
         }
 
         return view

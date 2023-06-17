@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:fontFamily="@font/archivo_black"
+                android:fontFamily="@font/allerta"
                 android:text="TextView"
                 app:layout_constraintEnd_toStartOf="@id/editTextContainer"
                 app:layout_constraintStart_toStartOf="parent"

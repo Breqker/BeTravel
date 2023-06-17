@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Date
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.ArrayList
 import java.util.Calendar
 
@@ -262,22 +265,24 @@ class FragmentPacchettoAlloggio: Fragment(), OnBackPressedDispatcherOwner {
             return
         }
 
-        /*if(rilascioDate < inizioDate){
-            showMessage("La data di ritorno deve essere o nello stesso giorno o nei giorni successivi alla data di inizio")
-            return
-        }*/
-
         val inizioSqlDate = convertToSqlDate(inizioDate)
         val rilascioSqlDate = convertToSqlDate(rilascioDate)
 
-        //dataInizio(inizioSqlDate)
-        //dataRilascio(rilascioSqlDate)
-
-        cercaSoggiorni(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate, numeroOspiti.selectedItem.toString())
+        val giorni = calcolaGiorniTraDate(inizioSqlDate.toString(), rilascioSqlDate.toString())
+        Log.d("GIORNI", "$giorni")
+        cercaSoggiorni(citta.selectedItem.toString(), inizioSqlDate, rilascioSqlDate, numeroOspiti.selectedItem.toString(), giorni)
     }
 
-    private fun cercaSoggiorni(citta: String, inizioDate: Date, rilascioDate: Date, numeroOspiti: String) {
-        val query = "SELECT nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero, num_ospiti\n" +
+    fun calcolaGiorniTraDate(dataInizio: String, dataFine: String): Long {
+        val formatoData = "yyyy-MM-dd"
+        val dataInizioParsed = LocalDate.parse(dataInizio)
+        val dataFineParsed = LocalDate.parse(dataFine)
+
+        return ChronoUnit.DAYS.between(dataInizioParsed, dataFineParsed)
+    }
+
+    private fun cercaSoggiorni(citta: String, inizioDate: Date, rilascioDate: Date, numeroOspiti: String, giorni: Long) {
+        val query = "SELECT codice_alloggio, nome_alloggio, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero * '$giorni' AS costo, num_ospiti\n" +
                 "FROM Alloggio\n" +
                 "WHERE data_inizio_disponibilita <= '$inizioDate'\n" +
                 "  AND data_fine_disponibilita >= '$rilascioDate'\n" +

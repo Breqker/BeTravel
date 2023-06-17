@@ -20,6 +20,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.betravel.databinding.FragmentPagamentoBinding
 import com.example.betravel.databinding.FragmentPagamentoOrizzontaleBinding
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileWriter
 
@@ -38,6 +42,8 @@ class FragmentPagamento : Fragment() {
             val view = bindingOrizzontale.root
 
             val data = arguments?.getString(ARG_DATA)
+            val tipo = arguments?.getString(ARG_TIPO)
+
             if (data != null) {
                 bindingOrizzontale.textViewDettagli.text = data
             }
@@ -83,19 +89,22 @@ class FragmentPagamento : Fragment() {
 
                 if (nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()) {
                     showMessageConfirm("Procedere al pagamento?") { button ->
-                        if (button) {
-                            if (isWriteExternalStoragePermissionGranted()) {
-                                saveTextAsFile()
-                            } else {
-                                requestWriteExternalStoragePermission()
-                            }
-                            showMessage("Pagamento effettuato con successo")
+                        if(tipo!=null && data!=null) {
+                            if (button && inserisciPrenotazioneDB(Utente.getId(), tipo, getIdViaggio(data))) {
+                                if (isWriteExternalStoragePermissionGranted()) {
+                                    saveTextAsFile()
+                                } else {
+                                    requestWriteExternalStoragePermission()
+                                }
 
-                            // Apri la MainActivity
-                            val intent = Intent(context, MainActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            // non fai niente
+                                showMessage("Pagamento effettuato con successo")
+
+                                // Apri la MainActivity
+                                val intent = Intent(context, MainActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                // non fai niente
+                            }
                         }
                     }
                 } else {
@@ -109,6 +118,8 @@ class FragmentPagamento : Fragment() {
             val view = binding.root
 
             val data = arguments?.getString(ARG_DATA)
+            val tipo = arguments?.getString(ARG_TIPO)
+
             if (data != null) {
                 binding.textViewDettagli.text = data
             }
@@ -154,31 +165,66 @@ class FragmentPagamento : Fragment() {
 
                 if (nomeCarta.isNotEmpty() && numeroCarta.isNotEmpty() && cvv.isNotEmpty()) {
                     showMessageConfirm("Procedere al pagamento?") { button ->
-                        if (button) {
-                            if (isWriteExternalStoragePermissionGranted()) {
-                                saveTextAsFile()
-                            } else {
-                                requestWriteExternalStoragePermission()
-                            }
-                            showMessage("Pagamento effettuato con successo")
+                        if(tipo!=null && data!=null) {
 
-                            // Apri la MainActivity
-                            val intent = Intent(context, MainActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            // non fai niente
+
+                            if (button && inserisciPrenotazioneDB(Utente.getId(), tipo, getIdViaggio(data))) {
+                                if (isWriteExternalStoragePermissionGranted()) {
+                                    saveTextAsFile()
+                                } else {
+                                    requestWriteExternalStoragePermission()
+                                }
+
+                                showMessage("Pagamento effettuato con successo")
+
+                                // Apri la MainActivity
+                                val intent = Intent(context, MainActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                // non fai niente
+                            }
                         }
                     }
                 } else {
                     showMessage("Compilare tutti i campi")
                 }
-
-
-
             }
 
             return view
         }
+    }
+
+    fun getIdViaggio(pagamentoDetails: String): String {
+        return pagamentoDetails.substringBefore("\n")
+    }
+
+    private fun inserisciPrenotazioneDB(idUtente: Int?, tipo: String, idViaggio: String): Boolean {
+        var insertQuery = ""
+        var risposta = false
+        when(tipo) {
+            "FragmentVolo" -> insertQuery = "INSERT INTO Prenotazione (id_utente, id_volo) values ('$idUtente','$idViaggio');"
+            "FragmentAlloggio" -> insertQuery = "INSERT INTO Prenotazione (id_utente, codice_alloggio) values ('$idUtente','$idViaggio');"
+            "FragmentTaxi" -> insertQuery = "INSERT INTO Prenotazione (id_utente, id_taxi) values ('$idUtente','$idViaggio');"
+            "FragmentAuto" -> insertQuery = "INSERT INTO Prenotazione (id_utente, id_auto) values ('$idUtente','$idViaggio');"
+            "FragmentCrociera" -> insertQuery = "INSERT INTO Prenotazione (id_utente, codice_crociera) values ('$idUtente','$idViaggio');"
+        }
+        val insertCall = ClientNetwork.retrofit.insert(insertQuery)
+        insertCall.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    showMessage("Prenotazione effettuata con successo")
+                    risposta = true
+                } else {
+                    showMessage("Risposta dal server vuota")
+                    risposta = false
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                showMessage("Errore di connessione: ${t.message}")
+            }
+        })
+        return risposta
     }
 
     private fun getPrintableText(): String {
@@ -273,12 +319,14 @@ class FragmentPagamento : Fragment() {
 
     companion object {
         private const val ARG_DATA = "data"
+        private const val ARG_TIPO = "tipo"
         private const val PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1
 
-        fun newPagamentoInstance(data: String): FragmentPagamento {
+        fun newPagamentoInstance(data: String, tipo: String): FragmentPagamento {
             val fragment = FragmentPagamento()
             val bundle = Bundle()
             bundle.putString(ARG_DATA, data)
+            bundle.putString(ARG_TIPO, tipo)
             fragment.arguments = bundle
             return fragment
         }

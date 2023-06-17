@@ -54,27 +54,27 @@ class FragmentPrenotazioni: Fragment() {
         binding.text.isVisible = false
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val query = "SELECT 'Alloggio' AS tipo, a.nome_alloggio AS nome, a.citta, p.data_inizio_prenotazione, p.data_fine_prenotazione, a.costo_giornaliero\n" +
+        val query = "SELECT 'Alloggio' AS tipo, a.nome_alloggio AS nome, a.citta, a.data_inizio_disponibilita AS data_inizio, a.data_fine_disponibilita AS data_fine, a.costo_giornaliero\n" +
                 "FROM Alloggio a\n" +
                 "JOIN Prenotazione p ON p.codice_alloggio = a.codice_alloggio\n" +
                 "WHERE p.id_utente = '$id'\n" +
                 "UNION ALL\n" +
-                "SELECT 'Auto' AS tipo, a.nome_auto AS nome, a.citta, p.data_inizio_prenotazione, p.data_fine_prenotazione, a.prezzo_giornaliero\n" +
+                "SELECT 'Auto' AS tipo, a.nome_auto AS nome, a.citta, a.data_inizio_disponibilita AS data_inizio, a.data_fine_disponibilita AS data_fine, a.prezzo_giornaliero\n" +
                 "FROM Auto a\n" +
                 "JOIN Prenotazione p ON p.id_auto = a.id_auto\n" +
                 "WHERE p.id_utente = '$id'\n" +
                 "UNION ALL\n" +
-                "SELECT 'Taxi' AS tipo, '' AS nome, t.citta, p.data_inizio_prenotazione, p.data_fine_prenotazione, t.prezzo_orario\n" +
+                "SELECT 'Taxi' AS tipo, '' AS nome, t.citta, t.data_disponibilita AS data_inizio, t.orario_disponibilita AS data_fine, t.prezzo_orario\n" +
                 "FROM Taxi t\n" +
                 "JOIN Prenotazione p ON p.id_taxi = t.id_taxi\n" +
                 "WHERE p.id_utente = '$id'\n" +
                 "UNION ALL\n" +
-                "SELECT 'Crociera' AS tipo, c.nome_crociera AS nome, c.citta_partenza, p.data_inizio_prenotazione, p.data_fine_prenotazione, c.prezzo_viaggio\n" +
+                "SELECT 'Crociera' AS tipo, c.nome_crociera AS nome, c.citta_partenza AS data_inizio, c.data_partenza AS data_fine, c.data_ritorno, c.prezzo_viaggio\n" +
                 "FROM Crociera c\n" +
                 "JOIN Prenotazione p ON p.codice_crociera = c.codice_crociera\n" +
                 "WHERE p.id_utente = '$id'\n" +
                 "UNION ALL\n" +
-                "SELECT 'Volo' AS tipo, v.nome_volo AS nome, v.aeroporto_partenza, v.aeroporto_arrivo, p.data_inizio_prenotazione, p.data_fine_prenotazione\n" +
+                "SELECT 'Volo' AS tipo, v.nome_volo AS nome, v.aeroporto_partenza, v.aeroporto_arrivo, v.data_partenza AS data_inizio, v.data_ritorno AS data_fine\n" +
                 "FROM Volo v\n" +
                 "JOIN Prenotazione p ON p.id_volo = v.codice\n" +
                 "WHERE p.id_utente = '$id';"
@@ -93,9 +93,13 @@ class FragmentPrenotazioni: Fragment() {
                                 val tipo = prenotazione.get("tipo").asString
                                 val nome = prenotazione.get("nome").asString
                                 val citta = prenotazione.get("citta").asString
-                                val dataInizio = prenotazione.get("data_inizio_prenotazione").asString
-                                val dataFine = prenotazione.get("data_fine_prenotazione").asString
-                                val costo = prenotazione.get("costo_giornaliero").asString
+                                val dataInizio = prenotazione.get("data_inizio").asString
+                                val dataFine = prenotazione.get("data_fine").asString
+                                val costo = if (prenotazione.get("costo_giornaliero").isJsonNull) {
+                                    "N/A"
+                                } else {
+                                    prenotazione.get("costo_giornaliero").asString
+                                }
 
                                 if (tipo=="Alloggio"){
                                     val item = ItemsViewModel(R.drawable.soggiorno, "$nome\n$citta\nDal $dataInizio\nal ${dataFine.subSequence(0,10)} \nCosto giornaliero: $costo €")

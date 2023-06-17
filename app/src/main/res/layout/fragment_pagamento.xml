@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:fontFamily="@font/archivo_black"
+        android:fontFamily="@font/allerta"
         android:textSize="22dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
