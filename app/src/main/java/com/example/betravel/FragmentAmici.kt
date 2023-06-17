@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentFamigliaBinding
+import com.example.betravel.databinding.FragmentFamigliaOrizzontaleBinding
 import com.google.gson.JsonObject
 import org.json.JSONObject
 import retrofit2.Call
@@ -20,133 +21,172 @@ import retrofit2.Response
 class FragmentAmici : Fragment() {
 
     private lateinit var binding: FragmentFamigliaBinding
+    private lateinit var bindingOrizzontale : FragmentFamigliaOrizzontaleBinding
+    private var flightListt: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
+    private var alloggioListt: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
+    private var cruiseListt : ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
+    private var taxiListt: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
+    private var autoListt: ArrayList<ItemsViewModel> = ArrayList<ItemsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return super.onCreateView(inflater, container, savedInstanceState)
-        } else {
+            bindingOrizzontale = FragmentFamigliaOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
+
+            bindingOrizzontale.volo.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+            voli{
+                val dataVolo = getFlightList()
+                val adapterVolo = CustomAdapterRisultati(dataVolo)
+                bindingOrizzontale.volo.adapter = adapterVolo
+            }
+
+            bindingOrizzontale.alloggio.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+            alloggi{
+                val dataAlloggio = getAlloggioList()
+                val adapterAlloggio = CustomAdapterRisultati(dataAlloggio)
+                bindingOrizzontale.alloggio.adapter = adapterAlloggio
+            }
+
+            bindingOrizzontale.crociera.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+            crociere {
+                val dataCrociera = getCruiseList()
+                val adapterCrociera = CustomAdapterRisultati(dataCrociera)
+                bindingOrizzontale.crociera.adapter = adapterCrociera
+            }
+
+            bindingOrizzontale.taxi.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+            taxi{
+                val dataTaxi = getTaxiList()
+                val adapterTaxi = CustomAdapterRisultati(dataTaxi)
+                bindingOrizzontale.taxi.adapter = adapterTaxi
+            }
+
+            bindingOrizzontale.auto.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+            auto {
+                val dataAuto = getAutoList()
+                val adapterAuto = CustomAdapterRisultati(dataAuto)
+                bindingOrizzontale.auto.adapter = adapterAuto
+            }
+
+
+
+            bindingOrizzontale.buttonPrenota.setOnClickListener {
+                val selectVolo = getFlightList().find { it.isItemSelected }
+                val selectedAlloggio = getAlloggioList().find { it.isItemSelected }
+                val selectedCrociera = getCruiseList().find { it.isItemSelected }
+                val selectedTaxi = getTaxiList().find { it.isItemSelected }
+                val selectedAuto = getAutoList().find { it.isItemSelected }
+
+                val dataList = ArrayList<String>()
+
+                if(selectVolo != null && selectedAlloggio != null){
+
+                    dataList.add(selectVolo.toString())
+                    dataList.add(selectedAlloggio.toString())
+                    dataList.add(selectedCrociera.toString())
+                    dataList.add(selectedTaxi.toString())
+                    dataList.add(selectedAuto.toString())
+
+                    val fragmentPagamentoPacchetto = FragmentPagamentoPacchetto.newPagamentoInstance(dataList)
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,fragmentPagamentoPacchetto)
+                        .addToBackStack(null)
+                        .commit()
+                }else{
+                    showMessage("Seleziona un volo e un alloggio")
+                }
+            }
+
+            return view        } else {
             binding = FragmentFamigliaBinding.inflate(inflater, container, false)
             val view = binding.root
 
             binding.volo.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-            val dataVolo = ArrayList<ItemsViewModel>()
-            val inputDataVolo = arguments?.getStringArrayList("data")
-            if (!inputDataVolo.isNullOrEmpty()) {
-                for (i in 0 until inputDataVolo.size) {
-                    val volo = inputDataVolo[i]
-                    val flightDetails = formatFlightDetails(volo)
-                    dataVolo.add(ItemsViewModel(R.drawable.aereo, flightDetails))
-                }
+            voli{
+                val dataVolo = getFlightList()
+                val adapterVolo = CustomAdapterRisultati(dataVolo)
+                binding.volo.adapter = adapterVolo
             }
-
-            val adapterVolo = CustomAdapterPacchetti(dataVolo)
-            binding.volo.adapter = adapterVolo
-
-            val stringListVolo = dataVolo.map { it.text }
-            val arrayAdapterVolo = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1, stringListVolo)
-
-            voli(arrayAdapterVolo)
 
             binding.alloggio.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-            val dataAlloggio = ArrayList<ItemsViewModel>()
-            val inputDataAlloggio = arguments?.getStringArrayList("data")
-            if (!inputDataAlloggio.isNullOrEmpty()) {
-                for (i in 0 until inputDataAlloggio.size) {
-                    val volo = inputDataAlloggio[i]
-                    val flightDetails = formatSoggiorniDetails(volo)
-                    dataAlloggio.add(ItemsViewModel(R.drawable.resort_santa_flavia, flightDetails))
-                }
+            alloggi{
+                val dataAlloggio = getAlloggioList()
+                val adapterAlloggio = CustomAdapterRisultati(dataAlloggio)
+                binding.alloggio.adapter = adapterAlloggio
             }
-
-            val adapterAlloggio = CustomAdapterPacchetti(dataAlloggio)
-            binding.alloggio.adapter = adapterAlloggio
-
-            val stringListAlloggio = dataAlloggio.map { it.text }
-            val arrayAdapterAlloggio = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1, stringListAlloggio)
-
-            alloggi(arrayAdapterAlloggio)
 
             binding.crociera.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-            val dataCrociera = ArrayList<ItemsViewModel>()
-            val inputDataCrociera = arguments?.getStringArrayList("data")
-            if (!inputDataCrociera.isNullOrEmpty()) {
-                for (i in 0 until inputDataCrociera.size) {
-                    val crociera = inputDataCrociera[i]
-                    val crocieraDetails = formatCrocieraDetails(crociera)
-                    dataCrociera.add(ItemsViewModel(R.drawable.crociera, crocieraDetails))
-                }
+            crociere {
+                val dataCrociera = getCruiseList()
+                val adapterCrociera = CustomAdapterRisultati(dataCrociera)
+                binding.crociera.adapter = adapterCrociera
             }
-
-            val adapterCrociera = CustomAdapterPacchetti(dataCrociera)
-            binding.crociera.adapter = adapterCrociera
-
-            val stringListCrociera = dataCrociera.map { it.text }
-            val arrayAdapterCrociera = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1, stringListCrociera)
-
-            crociere(arrayAdapterCrociera)
 
             binding.taxi.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-            val dataTaxi = ArrayList<ItemsViewModel>()
-            val inputDataTaxi = arguments?.getStringArrayList("data")
-            if (!inputDataTaxi.isNullOrEmpty()) {
-                for (i in 0 until inputDataTaxi.size) {
-                    val taxies = inputDataTaxi[i]
-                    val taxiDetails = formatTaxiDetails(taxies)
-                    dataTaxi.add(ItemsViewModel(R.drawable.aereo, taxiDetails))
-                }
+            taxi{
+                val dataTaxi = getTaxiList()
+                val adapterTaxi = CustomAdapterRisultati(dataTaxi)
+                binding.taxi.adapter = adapterTaxi
             }
-
-            val adapterTaxi = CustomAdapterPacchetti(dataTaxi)
-            binding.taxi.adapter = adapterTaxi
-
-            val stringListTaxi = dataTaxi.map { it.text }
-            val arrayAdapterTaxi = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1, stringListTaxi)
-
-            taxi(arrayAdapterTaxi)
 
             binding.auto.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-            val dataAuto = ArrayList<ItemsViewModel>()
-            val inputDataAuto = arguments?.getStringArrayList("data")
-            if (!inputDataAuto.isNullOrEmpty()) {
-                for (i in 0 until inputDataAuto.size) {
-                    val car = inputDataAuto[i]
-                    val carDetails = formatAutoDetails(car)
-                    dataAuto.add(ItemsViewModel(R.drawable.aereo, carDetails))
-                }
+            auto {
+                val dataAuto = getAutoList()
+                val adapterAuto = CustomAdapterRisultati(dataAuto)
+                binding.auto.adapter = adapterAuto
             }
 
-            val adapterAuto = CustomAdapterPacchetti(dataTaxi)
-            binding.auto.adapter = adapterAuto
-
-            val stringListAuto = dataAuto.map { it.text }
-            val arrayAdapterAuto = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1, stringListAuto)
-
-            auto(arrayAdapterAuto)
-
-
             binding.buttonPrenota.setOnClickListener {
-                if(dataVolo.any{it.isItemSelected} && dataAlloggio.any{it.isItemSelected}){
+                val selectVolo = getFlightList().find { it.isItemSelected }
+                val selectedAlloggio = getAlloggioList().find { it.isItemSelected }
+                val selectedCrociera = getCruiseList().find { it.isItemSelected }
+                val selectedTaxi = getTaxiList().find { it.isItemSelected }
+                val selectedAuto = getAutoList().find { it.isItemSelected }
+
+                val dataList = ArrayList<String>()
+
+                if(selectVolo != null && selectedAlloggio != null){
+
+                    dataList.add(selectVolo.toString())
+                    dataList.add(selectedAlloggio.toString())
+                    dataList.add(selectedCrociera.toString())
+                    dataList.add(selectedTaxi.toString())
+                    dataList.add(selectedAuto.toString())
+
+                    val fragmentPagamentoPacchetto = FragmentPagamentoPacchetto.newPagamentoInstance(dataList)
+
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container,FragmentPagamento())
+                        .replace(R.id.fragment_container,fragmentPagamentoPacchetto)
                         .addToBackStack(null)
                         .commit()
                 }else{
-                    showMessage("Seleziona un volo e/o un alloggio")
+                    showMessage("Seleziona un volo e un alloggio")
                 }
             }
 
@@ -159,8 +199,44 @@ class FragmentAmici : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    fun setFlightList(flightList: ArrayList<ItemsViewModel>){
+        flightListt = flightList
+    }
+    fun getFlightList(): ArrayList<ItemsViewModel>{
+        return flightListt
+    }
 
-    private fun voli(adapter : ArrayAdapter<String>){
+    fun setAlloggioList(alloggioList: ArrayList<ItemsViewModel>){
+        alloggioListt = alloggioList
+    }
+
+    fun getAlloggioList(): ArrayList<ItemsViewModel>{
+        return alloggioListt
+    }
+
+    fun setCruiseList(cruiseList: ArrayList<ItemsViewModel>){
+        cruiseListt = cruiseList
+    }
+    fun getCruiseList(): ArrayList<ItemsViewModel>{
+        return cruiseListt
+    }
+
+    fun setTaxiList(taxiList: ArrayList<ItemsViewModel>){
+        taxiListt = taxiList
+    }
+
+    fun getTaxiList(): ArrayList<ItemsViewModel>{
+        return taxiListt
+    }
+
+    fun setAutoList(autoList: ArrayList<ItemsViewModel>){
+        autoListt = autoList
+    }
+
+    fun getAutoList(): ArrayList<ItemsViewModel>{
+        return autoListt
+    }
+    private fun voli(callback: () -> Unit){
         val query = "SELECT * FROM webmobile.Volo"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -170,25 +246,23 @@ class FragmentAmici : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         val voli = responseBody.getAsJsonArray("queryset")
+                        val flightList = ArrayList<ItemsViewModel>()
 
                         if (voli.size() > 0) {
-                            val flightList = mutableListOf<String>()
                             for (i in 0 until voli.size()) {
                                 val volo = voli[i].toString()
-                                val flight = volo.substringAfter(":").trim()
-                                flightList.add(flight.substring(1, flight.length - 2))
+                                val flight = formatFlightDetails(volo)
+                                flightList.add(ItemsViewModel(R.drawable.aereo,flight))
                             }
+                            setFlightList(flightList)
+                            callback.invoke()
 
-                            activity?.runOnUiThread {
-                                adapter.clear()
-                                adapter.addAll(flightList)
-                                adapter.notifyDataSetChanged()
-                            }
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun volo trovato")
                             }
                         }
+
                     } else {
                         requireActivity().runOnUiThread {
                             showMessage("Risposta del server vuota")
@@ -208,9 +282,10 @@ class FragmentAmici : Fragment() {
             }
 
         })
+
     }
 
-    private fun alloggi(adapter : ArrayAdapter<String>){
+    private fun alloggi(callback: () -> Unit){
         val query = "SELECT * FROM webmobile.Alloggio"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -220,20 +295,17 @@ class FragmentAmici : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         val alloggi = responseBody.getAsJsonArray("queryset")
+                        val alloggiList = ArrayList<ItemsViewModel>()
 
                         if (alloggi.size() > 0) {
-                            val soggiornoList = mutableListOf<String>()
                             for (i in 0 until alloggi.size()) {
                                 val alloggio = alloggi[i].toString()
-                                val soggiorno = alloggio.substringAfter(":").trim()
-                                soggiornoList.add(soggiorno.substring(1, soggiorno.length - 2))
+                                val soggiorno = formatSoggiorniDetails(alloggio)
+                                alloggiList.add(ItemsViewModel(R.drawable.resort_santa_flavia,soggiorno))
                             }
+                            setAlloggioList(alloggiList)
+                            callback.invoke()
 
-                            activity?.runOnUiThread {
-                                adapter.clear()
-                                adapter.addAll(soggiornoList)
-                                adapter.notifyDataSetChanged()
-                            }
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun alloggio trovato")
@@ -260,7 +332,7 @@ class FragmentAmici : Fragment() {
         })
     }
 
-    private fun crociere(adapter : ArrayAdapter<String>){
+    private fun crociere(callback: () -> Unit){
         val query = "SELECT * FROM webmobile.Crociera"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -270,20 +342,16 @@ class FragmentAmici : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         val crociere = responseBody.getAsJsonArray("queryset")
-
+                        val cruiseList = ArrayList<ItemsViewModel>()
                         if (crociere.size() > 0) {
-                            val cruiseList = mutableListOf<String>()
                             for (i in 0 until crociere.size()) {
                                 val crociera = crociere[i].toString()
-                                val cruise = crociera.substringAfter(":").trim()
-                                cruiseList.add(cruise.substring(1, cruise.length - 2))
+                                val cruise = formatCrocieraDetails(crociera)
+                                cruiseList.add(ItemsViewModel(R.drawable.costa_fantastica,cruise))
                             }
 
-                            activity?.runOnUiThread {
-                                adapter.clear()
-                                adapter.addAll(cruiseList)
-                                adapter.notifyDataSetChanged()
-                            }
+                            setCruiseList(cruiseList)
+                            callback.invoke()
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna crociera trovata")
@@ -310,7 +378,7 @@ class FragmentAmici : Fragment() {
         })
     }
 
-    private fun taxi(adapter : ArrayAdapter<String>){
+    private fun taxi(callback: () -> Unit){
         val query = "SELECT * FROM webmobile.Taxi"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -320,20 +388,16 @@ class FragmentAmici : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         val taxi = responseBody.getAsJsonArray("queryset")
-
+                        val taxiList = ArrayList<ItemsViewModel>()
                         if (taxi.size() > 0) {
-                            val taxiList = mutableListOf<String>()
                             for (i in 0 until taxi.size()) {
                                 val taxies = taxi[i].toString()
-                                val taxii = taxies.substringAfter(":").trim()
-                                taxiList.add(taxii.substring(1, taxii.length - 2))
+                                val taxii = formatTaxiDetails(taxies)
+                                taxiList.add(ItemsViewModel(R.drawable.taxi2,taxii))
                             }
 
-                            activity?.runOnUiThread {
-                                adapter.clear()
-                                adapter.addAll(taxiList)
-                                adapter.notifyDataSetChanged()
-                            }
+                            setTaxiList(taxiList)
+                            callback.invoke()
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessun taxi trovato")
@@ -360,7 +424,7 @@ class FragmentAmici : Fragment() {
         })
     }
 
-    private fun auto(adapter : ArrayAdapter<String>){
+    private fun auto(callback: () -> Unit){
         val query = "SELECT * FROM webmobile.Auto"
 
         val queryCall = ClientNetwork.retrofit.select(query)
@@ -370,20 +434,17 @@ class FragmentAmici : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         val auto = responseBody.getAsJsonArray("queryset")
+                        val autoList = ArrayList<ItemsViewModel>()
 
                         if (auto.size() > 0) {
-                            val autoList = mutableListOf<String>()
                             for (i in 0 until auto.size()) {
                                 val car = auto[i].toString()
-                                val cars = car.substringAfter(":").trim()
-                                autoList.add(cars.substring(1, cars.length - 2))
+                                val cars = formatAutoDetails(car)
+                                autoList.add(ItemsViewModel(R.drawable.fiat_grande_punto,cars))
                             }
 
-                            activity?.runOnUiThread {
-                                adapter.clear()
-                                adapter.addAll(autoList)
-                                adapter.notifyDataSetChanged()
-                            }
+                            setAutoList(autoList)
+                            callback.invoke()
                         } else {
                             requireActivity().runOnUiThread {
                                 showMessage("Nessuna auto trovata")

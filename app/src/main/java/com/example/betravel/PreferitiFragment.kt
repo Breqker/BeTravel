@@ -1,6 +1,7 @@
 package com.example.betravel
 
 import Utente
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betravel.databinding.FragmentPreferitiBinding
+import com.example.betravel.databinding.FragmentPreferitiOrizzontaleBinding
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,23 +25,40 @@ import retrofit2.Response
 class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
 
     private lateinit var binding: FragmentPreferitiBinding
+    private lateinit var bindingOrizzontale : FragmentPreferitiOrizzontaleBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentPreferitiBinding.inflate(inflater, container, false)
-        val view = binding.root
+    ): View {
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale = FragmentPreferitiOrizzontaleBinding.inflate(inflater, container, false)
+            val view = bindingOrizzontale.root
 
-        prendiPreferiti()
+            prendiPreferiti()
 
-        return view
+            return view
+        }else{
+            binding = FragmentPreferitiBinding.inflate(inflater, container, false)
+            val view = binding.root
+
+            prendiPreferiti()
+
+            return view
+        }
     }
 
     private fun prendiPreferiti(): ArrayList<ItemsViewModel> {
         val id = Utente.getId()
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bindingOrizzontale.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }else{
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
         val preferiti = ArrayList<ItemsViewModel>()
 
         val query = "SELECT distinct 'Alloggio' AS tipo, nome_alloggio AS nome, citta, data_inizio_disponibilita, data_fine_disponibilita, costo_giornaliero\n" +
@@ -71,7 +90,12 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                         val preferitiData = responseBody.getAsJsonArray("queryset")
 
                         if (preferitiData.size() > 0) {
-                            binding.textView .isVisible = false
+                            val orientation = resources.configuration.orientation
+                            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                bindingOrizzontale.textView .isVisible = false
+                            }else{
+                                binding.textView .isVisible = false
+                            }
                             for (i in 0 until preferitiData.size()) {
                                 val preferito = preferitiData[i].asJsonObject
                                 val tipo = preferito.get("tipo").asString
@@ -98,8 +122,12 @@ class PreferitiFragment : Fragment(), OnBackPressedDispatcherOwner {
                                     preferiti.add(item)
                                 }
                                 val adapter = CustomAdapterPreferiti(preferiti)
-                                binding.recyclerView.adapter = adapter
-
+                                val orientation = resources.configuration.orientation
+                                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    bindingOrizzontale.recyclerView.adapter = adapter
+                                }else{
+                                    binding.recyclerView.adapter = adapter
+                                }
                             }
                         }
                     }
